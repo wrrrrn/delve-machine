@@ -17,7 +17,12 @@ class DocumentParser:
     def parse_document(self, document, content, map_statements=True):
         # content = self.text_blob(document)
         self.map_statements = map_statements
-        self._words_total = len(self.text_tools.get_words(content))
+        bag_of_words = self.text_tools.get_words(
+            content,
+            with_punctuation=False,
+            remove_stopwords=True
+        )
+        self._words_total = len(bag_of_words)
         sentences = self.text_tools.get_sentences(content)
         for sentence_number, s in enumerate(sentences):
             print s
