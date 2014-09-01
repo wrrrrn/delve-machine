@@ -9,7 +9,7 @@ class DocumentParser:
         self.data_models = models
         self.speech_tools = speech_tools
         self.text_tools = self.speech_tools.TextHandler()
-        self.tfidf_model = self.speech_tools.Tfidf_Model()
+        self.tfidf_model = self.speech_tools.TfidfModel()
         self.tfidf_model.load()
         self._set_counters()
         self._semantic_feats = []

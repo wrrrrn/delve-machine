@@ -7,6 +7,7 @@ from nltk.chunk import ChunkParserI, tree2conlltags
 from nltk.chunk.util import conlltags2tree
 from sklearn.linear_model import LogisticRegression
 import pandas as pd
+import os
 
 
 class Relations():
@@ -362,9 +363,7 @@ class Reverb():
 class ConfidenceFunction():
     reg = 1000.
     classifier = LogisticRegression(C=reg)
-    relation_file = "/home/warren/System2/Dropbox/_code/virtualenvs/" \
-                    "engine-datastore/ipython/" \
-                    "relation_data.csv"
+    relation_file = "%s/analytical_tools/relations/relation_data.csv" % os.curdir
     relations = pd.read_csv(relation_file)
     features, response = relations.iloc[:, 1:16], relations.iloc[:, 0]
     classifier.fit(features, response)
