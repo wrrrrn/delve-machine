@@ -55,7 +55,7 @@ def test_new_import():
     new_test.parse_blog()
 
 print "\n\nBegining document imports..."
-import_government()
+#import_government()
 import_codebook()
 import_acts()
 import_mps()
