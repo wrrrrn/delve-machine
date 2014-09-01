@@ -1,0 +1,39 @@
+digraph search {
+	orientation="landscape";
+	node [shape=record];
+
+	Politician -> GovernmentDepartment [label="MEMBER_OF"];
+	Politician -> PoliticalParty [label="MEMBER_OF"];
+	Politician -> Constituency [label="REPRESENTS"];
+	UniqueTerm -> GovernmentDepartment  [label="RELATED_TO"];
+	PolicyCat -> Policy [label="CATEGORY_OF"];
+	UniqueTerm -> Policy  [label="RELATED_TO"];
+	UniqueTerm -> PolicyCat  [label="RELATED_TO"];
+	NamedEntity -> PolicyCat  [label="RELATED_TO"];
+	UniqueTerm -> UniqueTerm [label="RELATED_TO"];
+	UniqueTerm -> NamedEntity [label="ASSOCIATED_WITH"];
+	NamedEntity -> Act [label="RELATED_TO"];
+	UniqueTerm -> Act [label="RELATED_TO"];
+	Act -> PolicyCat [label="RELATED_TO"];
+	Acticle -> NamedEntity [label="MENTIONS"];
+	Acticle -> UniqueTerm [label="MENTIONS"];
+	Acticle -> Politician [label="MENTIONS"];
+	Acticle -> Constituency [label="MENTIONS"];
+	Acticle -> PoliticalParty [label="MENTIONS"];
+	Acticle -> GovernmentDepartment [label="MENTIONS"];
+	UniqueTerm -> Politician  [label="RELATED_TO"];
+	UniqueTerm -> Constituency  [label="RELATED_TO"];
+	UniqueTerm -> PoliticalParty  [label="RELATED_TO"];
+
+	Politician [label="{POLITICIAN|*name:\n*party:|Named Entity\nMember of Parliament}"];
+	GovernmentDepartment [label="{GOVERNMENT\nDEPARTMENT|*name:|Named Entity}"];
+	UniqueTerm [label="{UNIQUE TERM|*term:|Unique Term} "];
+	NamedEntity [label="{NAMED ENTITY|*name:|Named Entity }"];
+	PoliticalParty [label="{POLITICAL PARTY|*name:|Named Entity }"];
+	Constituency [label="{CONSITUENCY|*name:|Named Entity }"];
+	Policy [label="{POLICY|*code:\n*policy:|Policy}"];
+	PolicyCat [label="{POLICY CATEGORY|*code:\n*category:|Policy Category}"];
+	Act [label="{ACTS OF PARLIAMENT|*name:\n*description:|Named Entity}"];
+	Acticle [label="{ARTICLE|*title:\n*publication\n*content:| Article}"];
+}
+

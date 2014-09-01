@@ -1,0 +1,205 @@
+Primary,Related,Description
+103,502,solutions to unemployment problems.
+103,503,solutions to unemployment problems.
+104,1501,Federal Reserve banking issues.
+104,1808,exchange rates
+108,1403,economic development programs.
+108,1806,international business competition
+301,334,long-term health care reform
+301,302,insurance reform.
+302,331,specific benefits
+302,332,specific benefits
+302,333,specific benefits
+302,334,specific benefits
+302,335,specific benefits
+302,336,specific benefits
+302,334,long-term care insurance.
+321,335,prescription drug costs
+321,398,research
+321,1520,for antitrust issues.
+322,323,payments to providers
+322,325,teaching hospitals.
+323,302,insurer or managed care consumer protections.
+323,325,workforce training programs
+324,325,physician certification and licensing.
+325,324,"Malpractice issues, 323 compensation and regulation of health care providers."
+331,208,right to privacy
+331,341,drug and tobacco programs.
+331,342,drug and tobacco programs.
+331,343,drug and tobacco programs.
+331,344,drug and tobacco programs.
+332,208,abortion related issues.
+332,331,health education programs
+333,322,reviews of hospital psychiatric programs.
+333,324,misuse of federal funds for mental health care
+335,321,regulation of drug industry.
+342,344,drug and alcohol abuse.
+343,321,drug safety.
+343,1203,drug trafficking
+344,342,alcohol abuse and treatment
+344,343,illegal drug abuse and treatment.
+401,1502,agricultural commodities trading.
+401,1800,general foreign trade
+402,1404,farm real estate financing.
+403,401,inspections of food imports.
+405,704,pollution effects of pesticides
+405,403,pesticide residues on foods.
+503,300,employee health benefits and access to coverage.
+503,301,employee health benefits and access to coverage.
+503,302,employee health benefits and access to coverage.
+503,321,employee health benefits and access to coverage.
+503,322,employee health benefits and access to coverage.
+503,323,employee health benefits and access to coverage.
+503,324,employee health benefits and access to coverage.
+503,325,employee health benefits and access to coverage.
+503,331,employee health benefits and access to coverage.
+503,332,employee health benefits and access to coverage.
+503,333,employee health benefits and access to coverage.
+503,334,employee health benefits and access to coverage.
+503,335,employee health benefits and access to coverage.
+503,336,employee health benefits and access to coverage.
+503,341,employee health benefits and access to coverage.
+503,342,employee health benefits and access to coverage.
+503,343,employee health benefits and access to coverage.
+503,344,employee health benefits and access to coverage.
+503,398,employee health benefits and access to coverage.
+503,2004,federal employee benefits
+504,1926,International Labor Organization.
+504,1202,illegal activities of labor unions
+506,501,child labor safety.
+530,1524,tourism
+530,1929,passport issues.
+603,201,school desegregation efforts.
+607,602,"general reform efforts aimed at increasing the quality of education (eg, NCLB), teacher certification standards for all teachers."
+609,1798,NSF funding.
+609,1707,public broadcasting
+699,2103,school land conveyances.
+710,711,"pollution in small lakes, rivers, and streams and/or watershed protection."
+710,2104,water resources development
+711,2104,water development projects.
+800,2104,energy and water development projects.
+801,704,nuclear waste.
+801,1614,defense related nuclear waste
+801,501,nuclear worker safety
+803,2103,mineral resources of the outer continental shelf
+803,710,oil spills.
+1000,1003,budget requests and appropriations for FAA and CAB.
+1006,705,"automobile emissions regulation, automobile CAFE standards."
+1007,1915,Panama Canal
+1007,1902,international fishing and wildlife agreements
+1007,2104,port development and construction.
+1010,800,energy projects
+1010,2104,water projects.
+1202,1203,drug related money laundering.
+1203,1202,general money laundering (non-drug related).
+1211,1208,domestic violence.
+1300,300,HEW appropriations specific to health
+1300,600,HEW appropriations specific to education.
+1301,331,the role of diets in disease prevention.
+1304,205,handicapped access to federal buildings.
+1305,1929,Peace Corps.
+1401,1403,urban economic development
+1401,1405,rural economic development.
+1403,2001,intergovernmental relations.
+1404,1405,rural economic development.
+1405,802,"rural electricity development, 1706 rural telephone development."
+1406,200,fair housing initiatives and discrimination in housing
+1406,1408,elderly housing.
+1407,1608,on-base military housing.
+1410,1504,consumer mortgages.
+1500,1800,Federal Trade Commission.
+1501,1525,Truth-in-Lending Act
+1501,104,Federal Reserve Board issues
+1501,1202,prosecution of financial institution crimes.
+1504,1410,government mortgage programs.
+1505,1523,flood and earthquake insurance.
+1507,1204,bankruptcy courts
+1507,1003,bankruptcies in airline industry.
+1507,530,employee benefits during bankruptcy
+1520,1706,telephone deregulation
+1520,1526,sports regulation
+1520,1501,banking deregulation
+1520,1505,insurance industry regulation.
+1520,803,oil industry deregulation
+1520,1006,trucking deregulation
+1520,1005,railroad deregulation
+1520,1003,airline deregulation
+1521,201,SBA minority business programs
+1521,1609,VA small business loans.
+1521,1523,small business disaster loan programs
+1524,1929,passport issues.
+1524,530,immigration and refugee issues
+1525,708,protection from indoor radiation hazards
+1525,1504,fraudulent land sales.
+1600,1701,NASA\DOD issues.
+1604,803,strategic petroleum reserves
+1604,1616,defense industry.
+1605,1803,chemical and advanced technologies export control.
+1608,601,GI Bill and military academies.
+1609,1608,on-base military housing and retired military personnel
+1609,601,veterans education benefits
+1609,300,series for veterans health care (.3 denotes military or veterans health)
+1609,502,for job training.
+1609,1409,homeless veterans
+1609,2008,designating/naming Veterans Administration hospitals and medical centers
+1609,1407,veterans housing
+1610,1617,oversight of defense contractors and contractor fraud
+1610,1604,adequacy of supplies.
+1612,601,ROTC college education.
+1614,704,nonmilitary hazardous waste disposal.
+1619,1620,settlement of war related claims against the US Government.
+1700,1798,NSF research funding.
+1704,1708,weather satellites.
+1704,1707,satellite TV broadcasting
+1705,1803,restrictions on exports of high technology.
+1706,208,telephone privacy
+1706,1525,telephone marketing fraud.
+1707,1929,Radio Free Europe program.
+1708,710,protection of marine environments.
+1800,401,foreign agricultural trade.
+1806,108,domestic industry productivity.
+1908,1605,US-Soviet arms agreements
+1908,1901,US foreign aid to the former Soviet Union.
+1910,1920,policy issues exclusively dealing with Turkey.
+1920,1910,issues dealing with the conflict between Turkey and Greece over Cyprus.
+1927,1615,Department of Homeland Security related functions and domestic terrorism prevention efforts within US borders.
+1929,208,display of USIA programs in US.
+1929,1603,espionage
+2003,201,racial discrimination in the USPS
+2003,2008,construction of post office buildings.
+2004,200,discrimination in the federal government employment
+2004,2012,political activities of federal employees.
+2004,2003,postal employees
+2004,300,changes to federal employee health benefits
+2004,301,changes to federal employee health benefits
+2004,302,changes to federal employee health benefits
+2004,321,changes to federal employee health benefits
+2004,322,changes to federal employee health benefits
+2004,323,changes to federal employee health benefits
+2004,324,changes to federal employee health benefits
+2004,325,changes to federal employee health benefits
+2004,331,changes to federal employee health benefits
+2004,332,changes to federal employee health benefits
+2004,333,changes to federal employee health benefits
+2004,334,changes to federal employee health benefits
+2004,335,changes to federal employee health benefits
+2004,336,changes to federal employee health benefits
+2004,341,changes to federal employee health benefits
+2004,342,changes to federal employee health benefits
+2004,343,changes to federal employee health benefits
+2004,344,changes to federal employee health benefits
+2004,398,changes to federal employee health benefits
+2006,104,monetary policy.
+2007,1617,military contractor oversight.
+2007,1610,military procurement
+2008,2100,conveyance of real property.
+2009,107,taxation.
+2101,2103,public lands management.
+2103,803,oil and gas leasing
+2103,2101,land conveyance for national parks/monuments.
+2103,709,animal and forest protection
+2103,805,coal leasing
+2103,1611,military land conveyances
+2104,1007,navigation and maritime issues.
+2104,802,hydroelectricity
+2104,711,"water and soil conservation, watershed protection"

@@ -1,0 +1,23 @@
+digraph search {
+	node [shape=circle];
+	orientation="landscape";
+//	rank=same;
+	splines=spline;
+//	ranksep=equally;
+
+	Article -> Sentence [label="CONTAINS"];
+	Sentence -> Sentence [label="NEXT"];	
+	Sentence -> NounPhrase [label="MENTIONS"];
+	Sentence -> Statement [label="CONTAINS"];
+	Statement -> NounPhrase [label="IS_COMPOSED_OF"];
+	Statement -> Relation [label="IS_COMPOSED_OF"];
+	NounPhrase -> Relation [label="ASSERTS"];
+	Relation -> NounPhrase [label="RELATED_TO"];
+
+	NounPhrase [label="NOUN PHRASE\n[Subject/Object\n/Named Entity]"];
+	Article [label="ARTICLE"];
+	Sentence [label="SENTENCE"];
+	Statement [label="STATEMENT"];
+	Relation [label="RELATION"];
+}
+

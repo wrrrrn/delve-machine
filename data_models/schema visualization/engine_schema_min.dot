@@ -1,0 +1,45 @@
+digraph search {
+	node [shape=circle];
+//	orientation="landscape";
+//	rank=same;
+	splines=spline;
+	ranksep=equally;
+
+	Politician -> GovernmentDepartment [label="MEMBER_OF"];
+	Politician -> PoliticalParty [label="MEMBER_OF"];
+	Politician -> Constituency [label="REPRESENTS"];
+	UniqueTerm -> GovernmentDepartment  [label="RELATED_TO"];
+	PolicyCat -> Policy [label="CATEGORY_OF"];
+	UniqueTerm -> Policy  [label="RELATED_TO"];
+	UniqueTerm -> PolicyCat  [label="RELATED_TO"];
+	NamedEntity -> PolicyCat  [label="RELATED_TO"];
+	UniqueTerm -> UniqueTerm [label="RELATED_TO"];
+	UniqueTerm -> NamedEntity [label="ASSOCIATED_WITH"];
+	UniqueTerm -> Politician [label="ASSOCIATED_WITH"];
+	UniqueTerm -> GovernmentDepartment [label="ASSOCIATED_WITH"];
+	UniqueTerm -> PoliticalParty [label="ASSOCIATED_WITH"];
+	NamedEntity -> Act [label="RELATED_TO"];
+	UniqueTerm -> Act [label="RELATED_TO"];
+	Act -> PolicyCat [label="RELATED_TO"];
+	Acticle -> NamedEntity [label="MENTIONS"];
+	Acticle -> UniqueTerm [label="MENTIONS"];
+	Acticle -> Politician [label="MENTIONS"];
+	Acticle -> Constituency [label="MENTIONS"];
+	Acticle -> PoliticalParty [label="MENTIONS"];
+	Acticle -> GovernmentDepartment [label="MENTIONS"];
+	UniqueTerm -> Politician  [label="RELATED_TO"];
+	UniqueTerm -> Constituency  [label="RELATED_TO"];
+	UniqueTerm -> PoliticalParty  [label="RELATED_TO"];
+
+	Politician [label="POLITICIAN"];
+	GovernmentDepartment [label="GOVERNMENT\nDEPARTMENT"];
+	UniqueTerm [label="UNIQUE TERM"];
+	NamedEntity [label="NAMED ENTITY"];
+	PoliticalParty [label="POLITICAL PARTY"];
+	Constituency [label="CONSITUENCY"];
+	Policy [label="POLICY"];
+	PolicyCat [label="POLICY CATEGORY"];
+	Act [label="ACTS OF\nPARLIAMENT"];
+	Acticle [label="ARTICLE"];
+}
+

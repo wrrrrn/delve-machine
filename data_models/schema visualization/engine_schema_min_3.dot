@@ -1,0 +1,43 @@
+digraph search {
+	node [shape=circle];
+	orientation="landscape";
+//	rank=same;
+	splines=spline;
+//	ranksep=equally;
+
+	Document -> Sentence [label="CONTAINS"];
+	Sentence -> Sentence [label="NEXT"];	
+	Sentence -> NounPhrase [label="MENTIONS"];
+	Sentence -> UniqueTerm [label="MENTIONS"];
+	NounPhrase -> UniqueTerm [label="ASSOCIATED_WITH"];
+//	Sentence -> Statement [label="CONTAINS"];
+	PolicyCategory -> Policy [label="CATEGORY_OF"];
+	Act -> PolicyCategory [label="RELATED_TO"]; 
+	MP -> GovPosition [label="IN_POSITION"];
+	MP -> GovDepartment [label="MEMBER_OF"];
+	MP -> Party [label="MEMBER_OF"];
+	Debate -> Debate [label="RELATED_TO"];
+	Debate -> Argument [label="HAS_COMMENT"];
+	MP -> Argument [label="STATED"]
+//	Statement -> NounPhrase [label="IS_COMPOSED_OF"];
+//	Statement -> Relation [label="IS_COMPOSED_OF"];
+//	NounPhrase -> Relation [label="ASSERTS"];
+//	Relation -> NounPhrase [label="RELATED_TO"];
+
+	Act [label="ACT OF PARLIAMENT\n[DOCUMENT]"];	
+	NounPhrase [label="NOUN PHRASE\n[Subject/Object\n/Named Entity]"];
+	Document [label="DOCUMENT\n[Act of Parliament/\nPolicy/Policy Category\n/Debate Argument]"];
+	Policy [label="POLICY\n[DOCUMENT]"];
+	Party [label="POLITICAL PARTY\n[NOUN PHRASE/NAMED ENTITY]"];
+	PolicyCategory [label="POLICY CATEGORY\n[DOCUMENT]"];
+	Debate [label="DEBATE IN PARLIAMENT"];
+	Argument [label="DEBATE ARGUMENT\n[DOCUMENT]"];
+	Sentence [label="SENTENCE"];
+	UniqueTerm [label="UNIQUE TERM"];
+	MP [label="MEMEBER OF PARLIAMENT\n[NOUN PHRASE/NAMED ENTITY]"];
+	GovPosition [label="GOVERNMENT POSITION\n[NOUN PHRASE/NAMED ENTITY]"];
+	GovDepartment [label="GOVERNMENT DEPARTMENT\n[NOUN PHRASE/NAMED ENTITY]"];
+//	Statement [label="STATEMENT"];
+//	Relation [label="RELATION"];
+}
+
