@@ -56,7 +56,7 @@ class ImportCurrent(ImportInterface):
                     online_text = self.text.parse_html(html)
                     if online_text:
                         scrubbed_text = online_text
-        return scrubbed_text
+        return scrubbed_text.encode("utf8")
 
     def _get_words(self, raw):
         words = self.text.get_words(

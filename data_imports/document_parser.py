@@ -16,6 +16,7 @@ class DocumentParser:
 
     def parse_document(self, document, content, map_statements=True):
         # content = self.text_blob(document)
+        # text = content.
         self.map_statements = map_statements
         bag_of_words = self.text_tools.get_words(
             content,
