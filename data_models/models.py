@@ -496,13 +496,12 @@ class DebateArgument(Document):
         )
 
     def link_speaker(self, speaker):
-        self.speaker = speaker
-        debate_mp = MemberOfParliament(self.speaker)
+        debate_mp = MemberOfParliament(speaker)
         if not debate_mp.exists:
             debate_mp.create()
             debate_mp.update_mp_details()
         self.create_relationship(
-            speaker.vertex,
+            debate_mp.vertex,
             "STATED",
             self.vertex
         )
