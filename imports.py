@@ -56,9 +56,10 @@ def test_new_import():
 
 print "\n\nBegining document imports..."
 #import_government()
-import_codebook()
-import_acts()
-import_mps()
+#import_codebook()
+#import_acts()
 import_current()
+import_mps()
+
 
 # test_new_import()
