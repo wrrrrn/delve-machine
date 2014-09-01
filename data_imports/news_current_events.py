@@ -56,6 +56,7 @@ class ImportCurrent(ImportInterface):
                     online_text = self.text.parse_html(html)
                     if online_text:
                         scrubbed_text = online_text
+        # convert input to ascii
         return scrubbed_text.encode('ascii', 'ignore')
 
     def _get_words(self, raw):
