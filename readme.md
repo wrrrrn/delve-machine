@@ -1,3 +1,3 @@
-Data Mining and Liguistic Analysis Engine for Politics
+# Data Mining & Liguistic Analysis for Politics
 
 Inital prototype. 
