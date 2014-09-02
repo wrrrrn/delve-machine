@@ -58,7 +58,7 @@ print "\n\nBegining document imports..."
 #import_government()
 #import_codebook()
 #import_acts()
-import_current()
+#import_current()
 import_mps()
 
 
