@@ -138,7 +138,7 @@ class DataModel:
     def link_sentence(self, sentence_node):
         self.create_relationship(
             self.vertex,
-            "fg",
+            "CONTAINS",
             sentence_node
         )
 

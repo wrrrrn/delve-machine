@@ -8,7 +8,7 @@ from data_profile import np_summary
 from data_profile import term_summary
 
 current_time = strftime("%Y-%m-%d %H:%M:%S")
-print "Data Profile"
+print "\nData Profile"
 print current_time
 print "---"
 
