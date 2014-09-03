@@ -20,10 +20,7 @@ class TermSummary(DataProfiler):
         for unique in terms:
             #term = unique["term"]
             t = self.data_models.UniqueTerm(unique)
-            sentences = len([x for x in t.get_sentences()])
-            documents = len([x for x in t.get_documents()])
-            print documents
-            associated = len([x for x in t.get_relationships()])
+            sentences, documents, associated = t.get_term_stats()
             features = {
                 "associated": associated,
                 "documents": documents,
