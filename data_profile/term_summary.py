@@ -27,13 +27,13 @@ class TermSummary(DataProfiler):
                 "associated": associated,
                 "documents": documents,
                 "sentences": sentences,
-                "term": unique["term"]
+                "term": unique
             }
             total = "[%s]" % len(self.all_features)
             self.all_features.append(features)
             if self.verbose:
                 self._print_count(
-                    sentences, associated, documents, term, total
+                    sentences, associated, documents, unique, total
                 )
 
     def show_term_stats(self, features):
