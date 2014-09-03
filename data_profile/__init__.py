@@ -15,14 +15,14 @@ class DataProfiler:
             "Policy Category",
             #"Statement",
             "Policy Agenda",
+            "Unique Term",
             "Noun Phrase",
             "Named Entity",
-            "Unique Term",
             "Act of Parliament",
             "Member of Parliament",
-            "Political Party",
-            "Parliamentary Debate",
             "Government Department",
-            "Government Position"
+            "Government Position",
+            "Political Party",
+            "Parliamentary Debate"
             #"Relation"
         ]
