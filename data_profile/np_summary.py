@@ -37,14 +37,7 @@ class NounPhraseSummary(DataProfiler):
         #for np in test_phrase[:10]:
             name = np["noun_phrase"]
             n = self.data_models.NounPhrase(name)
-            sentences = len([x for x in n.get_sentences()])
-            documents = len([x for x in n.get_documents()])
-            associated = len(
-                [x for x in n.get_relationships("IS_ASSOCIATED_WITH")]
-            )
-            #associated_docs = len(
-            #    [x for x in n.get_associated_documents()]
-            #)
+            sentences, documents, associated = n.get_stats()
             features = {
                 "associated": associated,
                 "documents": documents,
