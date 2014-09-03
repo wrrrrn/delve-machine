@@ -216,8 +216,7 @@ class UniqueTerm(DataModel):
 
     def get_relationships(self):
         search_string = """
-            MATCH (t:`Unique Term`)-[rel:`IS_ASSOCIATED_WITH`]-()
-            WHERE t.term = "%s"
+            MATCH (t:`Unique Term` {term:"%s"})-[rel:`IS_ASSOCIATED_WITH`]-()
             RETURN rel
         """ % (self.vertex["term"])
         output = self.query(search_string)
@@ -226,8 +225,8 @@ class UniqueTerm(DataModel):
 
     def get_documents(self):
         search_string = """
-            MATCH (t:`Unique Term`)<-[:MENTIONS]-(s)
-            WHERE t.term = "%s" with s
+            MATCH (t:`Unique Term` {term:"%s"})<-[:MENTIONS]-(s)
+            WITH s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
         """ % (self.vertex["term"])
@@ -237,8 +236,8 @@ class UniqueTerm(DataModel):
 
     def get_sentences(self):
         search_string = """
-            MATCH (t:`Unique Term`)<-[:MENTIONS]-(s)
-            WHERE t.term = "%s" with s
+            MATCH (t:`Unique Term` {term:"%s"})<-[:MENTIONS]-(s)
+            WITH s
             RETURN DISTINCT s
         """ % (self.vertex["term"])
         output = self.query(search_string)
