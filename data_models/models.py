@@ -91,8 +91,7 @@ class NounPhrase(DataModel):
 
     def get_relationships(self, relationship):
         search_string = """
-            MATCH (n:`Noun Phrase`)-[rel:`%s`]->()
-            WHERE n.noun_phrase = "%s"
+            MATCH (n:`Noun Phrase` {noun_phrase:"%s"})-[rel:`%s`]->()
             RETURN rel
         """ % (relationship, self.vertex["noun_phrase"])
         output = self.query(search_string)
@@ -101,8 +100,8 @@ class NounPhrase(DataModel):
 
     def get_documents(self):
         search_string = """
-            MATCH (np:`Noun Phrase`)<-[:MENTIONS]-(s)
-            WHERE np.noun_phrase = "%s" with s
+            MATCH (np:`Noun Phrase` {noun_phrase:"%s"})<-[:MENTIONS]-(s)
+            WITH s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
         """ % (self.vertex["noun_phrase"])
@@ -112,8 +111,8 @@ class NounPhrase(DataModel):
 
     def get_associated_documents(self):
         search_string = """
-            MATCH (np:`Noun Phrase`)-[:IS_ASSOCIATED_WITH]-(t)
-            WHERE np.noun_phrase = "%s" with t
+            MATCH (np:`Noun Phrase` {noun_phrase:"%s"} )-[:IS_ASSOCIATED_WITH]-(t)
+            WITH t
             MATCH (t)<-[:MENTIONS]-(s) with s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
@@ -124,8 +123,7 @@ class NounPhrase(DataModel):
 
     def get_sentences(self):
         search_string = """
-            MATCH (np:`Noun Phrase`)<-[:MENTIONS]-(s)
-            WHERE np.noun_phrase = "%s"
+            MATCH (np:`Noun Phrase` {noun_phrase:"%s"})<-[:MENTIONS]-(s)
             RETURN DISTINCT s
         """ % (self.vertex["noun_phrase"])
         output = self.query(search_string)
