@@ -31,7 +31,7 @@ class TextHandler:
             words = nltk.word_tokenize(self.text)
             tokens = [
                 w.lower().rstrip('.') for w in words
-                if re.match("([A-Z]|[a-z]|\s|\(|\)|-|[0-9]|\')", w)
+                if re.match("([A-Z]|[a-z]|\s|-|[0-9]|\')", w)
             ]
 
         if remove_stopwords:

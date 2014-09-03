@@ -11,15 +11,15 @@ class TermSummary(DataProfiler):
     def get_term_stats(self):
         print "Iterating All Terms..."
         self._print_count("sent", "ass", "docs", "term", "")
-        all_terms = [x for x in self.core_model.get_all_nodes("Unique Term")]
+        all_terms = [x["term"] for x in self.core_model.get_all_nodes("Unique Term")]
         self._iterate_terms(all_terms)
         self.export(self.all_features)
         self.show_term_stats(self.all_features)
 
     def _iterate_terms(self, terms):
         for unique in terms:
-            term = unique["term"]
-            t = self.data_models.UniqueTerm(term)
+            #term = unique["term"]
+            t = self.data_models.UniqueTerm(unique)
             sentences = len([x for x in t.get_sentences()])
             documents = len([x for x in t.get_documents()])
             associated = len([x for x in t.get_relationships()])

@@ -17,7 +17,7 @@ class ImportMPs(ImportInterface):
             self._print_out("person_id", mp["person_id"])
             print "\n"
             self._get_mp(mp['person_id'])
-            sleep(0.5)
+            sleep(0.25)
             print "---"
 
     def import_mp_debates(self):
