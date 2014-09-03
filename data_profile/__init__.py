@@ -20,6 +20,7 @@ class DataProfiler:
             "Unique Term",
             "Named Entity",
             "Political Party",
+            "Act of Parliament"
             "Government Department",
             "Government Position",
             "Member of Parliament",
