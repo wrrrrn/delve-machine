@@ -244,6 +244,19 @@ class UniqueTerm(DataModel):
         for result in output:
             yield result[0]
 
+    def get_term_stats(self):
+        search_string = """
+            MATCH (t:`Unique Term` {term:"%s"})<-[:MENTIONS]-(s)
+            WITH s, count(s) as cs
+            MATCH (s)-[:CONTAINS]-(d)
+            WITH cs, count(d) as cd
+            RETURN sum(cs), sum(cd)
+        """ % (self.vertex["term"])
+        output = self.query(search_string)
+        sent_count, doc_count = output[0][0], output[0][1]
+        rel_count = len([x for x in self.get_relationships()])
+        return sent_count, doc_count, rel_count
+
     def link_sentence(self, sentence):
         self.create_relationship(sentence.vertex, "MENTIONS", self.vertex)
 
