@@ -139,10 +139,12 @@ class NounPhrase(DataModel):
             MATCH (s)-[:CONTAINS]-(d)
             WITH cs, count(d) as cd
             RETURN sum(cs), sum(cd)
-        """ % (self.vertex["tenoun_phraserm"])
+        """ % (self.vertex["noun_phrase"])
         output = self.query(search_string)
         sent_count, doc_count = output[0][0], output[0][1]
-        rel_count = len([x for x in self.get_relationships()])
+        rel_count = len(
+            [x for x in self.get_relationships("IS_ASSOCIATED_WITH")]
+        )
         return sent_count, doc_count, rel_count
 
 
