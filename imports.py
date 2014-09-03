@@ -29,7 +29,7 @@ def import_codebook():
 def import_mps():
     new_mps = mps.ImportMPs()
     #new_mps.import_mp_details()
-    new_mps.import_mp_debates()
+    #new_mps.import_mp_debates()
 
 
 def import_current():
@@ -55,10 +55,10 @@ def test_new_import():
     new_test.parse_blog()
 
 print "\n\nBegining document imports..."
-#import_codebook()
-#import_government()
-#import_acts()
-#import_current()
+import_codebook()
+import_government()
+import_acts()
+import_current()
 import_mps()
 
 
