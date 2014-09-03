@@ -93,8 +93,7 @@ class NounPhrase(DataModel):
         search_string = """
             MATCH (n:`Noun Phrase` {noun_phrase:"%s"})-[rel:`%s`]->()
             RETURN rel
-        """ % (relationship, self.vertex["noun_phrase"])
-        print search_string
+        """ % (self.vertex["noun_phrase"], relationship)
         output = self.query(search_string)
         for result in output:
             yield result[0]
