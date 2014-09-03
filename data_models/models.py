@@ -132,6 +132,19 @@ class NounPhrase(DataModel):
         for result in output:
             yield result[0]
 
+    def get_stats(self):
+        search_string = """
+            MATCH (t:`Noun Phrase` {noun_phrase:"%s"})<-[:MENTIONS]-(s)
+            WITH s, count(s) as cs
+            MATCH (s)-[:CONTAINS]-(d)
+            WITH cs, count(d) as cd
+            RETURN sum(cs), sum(cd)
+        """ % (self.vertex["tenoun_phraserm"])
+        output = self.query(search_string)
+        sent_count, doc_count = output[0][0], output[0][1]
+        rel_count = len([x for x in self.get_relationships()])
+        return sent_count, doc_count, rel_count
+
 
 class MemberOfParliament(NounPhrase):
     def __init__(self, name):
@@ -244,7 +257,7 @@ class UniqueTerm(DataModel):
         for result in output:
             yield result[0]
 
-    def get_term_stats(self):
+    def get_stats(self):
         search_string = """
             MATCH (t:`Unique Term` {term:"%s"})<-[:MENTIONS]-(s)
             WITH s, count(s) as cs
