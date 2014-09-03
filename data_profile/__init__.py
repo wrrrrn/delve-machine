@@ -21,6 +21,7 @@ class DataProfiler:
             "Named Entity",
             "Political Party",
             "Government Department",
+            "Government Position",
             "Member of Parliament",
             "Political Party"
             #"Relation"
