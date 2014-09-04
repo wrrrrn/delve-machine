@@ -77,6 +77,7 @@ class ImportMPs(ImportInterface):
             new_position = self.data_models.GovernmentPosition(position)
             if not new_position.exists:
                 new_position.create()
+            new_position.update_details()
             mp.link_position(new_position)
             self._print_out("*position", position)
 
