@@ -28,7 +28,7 @@ def import_codebook():
 
 def import_mps():
     new_mps = mps.ImportMPs()
-    #new_mps.import_mp_details()
+    new_mps.import_mp_details()
     #new_mps.import_mp_debates()
 
 
