@@ -79,6 +79,7 @@ class DocumentParser:
                     term = self.data_models.UniqueTerm(t)
                     name.link_term(term)
 
+    @profile
     def _get_semantics(self, sentence):
         words = self.text_tools.get_words(
             sentence,
