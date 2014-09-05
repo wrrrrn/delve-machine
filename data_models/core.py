@@ -39,7 +39,9 @@ class DataModel:
                 RETURN v
             """.format(label, node_key, value)
         output = self.query(search_query)
-        return output[0][0]
+        self.vertex = output[0][0]
+        self.vertex.add_labels(label)
+        return self.vertex
 
     def set_node_properties(self, properties=None, labels=None):
         batch = self.g.neo4j.WriteBatch(self.g.graph)
