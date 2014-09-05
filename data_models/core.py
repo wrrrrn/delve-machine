@@ -36,6 +36,8 @@ class DataModel:
         self.vertex = None
         search_query = """
                 MERGE (v:`{0}` {{{1}:"{2}"}})
+                ON MERGE set v :{0}
+                ON CREATE set v :{0}
                 RETURN v
             """.format(label, node_key, value)
         output = self.query(search_query)
