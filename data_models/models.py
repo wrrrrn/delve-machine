@@ -210,6 +210,7 @@ class UniqueTerm(DataModel):
         self.term = term
         self.fetch()
 
+    @profile
     def fetch(self):
         self.exists = self.find_vertex(
             self.terms_reference,
@@ -220,6 +221,7 @@ class UniqueTerm(DataModel):
             self.vertex = self.exists
             self.exists = True
 
+    @profile
     def create(self):
         self.vertex = self.get_or_create(
             "term",
