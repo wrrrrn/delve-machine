@@ -28,7 +28,7 @@ def acts():
     new_acts.import_acts()
 
 
-#codebook()
-#acts()
+codebook()
+acts()
 mps()
-#current_media()
+current_media()

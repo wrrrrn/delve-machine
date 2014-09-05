@@ -43,7 +43,8 @@ class ImportMPs(ImportInterface):
         }
         for x in mp_details:
             self._print_out(x, mp_details[x])
-        new_mp = self.data_models.MemberOfParliament(mp["full_name"])
+        name = mp["full_name"].encode('ascii', 'ignore')
+        new_mp = self.data_models.MemberOfParliament(name)
         if not new_mp.exists:
             new_mp.create()
         new_mp.update_mp_details(mp_details)
