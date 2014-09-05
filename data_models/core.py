@@ -41,6 +41,7 @@ class DataModel:
         output = self.query(search_query)
         self.vertex = output[0][0]
         self.vertex.add_labels(label)
+        print self.vertex
         return self.vertex
 
     def set_node_properties(self, properties=None, labels=None):
