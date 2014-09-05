@@ -21,15 +21,7 @@ class Graph_Database:
         )
         # self.test = self.graph.get_or_create_index(self.node, "documents")
 
-    def get_or_create_node(self, node_key, node_value, index):
-        search_index = index
-        new_node = search_index.get_or_create(
-            node_key,
-            node_value,
-            {node_key: node_value}
-        )
-        return new_node
-
+    # TODO: Convert this to a merge statement
     def create_relationship(self, start_node, relationship, end_node):
         return self.graph.create(rel(start_node, relationship, end_node))
 

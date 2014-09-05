@@ -50,7 +50,6 @@ class DocumentParser:
             sentence_node.vertex["sentence"] = sentence
         return sentence_node
 
-    @profile
     def _map_semantics(self, sentence, text):
         names, terms, sentiment, subjectivity = self._get_semantics(text)
         sentence.vertex["sentiment"] = sentiment
@@ -71,7 +70,6 @@ class DocumentParser:
             new_term.link_sentence(sentence)
         self._link_names_and_terms(names, terms)
 
-    @profile
     def _link_names_and_terms(self, names, terms):
         if len(names) > 0 and len(terms) > 0:
             for n in names:
@@ -80,9 +78,12 @@ class DocumentParser:
                     term = self.data_models.UniqueTerm(t)
                     name.link_term(term)
 
-    @profile
     def _get_semantics(self, sentence):
-        words = self.text_tools.get_words(sentence)
+        words = self.text_tools.get_words(
+            sentence,
+            with_punctuation=False,
+            remove_stopwords=True
+        )
         text_blob = self.text_tools.text_blob(sentence)
         names = self.text_tools.get_all_entities(sentence)
         # noun_phrases = text_blob.noun_phrases

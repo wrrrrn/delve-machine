@@ -18,70 +18,28 @@ class DataModel:
         self.statement_label = 'Statement'
         self.predicate_label = 'Relation'
         self.debate_label = 'Parliamentary Debate'
-        self.create_references()  # do i need to run this at instantiation?
+        self.act_label = 'Act of Parliament'
 
-    def create_references(self):
-        # print 'creating data model references'
-        self.documents_reference = {
-            "index": self.g.graph.get_or_create_index(self.g.neo4j.Node, "documents"),
-            "label": self.document_label
-        }
-        self.sentence_reference = {
-            "index": self.g.graph.get_or_create_index(self.g.neo4j.Node, "sentence"),
-            "label": self.sentence_label
-        }
-        self.statement_reference = {
-            "index": self.g.graph.get_or_create_index(self.g.neo4j.Node, "statement"),
-            "label": self.statement_label
-        }
-        self.noun_reference = {
-            "index": self.g.graph.get_or_create_index(self.g.neo4j.Node, "noun_phrases"),
-            "label": self.noun_label
-        }
-        self.terms_reference = {
-            "index": self.g.graph.get_or_create_index(self.g.neo4j.Node, "unique_terms"),
-            "label": self.term_label
-        }
-        self.predicate_reference = {
-            "index": self.g.graph.get_or_create_index(self.g.neo4j.Node, "predicate"),
-            "label": self.predicate_label
-        }
-        self.debate_reference = {
-            "index": self.g.graph.get_or_create_index(self.g.neo4j.Node, "debates"),
-            "label": self.debate_label
-        }
-
-    def _get_vertex(self, index, node_key, value):
-        search_index = index
-        result_nodes = search_index.get(node_key, value)
-        if result_nodes:
-            return result_nodes[0]
-        else:
-            result_nodes = search_index.get(node_key, value.lower())
-            if result_nodes:
-                return result_nodes[0]
-            else:
-                return None
-
-    def find_vertex(self, index_references, node_key, value):
+    def find_vertex(self, label, node_key, value):
         self.vertex = None
-        if type(index_references) is dict:
-            self.vertex = self._get_vertex(index_references['index'], node_key, value)
-        elif type(index_references) is list:
-            for ref in index_references:
-                self.vertex = self._get_vertex(ref['index'], node_key, value)
-                if self.vertex:
-                    break
-        return self.vertex
+        search_query = """
+                MATCH (v:`{0}` {{{1}:"{2}"}})
+                RETURN v
+            """.format(label, node_key, value)
+        output = self.query(search_query)
+        if output:
+            return output[0][0]
+        else:
+            return None
 
-    def get_or_create(self, node_key, node_value, node_reference):
-        self.vertex = self.g.get_or_create_node(
-            node_key,
-            node_value,
-            node_reference["index"]
-        )
-        self.vertex.add_labels(node_reference["label"])
-        return self.vertex
+    def create_vertex(self, label, node_key, value):
+        self.vertex = None
+        search_query = """
+                MERGE (v:`{0}` {{{1}:"{2}"}})
+                RETURN v
+            """.format(label, node_key, value)
+        output = self.query(search_query)
+        return output[0][0]
 
     def set_node_properties(self, properties=None, labels=None):
         batch = self.g.neo4j.WriteBatch(self.g.graph)
@@ -165,12 +123,13 @@ class Document(DataModel):
     def __init__(self, link=False):
         DataModel.__init__(self)
         self.link = link
+        self.label = self.document_label
 
     def fetch(self):
         if self.link:
             #self.content = self.vertex.content.replace('\n', '<br /><br />')
             self.vertex = self.find_vertex(
-                self.documents_reference,
+                self.label,
                 'link',
                 self.link
             )
@@ -178,10 +137,10 @@ class Document(DataModel):
                 self.exists = True
 
     def create(self):
-        self.vertex = self.get_or_create(
-            "link",
-            self.link,
-            self.documents_reference
+        self.vertex = self.create_vertex(
+            self.label,
+            'link',
+            self.link
         )
 
     def get_sentences(self):

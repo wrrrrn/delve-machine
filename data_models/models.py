@@ -6,23 +6,23 @@ class Sentence(DataModel):
     def __init__(self, sentence_id):
         DataModel.__init__(self)
         self.sentence_id = sentence_id
-        self.fetch(self.sentence_id)
+        self.fetch()
 
-    def fetch(self, sentence_id):
+    def fetch(self):
         self.exists = self.find_vertex(
-            self.sentence_reference,
+            self.sentence_label,
             'sentence_id',
-            sentence_id
+            self.sentence_id
         )
         if self.exists:
             self.vertex = self.exists
             self.exists = True
 
     def create(self):
-        self.vertex = self.get_or_create(
-            "sentence_id",
-            self.sentence_id,
-            self.sentence_reference
+        self.vertex = self.create_vertex(
+            self.sentence_label,
+            'sentence_id',
+            self.sentence_id
         )
         self.exists = True
 
@@ -63,12 +63,13 @@ class NounPhrase(DataModel):
     def __init__(self, noun_phrase=False):
         DataModel.__init__(self)
         self.noun_phrase = noun_phrase
+        self.label = self.noun_label
         self.fetch()
 
     def fetch(self):
         if self.noun_phrase:
             self.vertex = self.find_vertex(
-                self.noun_reference,
+                self.label,
                 'noun_phrase',
                 self.noun_phrase
             )
@@ -76,10 +77,10 @@ class NounPhrase(DataModel):
                 self.exists = True
 
     def create(self):
-        self.vertex = self.get_or_create(
-            "noun_phrase",
-            self.noun_phrase,
-            self.noun_reference
+        self.vertex = self.create_vertex(
+            self.label,
+            'noun_phrase',
+            self.noun_phrase
         )
         self.exists = True
 
@@ -150,6 +151,7 @@ class MemberOfParliament(NounPhrase):
     def __init__(self, name):
         NounPhrase.__init__(self)
         self.noun_phrase = name
+        self.label = self.noun_label
         self.fetch()
 
     def update_mp_details(self, properties=None):
@@ -178,6 +180,7 @@ class GovernmentDepartment(NounPhrase):
     def __init__(self, name):
         NounPhrase.__init__(self)
         self.noun_phrase = name
+        self.label = self.noun_label
         self.fetch()
 
     def update_details(self, details=None):
@@ -193,6 +196,7 @@ class GovernmentPosition(NounPhrase):
     def __init__(self, name):
         NounPhrase.__init__(self)
         self.noun_phrase = name
+        self.label = self.noun_label
         self.fetch()
 
     def update_details(self, details=None):
@@ -210,10 +214,9 @@ class UniqueTerm(DataModel):
         self.term = term
         self.fetch()
 
-    @profile
     def fetch(self):
         self.exists = self.find_vertex(
-            self.terms_reference,
+            self.term_label,
             'term',
             self.term
         )
@@ -221,12 +224,11 @@ class UniqueTerm(DataModel):
             self.vertex = self.exists
             self.exists = True
 
-    @profile
     def create(self):
-        self.vertex = self.get_or_create(
-            "term",
-            self.term,
-            self.terms_reference
+        self.vertex = self.create_vertex(
+            self.term_label,
+            'term',
+            self.term
         )
 
     def get_relationships(self):
@@ -283,7 +285,7 @@ class Statement(DataModel):
 
     def fetch(self):
         self.exists = self.find_vertex(
-            self.sentence_reference,
+            self.sentence_label,
             'statement_id',
             self.statement_id
         )
@@ -291,10 +293,10 @@ class Statement(DataModel):
             self.create()
 
     def create(self):
-        self.vertex = self.get_or_create(
-            "statement_id",
-            self.statement_id,
-            self.statement_reference
+        self.vertex = self.create_vertex(
+            self.sentence_label,
+            'statement_id',
+            self.statement_id
         )
 
     def _composed_of(self, part):
@@ -356,7 +358,7 @@ class Relation(DataModel):
 
     def fetch(self):
         self.exists = self.find_vertex(
-            self.predicate_reference,
+            self.predicate_label,
             'relation',
             self.relation
         )
@@ -364,10 +366,10 @@ class Relation(DataModel):
             self.create()
 
     def create(self):
-        self.vertex = self.get_or_create(
-            "relation",
-            self.relation,
-            self.predicate_reference
+        self.vertex = self.create_vertex(
+             self.predicate_label,
+            'relation',
+            self.relation
         )
 
 
@@ -377,6 +379,7 @@ class Policy(Document):
         self.policy = policy
         self.code = code
         self.link = "%s-%s" % (self.code, self.policy)
+        self.label = self.policy_label
         self.fetch()
 
     def make_policy(self):
@@ -398,6 +401,7 @@ class PolicyCategory(Document):
         self.category = category
         self.code = code
         self.link = "%s-%s" % (self.code, self.category)
+        self.label = self.category_label
         self.fetch()
 
     def make_category(self):
@@ -443,6 +447,7 @@ class ActOfParliament(Document):
     def __init__(self, full_name=None):
         DataModel.__init__(self)
         self.link = full_name
+        self.label = self.act_label
         self.fetch()
 
     def make_act(self, name, description, date):
@@ -463,23 +468,23 @@ class DebateInParliament(DataModel):
     def __init__(self, debate_id):
         DataModel.__init__(self)
         self.debate_id = debate_id
-        self.fetch(self.debate_id)
+        self.fetch()
 
-    def fetch(self, debate_id):
+    def fetch(self):
         self.exists = self.find_vertex(
-            self.debate_reference,
+            self.debate_label,
             'debate_id',
-            debate_id
+            self.debate_id
         )
         if self.exists:
             self.vertex = self.exists
             self.exists = True
 
     def create(self):
-        self.vertex = self.get_or_create(
-            "debate_id",
-            self.debate_id,
-            self.debate_reference
+        self.vertex = self.create_vertex(
+            self.debate_label,
+            'debate_id',
+            self.debate_id
         )
 
     def link_debate(self, debate):
@@ -504,6 +509,7 @@ class DebateArgument(Document):
         self.link = link
         self.topic = topic
         self.content = content
+        self.label = self.document_label
         self.fetch()
 
     def make_argument(self):
