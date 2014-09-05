@@ -9,7 +9,6 @@ class ImportCodebook(ImportInterface):
         self.codebook_csv = \
             'data_imports/input/policyagenda_UK_Topics_Codebook-main.csv'
 
-    @profile
     def import_codebook(self):
         self.csv_handler.open(self.codebook_csv)
         data = self.csv_handler.all_rows

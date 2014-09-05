@@ -14,7 +14,6 @@ class DocumentParser:
         self._set_counters()
         self._semantic_feats = []
 
-    @profile
     def parse_document(self, document, content, map_statements=True):
         # content = self.text_blob(document)
         # text = content.
@@ -51,6 +50,7 @@ class DocumentParser:
             sentence_node.vertex["sentence"] = sentence
         return sentence_node
 
+    @profile
     def _map_semantics(self, sentence, text):
         names, terms, sentiment, subjectivity = self._get_semantics(text)
         sentence.vertex["sentiment"] = sentiment
