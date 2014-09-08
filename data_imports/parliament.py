@@ -1,5 +1,4 @@
 from data_imports import ImportInterface
-from time import sleep
 
 
 class Parliament(ImportInterface):
@@ -50,8 +49,8 @@ class Parliament(ImportInterface):
                 )
                 argument.link_speaker(name)
             argument.make_argument()
-            print "Comment:\n", scrubbed_text[:200]
-            print "\n"
+            print "\n\nComment:\n", scrubbed_text
+            print "\n\n\n"
 
     def _create_debate(self, topic):
         new_debate = self.data_models.DebateInParliament(topic["debate_id"])

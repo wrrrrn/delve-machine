@@ -50,7 +50,6 @@ class DocumentParser:
             sentence_node.vertex["sentence"] = sentence
         return sentence_node
 
-    @profile
     def _map_semantics(self, sentence, text):
         names, terms, sentiment, subjectivity = self._get_semantics(text)
         sentence.vertex["sentiment"] = sentiment
@@ -79,7 +78,6 @@ class DocumentParser:
                     term = self.data_models.UniqueTerm(t)
                     name.link_term(term)
 
-    @profile
     def _get_semantics(self, sentence):
         words = self.text_tools.get_words(
             sentence,
@@ -99,11 +97,7 @@ class DocumentParser:
             self._all_terms.extend(terms)
         self._all_sentiment.extend([sentiment])
         self._all_subjectivity.extend([subjectivity])
-        print "\n** named entities", names
-        print "** unique terms", terms
-        #print "** noun phrases", noun_phrases
-        print "** sentiment", sentiment
-        print "** subjectivity", subjectivity, '\n'
+        self._print_semantics(names, terms, sentiment, subjectivity)
         return names, terms, sentiment, subjectivity
 
     def _map_statement(self, sentence, text):
@@ -159,6 +153,13 @@ class DocumentParser:
         document.set_node_properties(self._semantic_feats)
         self._print_out()
         self._set_counters()
+
+    def _print_semantics(self, names, terms, sentiment, subjectivity):
+        print "\n** named entities", names
+        print "** unique terms", terms
+        #print "** noun phrases", noun_phrases
+        print "** sentiment", sentiment
+        print "** subjectivity", subjectivity, '\n'
 
     def _print_out(self):
         print "---DOCUMENT SUMMARY---"
