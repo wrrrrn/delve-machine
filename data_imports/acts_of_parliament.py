@@ -14,8 +14,8 @@ class ImportActsOfParliament(ImportInterface):
         data = self.csv_handler.all_rows
         for row in data:
             royal_assent = row[2]
-            short_title = row[4].decode('unicode-escape')
-            long_title = row[5].decode('unicode-escape')
+            short_title = row[4].encode('ascii', 'ignore')
+            long_title = row[5].encode('ascii', 'ignore')
             major_topic = row[6]
             sub_topic = row[7]
             print '%s\nassent date: %s - major code: %s - sub code: %s\n' % (
