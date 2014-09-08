@@ -5,7 +5,7 @@ class ImportActsOfParliament(ImportInterface):
     def __init__(self):
         ImportInterface.__init__(self)
         self.acts_csv = \
-            'data_imports/input/policyagenda_acts_test.csv'
+            'data_imports/input/policyagenda_acts1911-2008.csv'
             #'data_imports/input/policyagenda_acts1911-2008.csv'
         self.text = self.speech_tools.TextHandler()
 
