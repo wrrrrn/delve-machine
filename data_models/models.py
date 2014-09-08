@@ -405,7 +405,7 @@ class PolicyCategory(Document):
         self.fetch()
 
     def make_category(self):
-        labels = ("Document", "Policy Category")
+        labels = "Policy Category"
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.category,

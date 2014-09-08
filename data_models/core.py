@@ -4,8 +4,10 @@ import re
 
 
 class DataModel:
+    g = graph_interface.Graph_Database()
+
     def __init__(self):
-        self.g = graph_interface.Graph_Database()
+        self.g = DataModel.g
         self.vertex = None
         self.exists = False
         self.document_label = 'Document'
@@ -36,14 +38,13 @@ class DataModel:
         self.vertex = None
         search_query = """
                 MERGE (v:`{0}` {{{1}:"{2}"}})
-                ON MATCH set v :"{0}"
-                ON CREATE set v :"{0}"
+                ON MATCH set v:`{0}`
+                ON CREATE set v:`{0}`
                 RETURN v
             """.format(label, node_key, value)
         output = self.query(search_query)
         self.vertex = output[0][0]
         self.vertex.add_labels(label)
-        print self.vertex
         return self.vertex
 
     def set_node_properties(self, properties=None, labels=None):
@@ -62,13 +63,13 @@ class DataModel:
         return results
 
     def create_relationship(self, vertex1, relationship, vertex2):
-        try:
-            return self.g.create_relationship(
-                vertex1, relationship, vertex2
-            )
-        except AttributeError:
-            print "!!! Error creating relationship"
-            print "!!! ->", vertex1, relationship, vertex2
+        #return self.g.create_relationship(vertex1, relationship, vertex2)
+        rel_query = """
+            START n=node({0}), m=node({1})
+            MERGE (n)-[r:{2}]->(m)
+            RETURN r
+        """.format(vertex1._id, vertex2._id, relationship)
+        return self.query(rel_query)
 
     def query(self, query_string):
         search = self.g.neo4j.CypherQuery(self.g.graph, query_string)
