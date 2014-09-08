@@ -26,7 +26,7 @@ class DocumentParser:
         self._words_total = len(bag_of_words)
         sentences = self.text_tools.get_sentences(content)
         for sentence_number, s in enumerate(sentences):
-            print s
+            print "PARSING:", s
             sentence_id = "%s::%s" % (document.vertex["link"], sentence_number)
             sentence = self._create_sentence_node(sentence_id, s)
             document.link_sentence(sentence.vertex)
@@ -162,7 +162,7 @@ class DocumentParser:
         print "** subjectivity", subjectivity, '\n'
 
     def _print_out(self):
-        print "---DOCUMENT SUMMARY---"
+        print "\n---DOCUMENT SUMMARY---"
         for x in self._semantic_feats:
             print " %-30s%-25s%-20s" % (x, self._semantic_feats[x], "")
         print "---     SUMMARY   ---\n"

@@ -155,7 +155,7 @@ class MemberOfParliament(NounPhrase):
         self.fetch()
 
     def update_mp_details(self, properties=None):
-        labels = ["`Noun Phrase`", "Named Entity", "Member of Parliament"]
+        labels = ["Noun Phrase", "Named Entity", "Member of Parliament"]
         self.set_node_properties(
             properties,
             labels
@@ -515,7 +515,7 @@ class DebateArgument(Document):
     def make_argument(self):
         labels = ["Argument", "Document"]
         if self.speaker:
-            title = "%s - %s" % (self.speaker, self.topic)
+            title = "%s - %s" % (self.topic, self.speaker)
         else:
             title = self.topic
         properties = {
@@ -529,6 +529,7 @@ class DebateArgument(Document):
         )
 
     def link_speaker(self, speaker):
+        self.speaker = speaker
         debate_mp = MemberOfParliament(speaker)
         if not debate_mp.exists:
             debate_mp.create()
@@ -538,3 +539,11 @@ class DebateArgument(Document):
             "STATED",
             self.vertex
         )
+
+    def link_previous(self, argument):
+        if argument:
+            self.create_relationship(
+                self.vertex,
+                "RESPONSE_TO",
+                argument.vertex
+            )

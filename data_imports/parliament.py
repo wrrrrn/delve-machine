@@ -21,13 +21,13 @@ class Parliament(ImportInterface):
                 if sub:
                     topic, sub_cat, full_debate = \
                         self.hansard.get_full_debate(sub["debate_id"])
-                    print topic
+                    print "TOPIC:", topic["topic"], "\n"
                     new_topic = self._create_debate(topic)
                     new_subcat = self._create_debate(sub_cat)
                     new_topic.link_debate(new_subcat)
                     self._interate_debate(new_subcat, full_debate)
                 else:
-                    print start
+                    print "START:", start, "\n"
                     if start["content_count"] > 0:
                         new_topic = self._create_debate(start)
                         topic, sub_cat, full_debate = \
@@ -36,21 +36,24 @@ class Parliament(ImportInterface):
                 print "-"
 
     def _interate_debate(self, debate, arguments):
+        previous_argument = None
         for entry in arguments:
+            #print entry
             scrubbed_text = self.text.parse_raw_html(entry["body"])
             topic = debate.vertex["topic"]
-            argument = self._create_argument(entry["gid"], topic, scrubbed_text)
-            debate.link_argument(argument)
-            self.parser.parse_document(argument, scrubbed_text, map_statements=False)
+            new_argument = self._create_argument(entry["gid"], topic, scrubbed_text)
+            debate.link_argument(new_argument)
             if "speaker" in entry and "person_id" in entry["speaker"]:
                 name = "%s %s" % (
                     entry["speaker"]["first_name"],
                     entry["speaker"]["last_name"]
                 )
-                argument.link_speaker(name)
-            argument.make_argument()
-            print "\n\nComment:\n", scrubbed_text
-            print "\n\n\n"
+                new_argument.link_speaker(name)
+                print "\n\n%s Comment on %s:\n" % (name, topic), scrubbed_text, "\n__\n"
+            new_argument.make_argument()
+            self.parser.parse_document(new_argument, scrubbed_text, map_statements=False)
+            new_argument.link_previous(previous_argument)
+            previous_argument = new_argument
 
     def _create_debate(self, topic):
         new_debate = self.data_models.DebateInParliament(topic["debate_id"])

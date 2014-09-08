@@ -59,7 +59,7 @@ class TWFYHansard:
             "commons",
             full_debate_id
         )
-        print '\n\n[o] Getting Full Debate Details [id: %s count:%s]\n\n' \
+        print '\n\n[o] Getting Full Debate Details [id: %s count:%s]' \
               % (full_debate_id, len(debate_full))
         main = {
             "debate_id": debate_full[0]["gid"],
