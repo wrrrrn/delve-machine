@@ -12,6 +12,7 @@ class Parliament(ImportInterface):
         for mp in self.mps:
             self._get_debates(mp)
 
+    @profile
     def _get_debates(self, person):
         mp_debates = self.hansard.get_mp_debates("commons", person['person_id'])
         print "MP Debates Count:", mp_debates["info"]["total_results"]
@@ -35,6 +36,7 @@ class Parliament(ImportInterface):
                         self._interate_debate(new_topic, full_debate)
                 print "-"
 
+    @profile
     def _interate_debate(self, debate, arguments):
         previous_argument = None
         for entry in arguments:
