@@ -20,17 +20,25 @@ class Graph_Database:
             self.relationship, "connections"
         )
         # self.test = self.graph.get_or_create_index(self.node, "documents")
+        indexes = [
+            "CREATE INDEX ON :Document(link);",
+            "CREATE INDEX ON :`Named Entity`(noun_phrase);",
+            "CREATE INDEX ON :`Noun Phrase`(noun_phrase);",
+            "CREATE INDEX ON :`Unique Term`(term);",
+            "CREATE INDEX ON :Policy(link);",
+            "CREATE INDEX ON :`Policy Category`(link);",
+            "CREATE INDEX ON :Sentence(sentence_id);",
+            "CREATE INDEX ON :`Parliamentary Debate`(debate_id);",
+            "CREATE INDEX ON :`Act of Parliament`(link);"
+        ]
+        for index in indexes:
+            self.neo4j.CypherQuery(self.graph, index)
+
+
 
     # TODO: Convert this to a merge statement
     def create_relationship(self, start_node, relationship, end_node):
         return self.graph.create(rel(start_node, relationship, end_node))
 
-    def create_relationship_index(self, start_node, relationship, end_node):
-        """
-        Not sure if I'm making, or even need to make, unique relationships.
-        Leaving this here for later testing
-        """
-        return self.connections.get_or_create(
-            "connection", relationship, (start_node, relationship, end_node)
-        )
+
 
