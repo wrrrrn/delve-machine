@@ -34,7 +34,7 @@ def acts():
 
 
 #codebook()
-acts()
+#acts()
 mps()
 current_media()
 get_parliament()
