@@ -87,7 +87,6 @@ class TextHandler:
         return named_entities
 
     def get_all_entities(self, text):
-
         all_named_entities = []
         sentences = self.get_sentences(text)
         for sentence in sentences:
