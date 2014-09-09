@@ -23,10 +23,11 @@ class Parliament(ImportInterface):
                         self.hansard.get_full_debate(sub["debate_id"])
                     print "TOPIC:", topic["topic"], "\n"
                     new_topic = self._create_debate(topic)
-                    new_subcat = self._create_debate(sub_cat)
-                    if new_subcat:
-                        new_topic.link_debate(new_subcat)
-                        self._interate_debate(new_subcat, full_debate)
+                    if new_topic:
+                        new_subcat = self._create_debate(sub_cat)
+                        if new_subcat:
+                            new_topic.link_debate(new_subcat)
+                            self._interate_debate(new_subcat, full_debate)
                     else:
                         print "IMPORTED"
                 else:
