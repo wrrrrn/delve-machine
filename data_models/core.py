@@ -211,11 +211,15 @@ class Document(DataModel):
             self.g.calendar.day(d['year'], d["month"], d["day"])
         )
 
-    def set_assent_date(self, date):
-        d = date.split('/')
-        month, day, year = int(d[0]), int(d[1]), int(d[2])
+    def set_date(self, date, relationship):
+        if '/' in date:
+            d = date.split('/')
+            month, day, year = int(d[0]), int(d[1]), int(d[2])
+        elif '-' in date:
+            d = date.split('-')
+            year, month, day = int(d[0]), int(d[1]), int(d[2])
         self.create_relationship(
             self.vertex,
-            "RECEIVED_ROYAL_ASSENT",
+            relationship,
             self.g.calendar.day(year, month, day)
         )

@@ -461,31 +461,26 @@ class ActOfParliament(Document):
             properties,
             labels
         )
-        self.set_assent_date(date)
+        self.set_date(date, "RECEIVED_ROYAL_ASSENT")
 
 
-class DebateInParliament(DataModel):
-    def __init__(self, debate_id):
+class DebateInParliament(Document):
+    def __init__(self, link):
         DataModel.__init__(self)
-        self.debate_id = debate_id
+        self.link = link
+        self.label = self.debate_label
         self.fetch()
 
-    def fetch(self):
-        self.exists = self.find_vertex(
-            self.debate_label,
-            'debate_id',
-            self.debate_id
+    def make_debate(self, topic, date):
+        properties = {
+            "publication": "They Work for You",
+            "topic": topic,
+        }
+        self.set_node_properties(
+            properties,
+            None
         )
-        if self.exists:
-            self.vertex = self.exists
-            self.exists = True
-
-    def create(self):
-        self.vertex = self.create_vertex(
-            self.debate_label,
-            'debate_id',
-            self.debate_id
-        )
+        self.set_date(date, "DEBATED_ON")
 
     def link_debate(self, debate):
         self.create_relationship(

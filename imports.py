@@ -1,8 +1,8 @@
-from data_imports import members_of_parliament
+from data_imports import mps
 from data_imports import policy_agenda_codebook
 from data_imports import news_current_events
 from data_imports import acts_of_parliament
-from data_imports import parliament
+from data_imports import parliament_debates
 
 
 print "\n\nBegining document imports..."
@@ -13,13 +13,13 @@ def codebook():
     new_codebook.import_codebook()
 
 
-def mps():
-    new_mps = members_of_parliament.ImportMPs()
+def members_of_parliament():
+    new_mps = mps.ImportMPs()
     new_mps.import_mp_details()
 
 
 def get_parliament():
-    stuff = parliament.Parliament()
+    stuff = parliament_debates.Parliament()
     stuff.import_debates()
 
 
@@ -35,6 +35,6 @@ def acts():
 
 #codebook()
 #acts()
-mps()
-current_media()
+#members_of_parliament()
+#current_media()
 get_parliament()

@@ -28,7 +28,7 @@ class Graph_Database:
             "CREATE INDEX ON :Policy(link);",
             "CREATE INDEX ON :`Policy Category`(link);",
             "CREATE INDEX ON :Sentence(sentence_id);",
-            "CREATE INDEX ON :`Parliamentary Debate`(debate_id);",
+            "CREATE INDEX ON :`Parliamentary Debate`(link);",
             "CREATE INDEX ON :`Act of Parliament`(link);"
         ]
         for index in indexes:

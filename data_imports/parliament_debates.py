@@ -25,15 +25,21 @@ class Parliament(ImportInterface):
                     print "TOPIC:", topic["topic"], "\n"
                     new_topic = self._create_debate(topic)
                     new_subcat = self._create_debate(sub_cat)
-                    new_topic.link_debate(new_subcat)
-                    self._interate_debate(new_subcat, full_debate)
+                    if new_subcat:
+                        new_topic.link_debate(new_subcat)
+                        self._interate_debate(new_subcat, full_debate)
+                    else:
+                        print "IMPORTED"
                 else:
                     print "START:", start, "\n"
                     if start["content_count"] > 0:
                         new_topic = self._create_debate(start)
-                        topic, sub_cat, full_debate = \
-                            self.hansard.get_full_debate(start["debate_id"])
-                        self._interate_debate(new_topic, full_debate)
+                        if new_topic:
+                            topic, sub_cat, full_debate = \
+                                self.hansard.get_full_debate(start["debate_id"])
+                            self._interate_debate(new_topic, full_debate)
+                        else:
+                            print "IMPORTED"
                 print "-"
 
     @profile
@@ -60,13 +66,15 @@ class Parliament(ImportInterface):
     def _create_debate(self, topic):
         new_debate = self.data_models.DebateInParliament(topic["debate_id"])
         if "body" in topic:
-            new_properties = {"topic": topic["body"], "date": topic["date"]}
+            topic, date = topic["body"], topic["date"]
         else:
-            new_properties = {"topic": topic["topic"], "date": topic["date"]}
+            topic, date = topic["topic"], topic["date"]
         if not new_debate.exists:
             new_debate.create()
-            new_debate.set_node_properties(properties=new_properties)
-        return new_debate
+            new_debate.make_debate(topic, date)
+            return new_debate
+        else:
+            return None
 
     def _create_argument(self, link, topic, text):
         argument = self.data_models.DebateArgument(link, topic, text)
