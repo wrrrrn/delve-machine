@@ -1,4 +1,4 @@
-from data_interface import theyworkforyou
+from interfaces import theyworkforyou
 import json
 
 
@@ -6,8 +6,8 @@ class ImportGovernment:
     def __init__(self, csv_handler, database, models, speech_tools, verbose=True):
         self.verbose = verbose
         self.csv_handler = csv_handler
-        self.government_csv = 'data_imports/input/Government Departments - Members.csv'
-        self.opposition_csv = 'data_imports/input/Opposition Departments - Members.csv'
+        self.government_csv = 'import/input/Government Departments - Members.csv'
+        self.opposition_csv = 'import/input/Opposition Departments - Members.csv'
         self.g = database
         self.core_model = models.DataModel(self.g)
         self.twfy = theyworkforyou.TWFY('D4kApuGX4PE9G8NvmkEKRTmV')

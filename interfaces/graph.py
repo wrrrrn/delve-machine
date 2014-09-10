@@ -2,7 +2,7 @@ from py2neo import neo4j, rel, node
 from py2neo.calendar import GregorianCalendar
 
 
-class Graph_Database:
+class GraphInterface:
     def __init__(self):
         self.URI = 'http://localhost:7474/db/data/'
         self.neo4j = neo4j

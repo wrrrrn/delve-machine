@@ -1,11 +1,11 @@
-from analytical_tools import general_linguistic as lang
+from utils import general_linguistic as lang
 from gensim import corpora
 
 
 class VectorCorpus(object):
 
     system_path = '/home/warren/System2/Dropbox/_code/virtualenvs'
-    corpus_path = '/engine-datastore/analytical_tools/'
+    corpus_path = '/engine-datastore/utils/'
     corpus_data = system_path + corpus_path + 'vector_corpus.mm'
     vector_dict = system_path + corpus_path + 'vector_corpus.dict'
 

@@ -1,4 +1,4 @@
-from data_interface import theyworkforyou
+from interfaces import theyworkforyou
 import simplejson
 
 

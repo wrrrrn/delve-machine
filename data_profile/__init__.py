@@ -1,5 +1,5 @@
 from data_models import models
-from data_interface import text_io
+from interfaces import text_io
 
 
 class DataProfiler:

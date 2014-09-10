@@ -363,7 +363,7 @@ class Reverb():
 class ConfidenceFunction():
     reg = 1000.
     classifier = LogisticRegression(C=reg)
-    relation_file = "%s/analytical_tools/relations/relation_data.csv" % os.curdir
+    relation_file = "%s/utils/relations/relation_data.csv" % os.curdir
     relations = pd.read_csv(relation_file)
     features, response = relations.iloc[:, 1:16], relations.iloc[:, 0]
     classifier.fit(features, response)

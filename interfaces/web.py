@@ -7,7 +7,7 @@ import gzip
 import calendar
 
 
-class HtmlHandler:
+class HtmlInterface:
     def __init__(self):
         self.excluded_urls = \
         ['http://www.philosophyofinformation.net/publications/pdf/htdpi.pdf']
@@ -35,7 +35,7 @@ class HtmlHandler:
         return html
 
 
-class Opml:
+class OpmlInterface:
     def __init__(self, opml):
         self.opml_file = opml
         self.site_feeds = []
@@ -56,7 +56,7 @@ class Opml:
 
     def iterate(self, section):
         for title, url in self.get_section(section):
-            rss = Rss(url)
+            rss = RssInterface(url)
             blog = rss.parse_rss()
             for entry in blog.entries:
                 if hasattr(entry, 'description'):
@@ -81,7 +81,7 @@ class Opml:
             return " ".join(temp)
 
 
-class Rss:
+class RssInterface:
     def __init__(self, rss_input):
         self.rss_input = rss_input
 

@@ -1,7 +1,7 @@
 import pinboard
 
 
-class Pinboard:
+class PinboardInterface:
     def __init__(self, username, pwd):
         self.all_tags = []
         self.pinboard_account = pinboard.open(username, pwd)

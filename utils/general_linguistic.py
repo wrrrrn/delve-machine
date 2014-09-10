@@ -144,7 +144,7 @@ class TextHandler:
 class TfidfModel(object):
 
     system_path = os.curdir
-    corpus_path = '/analytical_tools/vectors/'
+    corpus_path = '/utils/vectors/'
     corpus_data = system_path + corpus_path + 'vector_corpus.mm'
     vector_dict = system_path + corpus_path + 'vector_corpus.dict'
 

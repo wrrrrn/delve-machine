@@ -1,10 +1,10 @@
-from data_interface import graph_interface
+from interfaces import graph
 import calendar
 import re
 
 
 class DataModel:
-    g = graph_interface.Graph_Database()
+    g = graph.GraphInterface()
 
     def __init__(self):
         self.g = DataModel.g

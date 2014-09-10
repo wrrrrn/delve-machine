@@ -8,10 +8,10 @@ class ImportCurrent(ImportInterface):
         self._connect_to_web_services()
 
     def _connect_to_web_services(self):
-        #opml_file = 'data_imports/input/google-reader-subscriptions.xml'
-        opml_file = 'data_imports/input/feedly.xml'
-        self.html_handler = self.web_handler.HtmlHandler()
-        self.opml = self.web_handler.Opml(opml_file)
+        #opml_file = 'import/input/google-reader-subscriptions.xml'
+        opml_file = 'import/input/feedly.xml'
+        self.html_handler = self.web_handler.HtmlInterface()
+        self.opml = self.web_handler.OpmlInterface(opml_file)
 
     def iterate_opml(self):
         for blog, entry, link, text, date in self.opml.iterate('Politics'):

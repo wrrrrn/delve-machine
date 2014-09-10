@@ -1,8 +1,8 @@
-from data_interface import text_io
-from data_interface import web
-from data_interface import pinboard_api
-from data_interface import hansard
-from analytical_tools import general_linguistic
+from interfaces import text_io
+from interfaces import web
+from interfaces import pinboard_api
+from interfaces import hansard
+from utils import general_linguistic
 from data_models import models
 from data_imports import document_parser
 

@@ -1,10 +1,10 @@
-from analytical_tools import relations
+from utils import relation_extraction
 
 
 class DocumentParser:
     def __init__(self, database, models, speech_tools):
         self.g = database
-        self.relation_extractor = relations.Relations()
+        self.relation_extractor = relation_extraction.Relations()
         self.core_model = models.DataModel()
         self.data_models = models
         self.speech_tools = speech_tools
