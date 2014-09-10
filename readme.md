@@ -1,3 +1,4 @@
-# Data Mining & Liguistic Analysis for Politics
+# Data Mining & Linguistic Analysis Engine
+# for Politics
 
 Initial prototype.
