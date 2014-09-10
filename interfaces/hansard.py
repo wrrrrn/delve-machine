@@ -1,4 +1,4 @@
-from data_interface import theyworkforyou
+from interfaces import theyworkforyou
 import simplejson
 
 
@@ -86,6 +86,4 @@ class TWFYHansard:
             )
         except simplejson.scanner.JSONDecodeError:
             print "JSONDecodeError"
-            return None
-        except:
             return None

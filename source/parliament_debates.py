@@ -1,5 +1,4 @@
-from data_imports import ImportInterface
-from time import sleep
+from source import ImportInterface
 
 
 class Parliament(ImportInterface):
@@ -22,47 +21,59 @@ class Parliament(ImportInterface):
                 if sub:
                     topic, sub_cat, full_debate = \
                         self.hansard.get_full_debate(sub["debate_id"])
-                    print topic
+                    print "TOPIC:", topic["topic"], "\n"
                     new_topic = self._create_debate(topic)
-                    new_subcat = self._create_debate(sub_cat)
-                    new_topic.link_debate(new_subcat)
-                    self._interate_debate(new_subcat, full_debate)
+                    if new_topic:
+                        new_subcat = self._create_debate(sub_cat)
+                        if new_subcat:
+                            new_topic.link_debate(new_subcat)
+                            self._interate_debate(new_subcat, full_debate)
+                    else:
+                        print "IMPORTED"
                 else:
-                    print start
+                    print "START:", start, "\n"
                     if start["content_count"] > 0:
                         new_topic = self._create_debate(start)
-                        topic, sub_cat, full_debate = \
-                            self.hansard.get_full_debate(start["debate_id"])
-                        self._interate_debate(new_topic, full_debate)
+                        if new_topic:
+                            topic, sub_cat, full_debate = \
+                                self.hansard.get_full_debate(start["debate_id"])
+                            self._interate_debate(new_topic, full_debate)
+                        else:
+                            print "IMPORTED"
                 print "-"
 
     def _interate_debate(self, debate, arguments):
+        previous_argument = None
         for entry in arguments:
+            #print entry
             scrubbed_text = self.text.parse_raw_html(entry["body"])
             topic = debate.vertex["topic"]
-            argument = self._create_argument(entry["gid"], topic, scrubbed_text)
-            debate.link_argument(argument)
-            self.parser.parse_document(argument, scrubbed_text, map_statements=False)
+            new_argument = self._create_argument(entry["gid"], topic, scrubbed_text)
+            debate.link_argument(new_argument)
             if "speaker" in entry and "person_id" in entry["speaker"]:
                 name = "%s %s" % (
                     entry["speaker"]["first_name"],
                     entry["speaker"]["last_name"]
                 )
-                argument.link_speaker(name)
-            argument.make_argument()
-            print "Comment:\n", scrubbed_text[:200]
-            print "\n"
+                new_argument.link_speaker(name)
+                print "\n\n%s Comment on %s:\n" % (name, topic), scrubbed_text, "\n__\n"
+            new_argument.make_argument()
+            self.parser.parse_document(new_argument, scrubbed_text, map_statements=False)
+            new_argument.link_previous(previous_argument)
+            previous_argument = new_argument
 
     def _create_debate(self, topic):
         new_debate = self.data_models.DebateInParliament(topic["debate_id"])
         if "body" in topic:
-            new_properties = {"topic": topic["body"], "date": topic["date"]}
+            topic, date = topic["body"], topic["date"]
         else:
-            new_properties = {"topic": topic["topic"], "date": topic["date"]}
+            topic, date = topic["topic"], topic["date"]
         if not new_debate.exists:
             new_debate.create()
-            new_debate.set_node_properties(properties=new_properties)
-        return new_debate
+            new_debate.make_debate(topic, date)
+            return new_debate
+        else:
+            return None
 
     def _create_argument(self, link, topic, text):
         argument = self.data_models.DebateArgument(link, topic, text)

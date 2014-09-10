@@ -1,11 +1,6 @@
 from time import strftime
-from data_profile import node_summary as nodes
-from data_profile import network_centrality
-from data_profile import central_nodes
-from data_profile import sentence_summary
-from data_profile import document_summary
-from data_profile import np_summary
-from data_profile import term_summary
+from utils.data_profiler import node_summary as nodes
+
 
 current_time = strftime("%Y-%m-%d %H:%M:%S")
 print "\nData Profile"

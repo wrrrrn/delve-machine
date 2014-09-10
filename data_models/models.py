@@ -155,7 +155,7 @@ class MemberOfParliament(NounPhrase):
         self.fetch()
 
     def update_mp_details(self, properties=None):
-        labels = ["Named Entity", "Member of Parliament"]
+        labels = ["Noun Phrase", "Named Entity", "Member of Parliament"]
         self.set_node_properties(
             properties,
             labels
@@ -169,7 +169,7 @@ class MemberOfParliament(NounPhrase):
 
     def link_party(self, party):
         party = NounPhrase(party)
-        labels = ["Named Entity", "Political Party"]
+        labels = ["`Noun Phrase`", "Named Entity", "Political Party"]
         if not party.exists:
             party.create()
         party.set_node_properties(labels=labels)
@@ -184,7 +184,7 @@ class GovernmentDepartment(NounPhrase):
         self.fetch()
 
     def update_details(self, details=None):
-        labels = ["Named Entity", "Government Department"]
+        labels = ["`Noun Phrase`", "Named Entity", "Government Department"]
         properties = details
         self.set_node_properties(
             properties,
@@ -200,7 +200,7 @@ class GovernmentPosition(NounPhrase):
         self.fetch()
 
     def update_details(self, details=None):
-        labels = ["Named Entity", "Government Position"]
+        labels = ["`Noun Phrase`", "Named Entity", "Government Position"]
         properties = details
         self.set_node_properties(
             properties,
@@ -383,7 +383,7 @@ class Policy(Document):
         self.fetch()
 
     def make_policy(self):
-        labels = "Policy Agenda"
+        labels = ["Policy Agenda", "Document"]
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.policy,
@@ -405,7 +405,7 @@ class PolicyCategory(Document):
         self.fetch()
 
     def make_category(self):
-        labels = "Policy Category"
+        labels = ["Policy Category", "Document"]
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.category,
@@ -451,7 +451,7 @@ class ActOfParliament(Document):
         self.fetch()
 
     def make_act(self, name, description, date):
-        labels = "Act of Parliament"
+        labels = ["Act of Parliament", "Document"]
         properties = {
             "publication": "UK Parliament",
             "title": name,
@@ -461,31 +461,26 @@ class ActOfParliament(Document):
             properties,
             labels
         )
-        self.set_assent_date(date)
+        self.set_date(date, "RECEIVED_ROYAL_ASSENT")
 
 
-class DebateInParliament(DataModel):
-    def __init__(self, debate_id):
+class DebateInParliament(Document):
+    def __init__(self, link):
         DataModel.__init__(self)
-        self.debate_id = debate_id
+        self.link = link
+        self.label = self.debate_label
         self.fetch()
 
-    def fetch(self):
-        self.exists = self.find_vertex(
-            self.debate_label,
-            'debate_id',
-            self.debate_id
+    def make_debate(self, topic, date):
+        properties = {
+            "publication": "They Work for You",
+            "topic": topic,
+        }
+        self.set_node_properties(
+            properties,
+            None
         )
-        if self.exists:
-            self.vertex = self.exists
-            self.exists = True
-
-    def create(self):
-        self.vertex = self.create_vertex(
-            self.debate_label,
-            'debate_id',
-            self.debate_id
-        )
+        self.set_date(date, "DEBATED_ON")
 
     def link_debate(self, debate):
         self.create_relationship(
@@ -513,9 +508,9 @@ class DebateArgument(Document):
         self.fetch()
 
     def make_argument(self):
-        labels = "Argument"
+        labels = ["Argument", "Document"]
         if self.speaker:
-            title = "%s - %s" % (self.speaker, self.topic)
+            title = "%s - %s" % (self.topic, self.speaker)
         else:
             title = self.topic
         properties = {
@@ -529,6 +524,7 @@ class DebateArgument(Document):
         )
 
     def link_speaker(self, speaker):
+        self.speaker = speaker
         debate_mp = MemberOfParliament(speaker)
         if not debate_mp.exists:
             debate_mp.create()
@@ -538,3 +534,11 @@ class DebateArgument(Document):
             "STATED",
             self.vertex
         )
+
+    def link_previous(self, argument):
+        if argument:
+            self.create_relationship(
+                self.vertex,
+                "RESPONSE_TO",
+                argument.vertex
+            )

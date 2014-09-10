@@ -1,11 +1,13 @@
-from data_interface import graph_interface
+from interfaces import graph
 import calendar
 import re
 
 
 class DataModel:
+    g = graph.GraphInterface()
+
     def __init__(self):
-        self.g = graph_interface.Graph_Database()
+        self.g = DataModel.g
         self.vertex = None
         self.exists = False
         self.document_label = 'Document'
@@ -36,10 +38,14 @@ class DataModel:
         self.vertex = None
         search_query = """
                 MERGE (v:`{0}` {{{1}:"{2}"}})
+                ON MATCH set v:`{0}`
+                ON CREATE set v:`{0}`
                 RETURN v
             """.format(label, node_key, value)
         output = self.query(search_query)
-        return output[0][0]
+        self.vertex = output[0][0]
+        self.vertex.add_labels(label)
+        return self.vertex
 
     def set_node_properties(self, properties=None, labels=None):
         batch = self.g.neo4j.WriteBatch(self.g.graph)
@@ -57,13 +63,13 @@ class DataModel:
         return results
 
     def create_relationship(self, vertex1, relationship, vertex2):
-        try:
-            return self.g.create_relationship(
-                vertex1, relationship, vertex2
-            )
-        except AttributeError:
-            print "!!! Error creating relationship"
-            print "!!! ->", vertex1, relationship, vertex2
+        #return self.g.create_relationship(vertex1, relationship, vertex2)
+        rel_query = """
+            START n=node({0}), m=node({1})
+            MERGE (n)-[r:{2}]->(m)
+            RETURN r
+        """.format(vertex1._id, vertex2._id, relationship)
+        return self.query(rel_query)
 
     def query(self, query_string):
         search = self.g.neo4j.CypherQuery(self.g.graph, query_string)
@@ -205,11 +211,15 @@ class Document(DataModel):
             self.g.calendar.day(d['year'], d["month"], d["day"])
         )
 
-    def set_assent_date(self, date):
-        d = date.split('/')
-        month, day, year = int(d[0]), int(d[1]), int(d[2])
+    def set_date(self, date, relationship):
+        if '/' in date:
+            d = date.split('/')
+            month, day, year = int(d[0]), int(d[1]), int(d[2])
+        elif '-' in date:
+            d = date.split('-')
+            year, month, day = int(d[0]), int(d[1]), int(d[2])
         self.create_relationship(
             self.vertex,
-            "RECEIVED_ROYAL_ASSENT",
+            relationship,
             self.g.calendar.day(year, month, day)
         )

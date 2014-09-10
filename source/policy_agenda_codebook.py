@@ -1,4 +1,4 @@
-from data_imports import ImportInterface
+from source import ImportInterface
 
 
 class ImportCodebook(ImportInterface):
@@ -7,7 +7,7 @@ class ImportCodebook(ImportInterface):
         self.verbose = True
         self.build_semantic_graph = False
         self.codebook_csv = \
-            'data_imports/input/policyagenda_UK_Topics_Codebook-main.csv'
+            'source/input/policyagenda_UK_Topics_Codebook-main.csv'
 
     def import_codebook(self):
         self.csv_handler.open(self.codebook_csv)
@@ -38,16 +38,16 @@ class ImportCodebook(ImportInterface):
         new_policy = self.data_models.Policy(policy, code)
         if not new_policy.exists:
             new_policy.create()
-            new_policy.make_policy()
-            new_policy.update_content(policy)
+        new_policy.make_policy()
+        new_policy.update_content(policy)
         return new_policy
 
     def _create_category(self, category, code, description):
         new_category = self.data_models.PolicyCategory(category, code)
         if not new_category.exists:
             new_category.create()
-            new_category.make_category()
-            new_category.update_content(description)
+        new_category.make_category()
+        new_category.update_content(description)
         return new_category
 
     def _parse_category_name(self, policy, text):

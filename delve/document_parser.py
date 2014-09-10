@@ -1,10 +1,10 @@
-from analytical_tools import relations
+from utils import relation_extraction
 
 
 class DocumentParser:
     def __init__(self, database, models, speech_tools):
         self.g = database
-        self.relation_extractor = relations.Relations()
+        self.relation_extractor = relation_extraction.Relations()
         self.core_model = models.DataModel()
         self.data_models = models
         self.speech_tools = speech_tools
@@ -15,8 +15,6 @@ class DocumentParser:
         self._semantic_feats = []
 
     def parse_document(self, document, content, map_statements=True):
-        # content = self.text_blob(document)
-        # text = content.
         self.map_statements = map_statements
         bag_of_words = self.text_tools.get_words(
             content,
@@ -24,9 +22,10 @@ class DocumentParser:
             remove_stopwords=True
         )
         self._words_total = len(bag_of_words)
+        self._get_terms(bag_of_words)
         sentences = self.text_tools.get_sentences(content)
         for sentence_number, s in enumerate(sentences):
-            print s
+            print "PARSING:", s
             sentence_id = "%s::%s" % (document.vertex["link"], sentence_number)
             sentence = self._create_sentence_node(sentence_id, s)
             document.link_sentence(sentence.vertex)
@@ -50,13 +49,14 @@ class DocumentParser:
             sentence_node.vertex["sentence"] = sentence
         return sentence_node
 
+    def _get_terms(self, words):
+        tfidf_results = self.tfidf_model.classify(words, score=False)
+        self.document_terms = tfidf_results
+
     def _map_semantics(self, sentence, text):
         names, terms, sentiment, subjectivity = self._get_semantics(text)
         sentence.vertex["sentiment"] = sentiment
         sentence.vertex["subjectivity"] = subjectivity
-        # batch_names = self.data_models.NounPhrase(None)
-        # roll this back to pre-batch
-        # batch_names.link_names_to_sent(names, sentence_node)
         for name in names:
             new_name = self.data_models.NounPhrase(name)
             if not new_name.exists:
@@ -70,6 +70,25 @@ class DocumentParser:
             new_term.link_sentence(sentence)
         self._link_names_and_terms(names, terms)
 
+    def _get_semantics(self, sentence):
+        words = self.text_tools.get_words(sentence)
+        text_blob = self.text_tools.text_blob(sentence)
+        names = self.text_tools.get_all_entities(sentence)
+        # noun_phrases = text_blob.noun_phrases
+        sentiment = text_blob.sentiment.polarity
+        subjectivity = text_blob.sentiment.subjectivity
+        terms = self.speech_tools.unique_list(
+            [w for w in words if w in self.document_terms]
+        )
+        if len(names) > 0:
+            self._all_names.extend(names)
+        if len(terms) > 0:
+            self._all_terms.extend(terms)
+        self._all_sentiment.extend([sentiment])
+        self._all_subjectivity.extend([subjectivity])
+        self._print_semantics(names, terms, sentiment, subjectivity)
+        return names, terms, sentiment, subjectivity
+
     def _link_names_and_terms(self, names, terms):
         if len(names) > 0 and len(terms) > 0:
             for n in names:
@@ -77,32 +96,6 @@ class DocumentParser:
                 for t in terms:
                     term = self.data_models.UniqueTerm(t)
                     name.link_term(term)
-
-    def _get_semantics(self, sentence):
-        words = self.text_tools.get_words(
-            sentence,
-            with_punctuation=False,
-            remove_stopwords=True
-        )
-        text_blob = self.text_tools.text_blob(sentence)
-        names = self.text_tools.get_all_entities(sentence)
-        # noun_phrases = text_blob.noun_phrases
-        sentiment = text_blob.sentiment.polarity
-        subjectivity = text_blob.sentiment.subjectivity
-        tfidf_results = self.tfidf_model.classify(words, score=False)
-        terms = self.speech_tools.unique_list(tfidf_results)
-        if len(names) > 0:
-            self._all_names.extend(names)
-        if len(terms) > 0:
-            self._all_terms.extend(terms)
-        self._all_sentiment.extend([sentiment])
-        self._all_subjectivity.extend([subjectivity])
-        print "\n** named entities", names
-        print "** unique terms", terms
-        #print "** noun phrases", noun_phrases
-        print "** sentiment", sentiment
-        print "** subjectivity", subjectivity, '\n'
-        return names, terms, sentiment, subjectivity
 
     def _map_statement(self, sentence, text):
         new_relations = self._get_statement(text)
@@ -158,8 +151,15 @@ class DocumentParser:
         self._print_out()
         self._set_counters()
 
+    def _print_semantics(self, names, terms, sentiment, subjectivity):
+        print "\n** named entities", names
+        print "** unique terms", terms
+        #print "** noun phrases", noun_phrases
+        print "** sentiment", sentiment
+        print "** subjectivity", subjectivity, '\n'
+
     def _print_out(self):
-        print "---DOCUMENT SUMMARY---"
+        print "\n---DOCUMENT SUMMARY---"
         for x in self._semantic_feats:
             print " %-30s%-25s%-20s" % (x, self._semantic_feats[x], "")
         print "---     SUMMARY   ---\n"

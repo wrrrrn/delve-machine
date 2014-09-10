@@ -2,7 +2,7 @@
 import readability
 
 
-class Readability:
+class ReadabilityInterface:
     def __init__(self, key, secret, username, pwd):
         self.token = readability.xauth(key, secret, username,pwd)
         self.rdd = readability.oauth(key, secret, token=self.token)
