@@ -1,4 +1,4 @@
-from data_imports import document_parser, ImportInterface
+from source import ImportInterface
 
 
 class ImportCurrent(ImportInterface):
@@ -8,8 +8,8 @@ class ImportCurrent(ImportInterface):
         self._connect_to_web_services()
 
     def _connect_to_web_services(self):
-        #opml_file = 'import/input/google-reader-subscriptions.xml'
-        opml_file = 'import/input/feedly.xml'
+        #opml_file = 'source/input/google-reader-subscriptions.xml'
+        opml_file = 'source/input/feedly.xml'
         self.html_handler = self.web_handler.HtmlInterface()
         self.opml = self.web_handler.OpmlInterface(opml_file)
 

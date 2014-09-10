@@ -1,8 +1,8 @@
-from data_imports import mps
-from data_imports import policy_agenda_codebook
-from data_imports import news_current_events
-from data_imports import acts_of_parliament
-from data_imports import parliament_debates
+from source import mps
+from source import policy_agenda_codebook
+from source import news_current_events
+from source import acts_of_parliament
+from source import parliament_debates
 
 
 print "\n\nBegining document imports..."

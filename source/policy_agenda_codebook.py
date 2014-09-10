@@ -1,4 +1,4 @@
-from data_imports import ImportInterface
+from source import ImportInterface
 
 
 class ImportCodebook(ImportInterface):
@@ -7,7 +7,7 @@ class ImportCodebook(ImportInterface):
         self.verbose = True
         self.build_semantic_graph = False
         self.codebook_csv = \
-            'import/input/policyagenda_UK_Topics_Codebook-main.csv'
+            'source/input/policyagenda_UK_Topics_Codebook-main.csv'
 
     def import_codebook(self):
         self.csv_handler.open(self.codebook_csv)

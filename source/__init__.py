@@ -1,10 +1,10 @@
+from utils import general_linguistic
+from delve import document_parser
+from data_models import models
 from interfaces import text_io
 from interfaces import web
 from interfaces import pinboard_api
 from interfaces import hansard
-from utils import general_linguistic
-from data_models import models
-from data_imports import document_parser
 
 
 class ImportInterface:
