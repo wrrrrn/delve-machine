@@ -22,7 +22,7 @@ class ImportCurrent(ImportInterface):
             parser.parse_document(article, cleaned_text, map_statements=False)
 
     def _get_document_parser(self):
-        return document_parser.DocumentParser(
+        return self.parser.DocumentParser(
             self.g,
             self.data_models,
             self.speech_tools,
