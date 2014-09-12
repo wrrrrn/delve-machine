@@ -5,11 +5,9 @@ class MongoInterface:
     def __init__(self):
         self.client = MongoClient()
         self.db = self.client.delve
-        self.collection = None
-        self.test()
+        self._collections()
 
-    def test(self):
+    def _collections(self):
         print self.db.collection_names()
 
-    def get_representatives(self):
-        self.collection = self.db.representatives
+

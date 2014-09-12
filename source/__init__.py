@@ -1,6 +1,7 @@
 from utils import general_linguistic
 from delve import document_parser
 from data_models import models
+from data_models import cache
 from interfaces import text_io
 from interfaces import web
 from interfaces import pinboard_api
@@ -10,6 +11,7 @@ from interfaces import hansard
 class ImportInterface:
     def __init__(self):
         self.data_models = models
+        self.cache_models = cache
         self.csv_handler = text_io.TextInput()
         self.web_handler = web
         self.pinboard_api = pinboard_api
