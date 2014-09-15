@@ -1,9 +1,9 @@
-from source import ImportInterface
+from source import CacheInterface
 
 
-class Parliament(ImportInterface):
+class Parliament(CacheInterface):
     def __init__(self, verbose=True):
-        ImportInterface.__init__(self)
+        CacheInterface.__init__(self)
         self.verbose = verbose
         self.text = self.speech_tools.TextHandler()
         self.mps = self.hansard.get_mps()

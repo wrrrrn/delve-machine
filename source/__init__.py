@@ -8,7 +8,7 @@ from interfaces import pinboard_api
 from interfaces import hansard
 
 
-class ImportInterface:
+class CacheInterface:
     def __init__(self):
         self.data_models = models
         self.cache_models = cache

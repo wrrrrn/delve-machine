@@ -1,9 +1,9 @@
-from source import ImportInterface
+from source import CacheInterface
 
 
-class ImportCodebook(ImportInterface):
+class ImportCodebook(CacheInterface):
     def __init__(self):
-        ImportInterface.__init__(self)
+        CacheInterface.__init__(self)
         self.verbose = True
         self.build_semantic_graph = False
         self.codebook_csv = \

@@ -1,9 +1,9 @@
-from source import ImportInterface
+from source import CacheInterface
 
 
-class ImportCurrent(ImportInterface):
+class ImportCurrent(CacheInterface):
     def __init__(self):
-        ImportInterface.__init__(self)
+        CacheInterface.__init__(self)
         self.text = self.speech_tools.TextHandler()
         self._connect_to_web_services()
 

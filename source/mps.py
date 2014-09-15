@@ -1,87 +1,91 @@
-from source import ImportInterface
+from source import CacheInterface
 from time import sleep
 
 
-class ImportMPs(ImportInterface):
-    def __init__(self, verbose=True):
-        ImportInterface.__init__(self)
-        self.verbose = verbose
+class GetMPs(CacheInterface):
+    def __init__(self):
+        CacheInterface.__init__(self)
         self.text = self.speech_tools.TextHandler()
+        self.cache = self.cache_models.Representatives()
         self.mps = self.hansard.get_mps()
-        print '\n\nMembers of Parliament [count:%s]' % len(self.mps)
 
-    def import_mp_details(self):
+    def fetch(self):
         for mp in self.mps:
             self._print_out("MP", mp["name"])
             self._print_out("Party", mp["party"])
             self._print_out("person_id", mp["person_id"])
+            node = {
+                "full_name": mp["name"],
+                "twfy_id": mp["person_id"],
+                "party": mp["party"]
+            }
             print "\n"
-            self._get_mp(mp['person_id'])
-            sleep(0.25)
+            details = self.hansard.get_mp_details(mp["person_id"])
+            if details:
+                node["first_name"] = details[0]["first_name"]
+                node["last_name"] = details[0]["last_name"]
+                node["number_of_terms"] = len(details)
+            terms = []
+            for entry in details:
+                term = {
+                    "party": entry["party"],
+                    "constituency": entry['constituency'],
+                    "left_house": entry["left_house"],
+                    "entered_house": entry["entered_house"],
+                    "left_reason": entry["left_reason"]
+                }
+                if "office" in entry:
+                    offices = self._get_office(entry["office"])
+                    if len(offices) > 0:
+                        term["offices_held"] = offices
+                terms.append(term)
+            node["terms"] = terms
+            self._report(node)
+            print self.cache.write(node)
             print "---"
 
-    def _get_mp(self, person_id):
-        new_mp = None
-        mp_detail = self.hansard.get_mp_details(person_id)
-        if mp_detail:
-            new_mp = self._create_mp(mp_detail[0], len(mp_detail))
-            if "office" in mp_detail[0]:
-                self._link_office_detail(new_mp, mp_detail[0]["office"])
-        return new_mp
-
-    def _create_mp(self, mp, terms):
-        mp_details = {
-            "first_name": mp["first_name"],
-            "last_name": mp["last_name"],
-            "full_name": mp["full_name"],
-            "party": mp["party"],
-            "constituency": mp['constituency'],
-            "left_house": mp["left_house"],
-            "entered_house": mp["entered_house"],
-            "number_of_terms": terms,
-            "left_reason": mp["left_reason"]
-        }
-        for x in mp_details:
-            self._print_out(x, mp_details[x])
-        name = mp["full_name"].encode('ascii', 'ignore')
-        new_mp = self.data_models.MemberOfParliament(name)
-        if not new_mp.exists:
-            new_mp.create()
-        new_mp.update_mp_details(mp_details)
-        new_mp.link_party(mp["party"])
-        return new_mp
-
-    def _link_office_detail(self, mp, positions):
+    def _get_office(self, positions):
+        offices = []
         if len(positions) > 1:
             for position in positions:
-                self._create_department(mp, position["dept"])
-                self._create_position(mp, position["position"])
+                office = {}
+                if position["dept"]:
+                    office = {"department": position["dept"]}
+                if position["position"]:
+                    office = {"position": position["position"]}
+                offices.append(office)
         else:
-            self._create_department(mp, positions[0]["dept"])
-            self._create_position(mp, positions[0]["position"])
+            office = {}
+            if positions[0]["dept"]:
+                office = {"department": positions[0]["dept"]}
+            if positions[0]["position"]:
+                office = {"position": positions[0]["position"]}
+            offices.append(office)
+        if len(offices) == 0:
+            return None
+        else:
+            return offices
 
-    def _create_department(self, mp, department):
-        if len(department) > 2:
-            new_department = self.data_models.GovernmentDepartment(department)
-            if not new_department.exists:
-                new_department.create()
-            new_department.update_details()
-            mp.link_department(new_department)
-            self._print_out("*department", department)
-
-    def _create_position(self, mp, position):
-        if len(position) > 2:
-            new_position = self.data_models.GovernmentPosition(position)
-            if not new_position.exists:
-                new_position.create()
-            new_position.update_details()
-            mp.link_position(new_position)
-            self._print_out("*position", position)
-
-    def _print_all(self, dic):
-        for k in dic:
-            self._print_out(k, dic[k])
-        print "\n"
+    def _report(self, node):
+        for x in node:
+                if x == "terms":
+                    for term in node["terms"]:
+                        print "-"
+                        for y in term:
+                            if y == "offices_held":
+                                offices = term["offices_held"]
+                                if len(offices) > 1 and offices != "none":
+                                    for office in offices:
+                                        for z in office:
+                                            self._print_out(z, office[z])
+                                else:
+                                    if not offices == "none":
+                                        for z in offices[0]:
+                                            self._print_out(z, offices[0][z])
+                            else:
+                                self._print_out(y, term[y])
+                else:
+                    self._print_out(x, node[x])
 
     def _print_out(self, key, value):
         print "  %-20s%-15s" % (key, value)

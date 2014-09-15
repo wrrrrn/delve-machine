@@ -14,8 +14,8 @@ def codebook():
 
 
 def members_of_parliament():
-    new_mps = mps.ImportMPs()
-    new_mps.import_mp_details()
+    new_mps = mps.GetMPs()
+    new_mps.fetch()
 
 
 def get_parliament():
@@ -35,6 +35,6 @@ def acts():
 
 #codebook()
 #acts()
-#members_of_parliament()
+members_of_parliament()
 #current_media()
-get_parliament()
+#get_parliament()

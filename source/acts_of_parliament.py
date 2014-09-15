@@ -1,9 +1,9 @@
-from source import ImportInterface
+from source import CacheInterface
 
 
-class ImportActsOfParliament(ImportInterface):
+class ImportActsOfParliament(CacheInterface):
     def __init__(self):
-        ImportInterface.__init__(self)
+        CacheInterface.__init__(self)
         self.acts_csv = \
             'source/input/policyagenda_acts1911-2008.csv'
             #'source/input/policyagenda_acts1911-2008.csv'
