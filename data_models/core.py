@@ -24,7 +24,7 @@ class DataModel:
 
     def find_vertex(self, label, node_key, value):
         self.vertex = None
-        search_query = """
+        search_query = u"""
                 MATCH (v:`{0}` {{{1}:"{2}"}})
                 RETURN v
             """.format(label, node_key, value)
@@ -36,7 +36,7 @@ class DataModel:
 
     def create_vertex(self, label, node_key, value):
         self.vertex = None
-        search_query = """
+        search_query = u"""
                 MERGE (v:`{0}` {{{1}:"{2}"}})
                 ON MATCH set v:`{0}`
                 ON CREATE set v:`{0}`
@@ -84,6 +84,19 @@ class DataModel:
         output = self.query(search_string)
         for result in output:
             yield result[0]
+
+    def set_date(self, date, relationship):
+        if '/' in date:
+            d = date.split('/')
+            month, day, year = int(d[0]), int(d[1]), int(d[2])
+        elif '-' in date:
+            d = date.split('-')
+            year, month, day = int(d[0]), int(d[1]), int(d[2])
+        self.create_relationship(
+            self.vertex,
+            relationship,
+            self.g.calendar.day(year, month, day)
+        )
 
     def convert_article_date(self, date):
         date = date.split(" ")
@@ -209,17 +222,4 @@ class Document(DataModel):
             self.vertex,
             "PUBLISHED",
             self.g.calendar.day(d['year'], d["month"], d["day"])
-        )
-
-    def set_date(self, date, relationship):
-        if '/' in date:
-            d = date.split('/')
-            month, day, year = int(d[0]), int(d[1]), int(d[2])
-        elif '-' in date:
-            d = date.split('-')
-            year, month, day = int(d[0]), int(d[1]), int(d[2])
-        self.create_relationship(
-            self.vertex,
-            relationship,
-            self.g.calendar.day(year, month, day)
         )

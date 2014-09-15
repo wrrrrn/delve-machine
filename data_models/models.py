@@ -42,8 +42,8 @@ class Sentence(DataModel):
 
     def get_statements(self):
         search_string = \
-            'MATCH (n:`Sentence` {sentence_id:"%s"})-[]->(x:`Statement`) ' \
-            "return x" % self.sentence_id
+            u'MATCH (n:`Sentence` {sentence_id:"{0}"})-[]->(x:`Statement`) ' \
+            u"return x".format(self.sentence_id)
         search_test = self.g.neo4j.CypherQuery(self.g.graph, search_string)
         output = search_test.execute()
         for result in output:
@@ -51,8 +51,8 @@ class Sentence(DataModel):
 
     def get_statement_parts(self, part_type):
         search_string = \
-            'MATCH (n:`Sentence` {sentence_id:"%s"})-[]->(x:`Statement`)-[]->(y:`%s`) ' \
-            "return  y " % (self.sentence_id, part_type)
+            u'MATCH (n:`Sentence` {sentence_id:"{0}"})-[]->(x:`Statement`)-[]->(y:`{1}`) ' \
+            u"return  y ".format(self.sentence_id, part_type)
         search_test = self.g.neo4j.CypherQuery(self.g.graph, search_string)
         output = search_test.execute()
         for result in output:
@@ -91,54 +91,54 @@ class NounPhrase(DataModel):
         self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", term.vertex)
 
     def get_relationships(self, relationship):
-        search_string = """
-            MATCH (n:`Noun Phrase` {noun_phrase:"%s"})-[rel:`%s`]->()
+        search_string = u"""
+            MATCH (n:`Noun Phrase` {noun_phrase:"{0}"})-[rel:`{1}`]->()
             RETURN rel
-        """ % (self.vertex["noun_phrase"], relationship)
+        """.format(self.vertex["noun_phrase"], relationship)
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
     def get_documents(self):
-        search_string = """
-            MATCH (np:`Noun Phrase` {noun_phrase:"%s"})<-[:MENTIONS]-(s)
+        search_string = u"""
+            MATCH (np:`Noun Phrase` {noun_phrase:"{0}"})<-[:MENTIONS]-(s)
             WITH s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
-        """ % (self.vertex["noun_phrase"])
+        """.format(self.vertex["noun_phrase"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
     def get_associated_documents(self):
-        search_string = """
-            MATCH (np:`Noun Phrase` {noun_phrase:"%s"} )-[:IS_ASSOCIATED_WITH]-(t)
+        search_string = u"""
+            MATCH (np:`Noun Phrase` {noun_phrase:"{0}"} )-[:IS_ASSOCIATED_WITH]-(t)
             WITH t
             MATCH (t)<-[:MENTIONS]-(s) with s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
-        """ % (self.vertex["noun_phrase"])
+        """.format(self.vertex["noun_phrase"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
     def get_sentences(self):
-        search_string = """
-            MATCH (np:`Noun Phrase` {noun_phrase:"%s"})<-[:MENTIONS]-(s)
+        search_string = u"""
+            MATCH (np:`Noun Phrase` {noun_phrase:"{0}"})<-[:MENTIONS]-(s)
             RETURN DISTINCT s
-        """ % (self.vertex["noun_phrase"])
+        """.format(self.vertex["noun_phrase"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
     def get_stats(self):
-        search_string = """
-            MATCH (t:`Noun Phrase` {noun_phrase:"%s"})<-[:MENTIONS]-(s)
+        search_string = u"""
+            MATCH (t:`Noun Phrase` {noun_phrase:"{0}"})<-[:MENTIONS]-(s)
             WITH s, count(s) as cs
             MATCH (s)-[:CONTAINS]-(d)
             WITH cs, count(d) as cd
             RETURN sum(cs), sum(cd)
-        """ % (self.vertex["noun_phrase"])
+        """.format(self.vertex["noun_phrase"])
         output = self.query(search_string)
         sent_count, doc_count = output[0][0], output[0][1]
         rel_count = len(
@@ -169,11 +169,36 @@ class MemberOfParliament(NounPhrase):
 
     def link_party(self, party):
         party = NounPhrase(party)
-        labels = ["`Noun Phrase`", "Named Entity", "Political Party"]
+        labels = ["Noun Phrase", "Named Entity", "Political Party"]
         if not party.exists:
             party.create()
         party.set_node_properties(labels=labels)
         self.create_relationship(self.vertex, "MEMBER_OF", party.vertex)
+
+    def link_session(self, term):
+        self.create_relationship(self.vertex, "REPRESENTATIVE_FOR", term.vertex)
+
+
+class TermInParliament(NounPhrase):
+    def __init__(self, session):
+        NounPhrase.__init__(self)
+        self.noun_phrase = session
+        self.label = self.noun_label
+        self.fetch()
+
+    def update_details(self, properties=None):
+        labels = ["Term in Parliament"]
+        self.set_node_properties(
+            properties,
+            labels
+        )
+        if properties["entered_house"]:
+            self.set_date(properties["entered_house"], "ENTERED_HOUSE")
+        if properties["left_reason"]:
+            self.set_date(properties["left_house"], "LEFT_HOUSE")
+
+    def link_position(self, position):
+        self.create_relationship(self.vertex, "SERVED_IN", position.vertex)
 
 
 class GovernmentDepartment(NounPhrase):
@@ -184,7 +209,7 @@ class GovernmentDepartment(NounPhrase):
         self.fetch()
 
     def update_details(self, details=None):
-        labels = ["`Noun Phrase`", "Named Entity", "Government Department"]
+        labels = ["Noun Phrase", "Named Entity", "Government Department"]
         properties = details
         self.set_node_properties(
             properties,
@@ -200,7 +225,7 @@ class GovernmentPosition(NounPhrase):
         self.fetch()
 
     def update_details(self, details=None):
-        labels = ["`Noun Phrase`", "Named Entity", "Government Position"]
+        labels = ["Noun Phrase", "Named Entity", "Government Position"]
         properties = details
         self.set_node_properties(
             properties,
