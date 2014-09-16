@@ -4,6 +4,7 @@ from source import CacheInterface
 class GetMPs(CacheInterface):
     ALL_PARTIES_API = 'http://www.theguardian.com/politics/api/party/all/json'
     VOTE_MATRIX = 'source/input/votematrix-2010.csv'
+    TEST = None
 
     def __init__(self):
         CacheInterface.__init__(self)
