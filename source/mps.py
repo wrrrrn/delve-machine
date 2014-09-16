@@ -1,15 +1,26 @@
 from source import CacheInterface
-from time import sleep
 
 
 class GetMPs(CacheInterface):
+    ALL_PARTIES_API = 'http://www.theguardian.com/politics/api/party/all/json'
+    VOTE_MATRIX = 'source/input/votematrix-2010.csv'
+
     def __init__(self):
         CacheInterface.__init__(self)
         self.text = self.speech_tools.TextHandler()
-        self.cache = self.cache_models.Representatives()
+        self.fuzzy = self.text.fuzzy_match
+        self.cache = self.cache_models.Politicians()
+        self.requests = self.web_handler.requests
         self.mps = self.hansard.get_mps()
+        self.all_mps = None
+        self.mongo_result = {"Mongo_Result": True}
 
     def fetch(self):
+        self._get_twfy_data()
+        self._get_guardian_data()
+        self._get_publicwhip_data()
+
+    def _get_twfy_data(self):
         for mp in self.mps:
             self._print_out("MP", mp["name"])
             self._print_out("Party", mp["party"])
@@ -17,7 +28,10 @@ class GetMPs(CacheInterface):
             node = {
                 "full_name": mp["name"],
                 "twfy_id": mp["person_id"],
-                "party": mp["party"]
+                "publicwhip_id": None,
+                "party": mp["party"],
+                "guardian_url": None,
+                "publicwhip_url": None
             }
             print "\n"
             details = self.hansard.get_mp_details(mp["person_id"])
@@ -41,8 +55,47 @@ class GetMPs(CacheInterface):
                 terms.append(term)
             node["terms"] = terms
             self._report(node)
-            print self.cache.write(node)
+            self.cache.write(node)
             print "---"
+        self.all_mps = [doc["full_name"] for doc in self.cache.collection.find()]
+
+    def _get_guardian_data(self):
+        print "Updating Guardian data"
+        r = self.requests.get(GetMPs.ALL_PARTIES_API)
+        parties = r.json()["parties"]
+        for party in parties:
+            party_uri = party["json-url"]
+            r = self.requests.get(party_uri)
+            if not r.status_code == 404:
+                mps = r.json()["party"]["mps"]
+                for mp in mps:
+                    mp_uri = mp["json-url"]
+                    r = self.requests.get(mp_uri)
+                    if not r.status_code == 404:
+                        person = r.json()["person"]
+                        url = person["aristotle-url"]
+                        result = self._find_cached_mp(person["name"])
+                        self._update_cached_mp(result["_id"], "guardian_url", url)
+                        self._print_out(result["full_name"], url)
+
+    def _get_publicwhip_data(self):
+        with open(GetMPs.VOTE_MATRIX) as fin:
+            rows = (line.split('\t') for line in fin)
+            for row in rows:
+                name, id = u'{0} {1}'.format(row[1], row[2]), row[0]
+                url = u"http://publicwhip.com/mp.php?mpid={0}".format(id)
+                result = self._find_cached_mp(name)
+                self._update_cached_mp(result["_id"], "publicwhip_id", id)
+                self._update_cached_mp(result["_id"], "publicwhip_url", url)
+                self._print_out(name, url)
+
+    def _find_cached_mp(self, search):
+        cand = self.fuzzy.extractOne(search, self.all_mps)
+        result = self.cache.collection.find({"full_name": cand[0]}).limit(1)
+        return result[0]
+
+    def _update_cached_mp(self, id, key, value):
+        self.cache.collection.update({"_id": id}, {"$set": {key: value}})
 
     def _get_office(self, positions):
         offices = []

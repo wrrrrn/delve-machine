@@ -4,7 +4,7 @@ from delve import ImportInterface
 class ImportMPs(ImportInterface):
     def __init__(self):
         ImportInterface.__init__(self)
-        self.cache = self.cache_models.Representatives()
+        self.cache = self.cache_models.Politicians()
 
     def delve(self):
         for doc in self.cache.collection.find():
@@ -19,6 +19,7 @@ class ImportMPs(ImportInterface):
         print "\n.................."
         print node["full_name"], "x", node["number_of_terms"]
         print node["party"]
+        print node["guardian_url"]
         print ".................."
         #print node["twfy_id"]
         return self._create_mp(node)

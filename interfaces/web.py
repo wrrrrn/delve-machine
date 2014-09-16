@@ -5,6 +5,7 @@ import urllib2
 import StringIO
 import gzip
 import calendar
+import requests
 
 
 class HtmlInterface:

@@ -3,8 +3,9 @@ from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim import corpora, models as gensim_models
-from goose import Goose
+from fuzzywuzzy import process
 from textblob import TextBlob
+from goose import Goose
 import nltk
 import re
 import os
@@ -21,6 +22,7 @@ class TextHandler:
         self.bigram_score_function = BigramAssocMeasures.chi_sq
         self.trigram_score_function = TrigramAssocMeasures.chi_sq
         self.top_ngram_count = 400
+        self.fuzzy_match = process
         self.text_blob = TextBlob
 
     def get_words(self, text, with_punctuation=True, remove_stopwords=False):
