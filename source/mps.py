@@ -14,7 +14,6 @@ class GetMPs(CacheInterface):
         self.requests = self.web_handler.requests
         self.mps = self.hansard.get_mps()
         self.all_mps = None
-        self.mongo_result = {"Mongo_Result": True}
 
     def fetch(self):
         self._get_twfy_data()
