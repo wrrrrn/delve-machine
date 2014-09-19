@@ -29,38 +29,41 @@ class TWFYHansard:
             "commons",
             debate_id
         )
-        starting_point = debate_found[0]
-        mp_comment = debate_found[-1]
-        start = {
-                "date": starting_point["hdate"],
-                "content_count": starting_point["contentcount"],
-                "body": starting_point["body"],
-                "debate_id": starting_point["gid"]
-        }
-        mp_comment  = {
-                "date": mp_comment["hdate"],
-                "body": mp_comment["body"],
-                "debate_id": mp_comment["gid"]
-        }
-        if len(debate_found) == 3:
-            sub = debate_found[1]
-            sub_cat = {
-                "date": sub["hdate"],
-                "body": sub["body"],
-                "content_count": sub["contentcount"],
-                "debate_id": sub["gid"]
+        if debate_found:
+            starting_point = debate_found[0]
+            mp_comment = debate_found[-1]
+            start = {
+                    "date": starting_point["hdate"],
+                    "content_count": starting_point["contentcount"],
+                    "body": starting_point["body"],
+                    "debate_id": starting_point["gid"]
             }
+            mp_comment = {
+                    "date": mp_comment["hdate"],
+                    "body": mp_comment["body"],
+                    "debate_id": mp_comment["gid"]
+            }
+            if len(debate_found) == 3:
+                sub = debate_found[1]
+                sub_cat = {
+                    "date": sub["hdate"],
+                    "body": sub["body"],
+                    "content_count": sub["contentcount"],
+                    "debate_id": sub["gid"]
+                }
+            else:
+                sub_cat = None
+            return start, sub_cat, mp_comment
         else:
-            sub_cat = None
-        return start, sub_cat, mp_comment
+            return None
 
     def get_full_debate(self, full_debate_id, sub_category=True):
         debate_full = self._get_debate_detail(
             "commons",
             full_debate_id
         )
-        print '\n\n[o] Getting Full Debate Details [id: %s count:%s]' \
-              % (full_debate_id, len(debate_full))
+        #print '\n\n[o] Getting Full Debate Details [id: %s count:%s]' \
+        #      % (full_debate_id, len(debate_full))
         main = {
             "debate_id": debate_full[0]["gid"],
             "date": debate_full[0]["hdate"],

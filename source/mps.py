@@ -15,7 +15,7 @@ class GetMPs(CacheInterface):
         self.mps = self.hansard.get_mps()
         self.all_mps = None
 
-    def fetch(self):
+    def import_mps(self):
         self._get_twfy_data()
         self._get_guardian_data()
         self._get_publicwhip_data()

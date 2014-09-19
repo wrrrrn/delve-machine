@@ -3,6 +3,7 @@ from delve import document_parser
 from data_models import models
 from data_models import cache
 from interfaces import text_io
+from interfaces import data_io
 from interfaces import web
 from interfaces import pinboard_api
 from interfaces import hansard
@@ -21,6 +22,7 @@ class CacheInterface:
         self.tfidf_model.load()
         self.core_model = self.data_models.DataModel()
         self.g = self.core_model.g
+        self.csv_to_df = data_io.read_csv
         self.parser = self._get_document_parser()
 
     def _get_document_parser(self):

@@ -3,6 +3,7 @@ from source import policy_agenda_codebook
 from source import news_current_events
 from source import acts_of_parliament
 from source import parliament_debates
+from source import parliament
 
 
 print "\n\nBegining document imports..."
@@ -14,13 +15,17 @@ def codebook():
 
 
 def members_of_parliament():
-    new_mps = mps.GetMPs()
-    new_mps.fetch()
+    members = mps.GetMPs()
+    members.import_mps()
 
 
 def get_parliament():
-    stuff = parliament_debates.Parliament()
-    stuff.import_debates()
+    #stuff = parliament_debates.Parliament()
+    #stuff.import_debates()
+    parl = parliament.ParliamentData()
+    #parl.import_acts()
+    #parl.import_votes()
+    parl.import_debates()
 
 
 def current_media():
@@ -35,6 +40,6 @@ def acts():
 
 #codebook()
 #acts()
-members_of_parliament()
+#members_of_parliament()
 #current_media()
-#get_parliament()
+get_parliament()

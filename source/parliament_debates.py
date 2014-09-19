@@ -17,29 +17,31 @@ class Parliament(CacheInterface):
         print "MP Debates Count:", mp_debates["info"]["total_results"]
         if mp_debates:
             for result in mp_debates["rows"]:
-                start, sub, comment = self.hansard.get_debate(result["gid"])
-                if sub:
-                    topic, sub_cat, full_debate = \
-                        self.hansard.get_full_debate(sub["debate_id"])
-                    print "TOPIC:", topic["topic"], "\n"
-                    new_topic = self._create_debate(topic)
-                    if new_topic:
-                        new_subcat = self._create_debate(sub_cat)
-                        if new_subcat:
-                            new_topic.link_debate(new_subcat)
-                            self._interate_debate(new_subcat, full_debate)
-                    else:
-                        print "IMPORTED"
-                else:
-                    print "START:", start, "\n"
-                    if start["content_count"] > 0:
-                        new_topic = self._create_debate(start)
+                result = self.hansard.get_debate(result["gid"])
+                if result:
+                    start, sub, comment = result[0], result[1], result[2]
+                    if sub:
+                        topic, sub_cat, full_debate = \
+                            self.hansard.get_full_debate(sub["debate_id"])
+                        print "TOPIC:", topic["topic"], "\n"
+                        new_topic = self._create_debate(topic)
                         if new_topic:
-                            topic, sub_cat, full_debate = \
-                                self.hansard.get_full_debate(start["debate_id"])
-                            self._interate_debate(new_topic, full_debate)
+                            new_subcat = self._create_debate(sub_cat)
+                            if new_subcat:
+                                new_topic.link_debate(new_subcat)
+                                self._interate_debate(new_subcat, full_debate)
                         else:
                             print "IMPORTED"
+                    else:
+                        print "START:", start, "\n"
+                        if start["content_count"] > 0:
+                            new_topic = self._create_debate(start)
+                            if new_topic:
+                                topic, sub_cat, full_debate = \
+                                    self.hansard.get_full_debate(start["debate_id"])
+                                self._interate_debate(new_topic, full_debate)
+                            else:
+                                print "IMPORTED"
                 print "-"
 
     def _interate_debate(self, debate, arguments):

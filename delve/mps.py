@@ -19,7 +19,6 @@ class ImportMPs(ImportInterface):
         print "\n.................."
         print node["full_name"], "x", node["number_of_terms"]
         print node["party"]
-        print node["guardian_url"]
         print ".................."
         #print node["twfy_id"]
         return self._create_mp(node)
@@ -30,8 +29,14 @@ class ImportMPs(ImportInterface):
             "first_name": mp["first_name"],
             "last_name": mp["last_name"],
             "party": mp["party"],
+            "twfy_id": mp["twfy_id"],
             "number_of_terms": mp["number_of_terms"]
         }
+        if mp["guardian_url"]:
+            mp_details["guardian_url"] = mp["guardian_url"]
+        if mp["publicwhip_url"]:
+            mp_details["publicwhip_url"] = mp["publicwhip_url"]
+            mp_details["publicwhip_id"] = mp["publicwhip_id"]
         if not new_mp.exists:
             new_mp.create()
         new_mp.update_mp_details(mp_details)
