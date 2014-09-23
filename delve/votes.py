@@ -12,5 +12,9 @@ class ImportVotes(ImportInterface):
 
     def _import(self, node):
         print node["bill"]
-        print node["date"]
-        print node["vote_number"]
+        print node["vote_number"], node["date"]
+        for vote in node["votes"]:
+            self._print_out(vote["full_name"], vote["vote"])
+
+    def _print_out(self, key, value):
+        print "  %-20s%-15s" % (key, value)

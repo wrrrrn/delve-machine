@@ -257,43 +257,43 @@ class UniqueTerm(DataModel):
         )
 
     def get_relationships(self):
-        search_string = """
-            MATCH (t:`Unique Term` {term:"%s"})-[rel:`IS_ASSOCIATED_WITH`]-()
+        search_string = u"""
+            MATCH (t:`Unique Term` {term:"{0}"})-[rel:`IS_ASSOCIATED_WITH`]-()
             RETURN rel
-        """ % (self.vertex["term"])
+        """.format(self.vertex["term"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
     def get_documents(self):
-        search_string = """
-            MATCH (t:`Unique Term` {term:"%s"})<-[:MENTIONS]-(s)
+        search_string = u"""
+            MATCH (t:`Unique Term` {term:"{0}"})<-[:MENTIONS]-(s)
             WITH s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
-        """ % (self.vertex["term"])
+        """.format(self.vertex["term"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
     def get_sentences(self):
-        search_string = """
-            MATCH (t:`Unique Term` {term:"%s"})<-[:MENTIONS]-(s)
+        search_string = u"""
+            MATCH (t:`Unique Term` {term:"{0}"})<-[:MENTIONS]-(s)
             WITH s
             RETURN DISTINCT s
-        """ % (self.vertex["term"])
+        """.format(self.vertex["term"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
     def get_stats(self):
-        search_string = """
-            MATCH (t:`Unique Term` {term:"%s"})<-[:MENTIONS]-(s)
+        search_string = u"""
+            MATCH (t:`Unique Term` {term:"{0}"})<-[:MENTIONS]-(s)
             WITH s, count(s) as cs
             MATCH (s)-[:CONTAINS]-(d)
             WITH cs, count(d) as cd
             RETURN sum(cs), sum(cd)
-        """ % (self.vertex["term"])
+        """.format(self.vertex["term"])
         output = self.query(search_string)
         sent_count, doc_count = output[0][0], output[0][1]
         rel_count = len([x for x in self.get_relationships()])
@@ -392,7 +392,7 @@ class Relation(DataModel):
 
     def create(self):
         self.vertex = self.create_vertex(
-             self.predicate_label,
+            self.predicate_label,
             'relation',
             self.relation
         )
@@ -403,12 +403,12 @@ class Policy(Document):
         DataModel.__init__(self)
         self.policy = policy
         self.code = code
-        self.link = "%s-%s" % (self.code, self.policy)
+        self.link = u"{0}-{1}".format(self.code, self.policy)
         self.label = self.policy_label
         self.fetch()
 
     def make_policy(self):
-        labels = ["Policy Agenda", "Document"]
+        labels = ["Document"]
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.policy,
@@ -425,12 +425,12 @@ class PolicyCategory(Document):
         DataModel.__init__(self)
         self.category = category
         self.code = code
-        self.link = "%s-%s" % (self.code, self.category)
+        self.link = u"{0}-{1}".format(self.code, self.category)
         self.label = self.category_label
         self.fetch()
 
     def make_category(self):
-        labels = ["Policy Category", "Document"]
+        labels = ["Document"]
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.category,
@@ -443,7 +443,7 @@ class PolicyCategory(Document):
 
     def get_category(self, code):
         search_string = \
-            "MATCH (n:`Policy Category`{code:'%s'}) RETURN n" % code
+            u"MATCH (n:`Policy Category`{code:'{0}'}) RETURN n".format(code)
         search_test = self.g.neo4j.CypherQuery(self.g.graph, search_string)
         output = search_test.execute()
         if output:
@@ -476,7 +476,7 @@ class ActOfParliament(Document):
         self.fetch()
 
     def make_act(self, name, description, date):
-        labels = ["Act of Parliament", "Document"]
+        labels = ["Parliamentary Matters", "Document"]
         properties = {
             "publication": "UK Parliament",
             "title": name,
@@ -497,13 +497,14 @@ class DebateInParliament(Document):
         self.fetch()
 
     def make_debate(self, topic, date):
+        labels = ["Parliamentary Matters", "Document"]
         properties = {
             "publication": "They Work for You",
             "topic": topic,
         }
         self.set_node_properties(
             properties,
-            None
+            labels
         )
         self.set_date(date, "DEBATED_ON")
 
@@ -529,13 +530,13 @@ class DebateArgument(Document):
         self.link = link
         self.topic = topic
         self.content = content
-        self.label = self.document_label
+        self.label = self.argument_label
         self.fetch()
 
     def make_argument(self):
-        labels = ["Argument", "Document"]
+        labels = ["Parliamentary Matters", "Document"]
         if self.speaker:
-            title = "%s - %s" % (self.topic, self.speaker)
+            title = u"{0} - {1}".format(self.topic, self.speaker)
         else:
             title = self.topic
         properties = {
@@ -567,3 +568,46 @@ class DebateArgument(Document):
                 "RESPONSE_TO",
                 argument.vertex
             )
+
+
+class VoteinParliament(Document):
+    def __init__(self, vote_number, topic=None):
+        DataModel.__init__(self)
+        self.topic = topic
+        self.vote_number = vote_number
+        self.link = u"{0} - {1}".format(vote_number, topic)
+        self.label = self.vote_label
+        self.fetch()
+
+    def make_vote(self, date):
+        labels = ["Parliamentary Matters", "Document"]
+        properties = {
+            "publication": "Public Whip",
+            "topic": self.topic
+        }
+        self.set_node_properties(
+            properties,
+            labels
+        )
+        self.set_date(date, "VOTED_ON")
+
+
+class VoteCategory(Document):
+    def __init__(self, bill, category):
+        DataModel.__init__(self)
+        self.bill = bill
+        self.vote_category = category
+        self.label = self.votecategory_label
+        self.link = u"{0} - {1}".format(bill, category)
+        self.fetch()
+
+    def make_vote(self):
+        labels = ["Parliamentary Matters"]
+        properties = {
+            "publication": "Public Whip",
+            "category": self.link
+        }
+        self.set_node_properties(
+            properties,
+            labels
+        )

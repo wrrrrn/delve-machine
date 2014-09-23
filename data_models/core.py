@@ -14,13 +14,16 @@ class DataModel:
         self.named_label = "Named Entity"
         self.noun_label = "Noun Phrase"
         self.term_label = "Unique Term"
-        self.policy_label = 'Policy'
+        self.policy_label = 'Policy Agenda'
         self.category_label = 'Policy Category'
         self.sentence_label = 'Sentence'
         self.statement_label = 'Statement'
         self.predicate_label = 'Relation'
         self.debate_label = 'Parliamentary Debate'
+        self.vote_label = 'Parliamentary Vote'
+        self.votecategory_label = 'Vote Category'
         self.act_label = 'Act of Parliament'
+        self.argument_label = 'Debate Argument'
 
     def find_vertex(self, label, node_key, value):
         self.vertex = None
