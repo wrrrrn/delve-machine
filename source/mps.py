@@ -1,7 +1,7 @@
 from source import CacheInterface
 
 
-class GetMPs(CacheInterface):
+class CacheMPs(CacheInterface):
     ALL_PARTIES_API = 'http://www.theguardian.com/politics/api/party/all/json'
     VOTE_MATRIX = 'source/input/votematrix-2010.csv'
     TEST = None
@@ -61,7 +61,7 @@ class GetMPs(CacheInterface):
 
     def _get_guardian_data(self):
         print "Updating Guardian data"
-        r = self.requests.get(GetMPs.ALL_PARTIES_API)
+        r = self.requests.get(CacheMPs.ALL_PARTIES_API)
         parties = r.json()["parties"]
         for party in parties:
             party_uri = party["json-url"]
@@ -79,7 +79,7 @@ class GetMPs(CacheInterface):
                         self._print_out(result["full_name"], url)
 
     def _get_publicwhip_data(self):
-        with open(GetMPs.VOTE_MATRIX) as fin:
+        with open(CacheMPs.VOTE_MATRIX) as fin:
             rows = (line.split('\t') for line in fin)
             for row in rows:
                 name, id = u'{0} {1}'.format(row[1], row[2]), row[0]

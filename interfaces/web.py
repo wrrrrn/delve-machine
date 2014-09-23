@@ -1,4 +1,3 @@
-
 from xml.etree import ElementTree
 import feedparser
 import urllib2
@@ -14,26 +13,17 @@ class HtmlInterface:
         ['http://www.philosophyofinformation.net/publications/pdf/htdpi.pdf']
 
     def get_url(self, content_url):
-            if content_url not in self.excluded_urls:
-                #print "getting url: %s" % content_url
-                self.html = self.get_webpage(content_url)
-                return self.html
+        if content_url not in self.excluded_urls:
+            #print "getting url: %s" % content_url
+            self.html = self.get_webpage(content_url)
+            return self.html
 
-    def get_webpage(self,  address):
-        request = urllib2.Request(address)
-        request.add_header('Accept-encoding', 'gzip')
+    def get_webpage(self,  url):
         try:
-            response = urllib2.urlopen(request)
-            if response.info().get('Content-Encoding') == 'gzip':
-                data = StringIO.StringIO(response.read())
-                gzipper = gzip.GzipFile(fileobj=data)
-                html = gzipper.read()
-            else:
-                html = response.read()
-        except Exception, e:
-            print e
+            r = requests.get(url, timeout=5)
+            return r.content
+        except requests.exceptions.ReadTimeout:
             return False
-        return html
 
 
 class OpmlInterface:

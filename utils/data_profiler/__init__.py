@@ -24,6 +24,8 @@ class DataProfiler:
             "Government Department",
             "Government Position",
             "Political Party",
-            "Parliamentary Debate"
+            "Parliamentary Debate",
+            "Parliamentary Vote",
+            "Vote Category"
             #"Relation"
         ]

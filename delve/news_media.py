@@ -1,38 +1,39 @@
-from source import CacheInterface
+from delve import ImportInterface
 
 
-class ImportCurrent(CacheInterface):
+class ImportMedia(ImportInterface):
     def __init__(self):
-        CacheInterface.__init__(self)
+        ImportInterface.__init__(self)
+        self.cache = self.cache_models.Media()
         self.text = self.speech_tools.TextHandler()
-        self._connect_to_web_services()
 
-    def _connect_to_web_services(self):
-        #opml_file = 'source/input/google-reader-subscriptions.xml'
-        opml_file = 'source/input/feedly.xml'
-        self.html_handler = self.web_handler.HtmlInterface()
-        self.opml = self.web_handler.OpmlInterface(opml_file)
+    def delve(self):
+        for doc in self.cache.collection.find():
+            self._import(doc)
 
-    def iterate_opml(self):
-        for blog, entry, link, text, date in self.opml.iterate('Politics'):
-            print '\n\n', blog, '\n', entry, '\n', link, '\n', date
-            cleaned_text = self._get_text(text, link)
-            article = self._create_article_node(blog, entry, link, cleaned_text, date)
-            parser = self._get_document_parser()
-            parser.parse_document(article, cleaned_text, map_statements=False)
-
-    def _get_document_parser(self):
-        return self.parser.DocumentParser(
-            self.g,
-            self.data_models,
-            self.speech_tools,
+    def _import(self, node):
+        fresh = [doc["full_name"] for doc in self.cache.collection.find()]
+        publication = node["publication"]
+        title = node["title"]
+        link = node["link"]
+        date = node["date"]
+        text = node["publication"]
+        print '\n\n', publication, '\n', title, '\n', link, '\n', date
+        cleaned_text = self._get_text(text, link)
+        article = self._create_article_node(
+            publication,
+            title,
+            link,
+            cleaned_text,
+            date
         )
+        self.parser.parse_document(article, cleaned_text, map_statements=False)
 
     def _create_article_node(self, publication, title, link, content, date):
         new_document = self.data_models.Document(link)
         if not new_document.exists:
             new_document.create()
-            labels = "Media"
+            labels = "Public Media"
             properties = {
                 "publication": publication,
                 "title": title,

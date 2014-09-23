@@ -106,6 +106,12 @@ class TextHandler:
         except IOError, e:
             print '->Unable to parse raw html. Error: %s' % e
             return False
+        except UnicodeDecodeError, e:
+            print '->Unable to parse unicode. Error: %s' % e
+            new_html = html.decode('utf-8', errors='replace')
+            article = goose.extract(raw_html=new_html)
+            text = article.cleaned_text
+            return text
 
     def parse_raw_html(self, raw):
         try:

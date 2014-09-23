@@ -11,7 +11,7 @@ class CacheModel:
             result = self.collection.insert(document)
             return result
         except self.mongo_interface.duplicate_error:
-            print "Existing Debate"
+            print "Existing Document"
             return None
 
     def get_document(self, key, value):
@@ -63,3 +63,16 @@ class Debates(CacheModel):
         else:
             print "Existing Sub"
             return None
+
+
+class Media(CacheModel):
+    def __init__(self):
+        CacheModel.__init__(self)
+        self.collection = self.mongo_interface.db.media
+
+
+class PolicyAgenda(CacheModel):
+    def __init__(self):
+        CacheModel.__init__(self)
+        self.collection = self.mongo_interface.db.policy
+

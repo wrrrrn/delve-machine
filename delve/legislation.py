@@ -17,11 +17,11 @@ class ImportActs(ImportInterface):
         major_topic = node["major_topic"]
         sub_topic = node["sub_topic"]
         print '%s\nassent date: %s - major code: %s - sub code: %s\n' % (
-                short_title,
-                royal_assent,
-                major_topic,
-                sub_topic
-            )
+            short_title,
+            royal_assent,
+            major_topic,
+            sub_topic
+        )
         new_act = self._create_act(short_title, long_title, royal_assent)
         self.parser.parse_document(new_act, long_title, map_statements=False)
         category = self._get_related_category(sub_topic)
