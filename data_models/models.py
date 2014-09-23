@@ -573,9 +573,9 @@ class DebateArgument(Document):
 class VoteinParliament(Document):
     def __init__(self, vote_number, topic=None):
         DataModel.__init__(self)
-        self.topic = topic
+        self.bill = topic
         self.vote_number = vote_number
-        self.link = u"{0} - {1}".format(vote_number, topic)
+        self.link = u"{0} - {1}".format(vote_number, self.bill)
         self.label = self.vote_label
         self.fetch()
 
@@ -583,13 +583,20 @@ class VoteinParliament(Document):
         labels = ["Parliamentary Matters", "Document"]
         properties = {
             "publication": "Public Whip",
-            "topic": self.topic
+            "bill": self.bill
         }
         self.set_node_properties(
             properties,
             labels
         )
         self.set_date(date, "VOTED_ON")
+
+    def link_debate(self, vote_category):
+        self.create_relationship(
+            self.vertex,
+            "VOTING_CATEGORY",
+            vote_category.vertex
+        )
 
 
 class VoteCategory(Document):
@@ -601,7 +608,7 @@ class VoteCategory(Document):
         self.link = u"{0} - {1}".format(bill, category)
         self.fetch()
 
-    def make_vote(self):
+    def make_category(self):
         labels = ["Parliamentary Matters"]
         properties = {
             "publication": "Public Whip",
@@ -610,4 +617,11 @@ class VoteCategory(Document):
         self.set_node_properties(
             properties,
             labels
+        )
+
+    def link_vote(self, mp):
+        self.create_relationship(
+            self.vertex,
+            "VOTE_CAST",
+            mp.vertex
         )
