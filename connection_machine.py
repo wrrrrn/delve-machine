@@ -1,28 +1,28 @@
-from flask import Flask, request, session, g, redirect, url_for, \
-    abort, render_template, flash
-from data_models import models
+from flask import Flask, url_for, render_template
+from web.controllers import documents
+import os
 
-Nietzsche = """
-    There are various eyes.
-    Even the Sphinx has eyes: and as a result there are various truths,
-    and as a result there is no truth."""
-
-app = Flask(__name__)
+template_dir = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'web/templates'
+)
+static_dir = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'web/static'
+)
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.config.from_object(__name__)
 
 
 @app.route('/document')
 def document():
-    url = 'http://www.guardian.co.uk/politics/2012/apr/20/cameron-family-tax-havens'
-    article = g.extract(url=url)
-    mentions = {'type': 'name', 'name': u'Parliament'}
+    url = 'http://chrishanretty.co.uk/blog/index.php/2014/09/13/what-can-deutsche-bank-possibly-mean/'
+    doc = documents.DocumentController(url)
+    properties = doc.get_properties()
     return render_template(
         'article.html',
-        title=article.title,
-        content=format_content(article.cleaned_text),
-        mentions=mentions,
-        description=article.meta_description,
-        domain=article.domain
+        title=properties["title"],
+        content=format_content(properties["content"]),
+        mentions=properties["mentions"],
+        domain=properties["domain"]
     )
 
 
@@ -32,7 +32,6 @@ def format_content(string):
     for para in old_content:
         new_content += "<p>%s</p>" % para
     return new_content
-
 
 
 @app.route('/<search_type>/<search_term>')
@@ -64,4 +63,4 @@ if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0')
     app.run()
-    g.db = connect_db()
+

@@ -36,10 +36,10 @@ class DocumentsSummary(DataProfiler):
             # rels = [s for s in document.get_feat_relationships()]
             sent_count = len([s for s in document.get_sentences()])
             names_count = len(
-                [s for s in document.get_doc_features("Named Entity")]
+                [s for s in document.get_mentions("Named Entity")]
             )
             terms_count = len(
-                [s for s in document.get_doc_features("Unique Term")]
+                [s for s in document.get_mentions("Unique Term")]
             )
             rel_count = names_count*terms_count
             features = {

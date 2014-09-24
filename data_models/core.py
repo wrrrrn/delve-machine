@@ -67,7 +67,7 @@ class DataModel:
 
     def create_relationship(self, vertex1, relationship, vertex2):
         #return self.g.create_relationship(vertex1, relationship, vertex2)
-        rel_query = """
+        rel_query = u"""
             START n=node({0}), m=node({1})
             MERGE (n)-[r:{2}]->(m)
             RETURN r
@@ -83,7 +83,7 @@ class DataModel:
         return batch
 
     def get_all_nodes(self, node_type):
-        search_string = "MATCH (n:`%s`) RETURN n" % node_type
+        search_string = u"MATCH (n:`{0}`) RETURN n".format(node_type)
         output = self.query(search_string)
         for result in output:
             yield result[0]
@@ -166,48 +166,37 @@ class Document(DataModel):
         )
 
     def get_sentences(self):
-        search_string = """
-            MATCH (d:`Document`) WHERE d.link = "%s" WITH d
+        search_string = u"""
+            MATCH (d:`Document`) WHERE d.link = "{0}" WITH d
             MATCH (d)-[:CONTAINS]->(s)
             return s
-        """ % self.vertex["link"]
+        """.format(self.vertex["link"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
-    def get_doc_features(self, feature):
-        search_string = """
-            MATCH (d:`Document`) WHERE d.link = "%s" WITH d
+    def get_mentions(self, feature):
+        search_string = u"""
+            MATCH (d:`Document`) WHERE d.link = "{0}" WITH d
             MATCH (d)-[:CONTAINS]->(s) WITH s
-            MATCH (s)-[:MENTIONS]->(feat:`%s`)
+            MATCH (s)-[:MENTIONS]->(feat:`{1}`)
             RETURN distinct feat
-        """ % (self.vertex["link"], feature)
+        """.format(self.vertex["link"], feature)
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
     def get_feat_relationships(self):
-        search_string = """
-            MATCH (d:`Document`) WHERE d.link = "%s" WITH d
+        search_string = u"""
+            MATCH (d:`Document`) WHERE d.link = "{0}" WITH d
             MATCH (d)-[:CONTAINS]->(s) WITH s
             MATCH (s)-[:MENTIONS]->(np:`Noun Phrase`)-
             [rel:IS_ASSOCIATED_WITH]->(t:`Unique Term`)<-[:MENTIONS]-(s)
             RETURN count(rel)
-        """ % self.vertex["link"]
+        """.format(self.vertex["link"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
-
-    def get_training_documents(self, doc_limit):
-        search_string = "MATCH (n:`Document`) " \
-                        "WHERE n.nounphrase_common < 10 " \
-                        'AND n.publication <> "Bad Science"' \
-                        "RETURN n.title, n.content " \
-                        "LIMIT %s" % doc_limit
-        search_test = self.g.neo4j.CypherQuery(self.g.graph, search_string)
-        output = search_test.execute()
-        for result in output:
-            yield result[0], result[1]
 
     def update_content(self, content):
         self.vertex.content = self._format_content(content)
@@ -216,7 +205,7 @@ class Document(DataModel):
         old_content = string.split("\n\n")
         new_content = ""
         for para in old_content:
-            new_content += "<p>%s</p>" % para
+            new_content += u"<p>{0}</p>".format(para)
         return new_content
 
     def set_published_date(self, date):
