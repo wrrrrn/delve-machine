@@ -24,6 +24,8 @@ class HtmlInterface:
             return r.content
         except requests.exceptions.ReadTimeout:
             return False
+        except requests.exceptions.ConnectionError:
+            return False
 
 
 class OpmlInterface:
