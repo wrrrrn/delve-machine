@@ -18,7 +18,7 @@ class CacheMedia(CacheInterface):
 
     def iterate_sources(self):
         for pub, entry, link, text, date in self.opml.iterate('Politics'):
-            print '\n\n', pub, '\n', entry, '\n', link, '\n', date
+            print '\n\n', entry, '\n', pub, '\n', link, '\n', date
             if not link in self.cached_docs:
                 full_text = self._get_full_text(text, link)
                 document = {
