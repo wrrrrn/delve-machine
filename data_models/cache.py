@@ -21,11 +21,15 @@ class CacheModel:
         else:
             return None
 
+    def delete_data(self):
+        self.collection.remove({})
+
 
 class Politicians(CacheModel):
     def __init__(self):
         CacheModel.__init__(self)
         self.collection = self.mongo_interface.db.politicians
+        self.collection.ensure_index('full_name', unique=True)
 
 
 class Votes(CacheModel):

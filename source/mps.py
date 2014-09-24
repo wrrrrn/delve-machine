@@ -141,4 +141,4 @@ class CacheMPs(CacheInterface):
                     self._print_out(x, node[x])
 
     def _print_out(self, key, value):
-        print "  %-20s%-15s" % (key, value)
+        print "  %-25s%-15s" % (key, value)
