@@ -30,6 +30,7 @@ source/input/document_metrics-14042014.csv
 test.py
 test.py.lprof
 utils/system_stats.r
+imports.py.lprof
 
 
 # PyInstaller

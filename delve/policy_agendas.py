@@ -26,7 +26,7 @@ class ImportPolicies(ImportInterface):
         new_category.link_policy(new_policy)
         self.parser.parse_document(
             new_category,
-            node["description "],
+            node["description"],
             map_statements=False
         )
 

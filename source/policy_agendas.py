@@ -19,4 +19,5 @@ class PolicyResearch(CacheInterface):
                 "category": row[3],
                 "description": row[4]
             }
+            print policy, "\n"
             self.cache.write(policy)

@@ -1,5 +1,4 @@
 from source import mps
-from source import policy_agenda_codebook
 from source import news_media
 from source import parliament
 from source import policy_agendas
@@ -20,8 +19,8 @@ def members_of_parliament():
 
 def get_parliament():
     parl = parliament.ParliamentData()
-    #parl.import_acts()
-    #parl.import_votes()
+    parl.import_acts()
+    parl.import_votes()
     parl.import_debates()
 
 
@@ -31,8 +30,8 @@ def current_media():
 
 
 
-#codebook()
-#acts()
-#members_of_parliament()
+codebook()
+members_of_parliament()
+get_parliament()
 current_media()
-#get_parliament()
+
