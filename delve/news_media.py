@@ -16,7 +16,8 @@ class ImportMedia(ImportInterface):
         title = node["title"]
         link = node["link"]
         date = node["date"]
-        text = node["publication"]
+        publication = node["publication"]
+        text = node["text"]
         print '\n\n', publication, '\n', title, '\n', link, '\n', date
         cleaned_text = self._get_text(text)
         article = self._create_article_node(
