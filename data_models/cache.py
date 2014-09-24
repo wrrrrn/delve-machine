@@ -24,12 +24,17 @@ class CacheModel:
     def delete_data(self):
         self.collection.remove({})
 
+    def create_index(self, key):
+        try:
+            self.collection.ensure_index(key, unique=True)
+        except self.mongo_interface.index_error:
+            print "Existing index"
+
 
 class Politicians(CacheModel):
     def __init__(self):
         CacheModel.__init__(self)
         self.collection = self.mongo_interface.db.politicians
-        self.collection.ensure_index('full_name', unique=True)
 
 
 class Votes(CacheModel):
@@ -48,7 +53,7 @@ class Debates(CacheModel):
     def __init__(self):
         CacheModel.__init__(self)
         self.collection = self.mongo_interface.db.debates
-        self.collection.ensure_index('debate_id', unique=True)
+        self.create_index('debate_id')
 
     def add_subdocument(self, document_id, subdocument):
         result = self.collection.find(
@@ -68,7 +73,7 @@ class Media(CacheModel):
     def __init__(self):
         CacheModel.__init__(self)
         self.collection = self.mongo_interface.db.media
-        self.collection.ensure_index('link', unique=True)
+        self.create_index('link')
 
 
 class PolicyAgenda(CacheModel):

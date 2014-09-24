@@ -30,7 +30,6 @@ class CacheMedia(CacheInterface):
             else:
                 print "Document cached"
 
-
     def _get_full_text(self, raw_content, link):
         raw_text = self.text.parse_raw_html(raw_content)
         if raw_text:

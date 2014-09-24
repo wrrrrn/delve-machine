@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
+from pymongo.errors import OperationFailure
 
 
 class MongoInterface:
@@ -8,6 +9,7 @@ class MongoInterface:
         self.db = self.client.delve
         self._collections()
         self.duplicate_error = DuplicateKeyError
+        self.index_error = OperationFailure
 
     def _collections(self):
         print self.db.collection_names()

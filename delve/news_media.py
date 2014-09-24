@@ -12,14 +12,13 @@ class ImportMedia(ImportInterface):
             self._import(doc)
 
     def _import(self, node):
-        fresh = [doc["full_name"] for doc in self.cache.collection.find()]
         publication = node["publication"]
         title = node["title"]
         link = node["link"]
         date = node["date"]
         text = node["publication"]
         print '\n\n', publication, '\n', title, '\n', link, '\n', date
-        cleaned_text = self._get_text(text, link)
+        cleaned_text = self._get_text(text)
         article = self._create_article_node(
             publication,
             title,
@@ -47,18 +46,8 @@ class ImportMedia(ImportInterface):
         new_document.set_published_date(date)
         return new_document
 
-    def _get_text(self, raw_content, link):
+    def _get_text(self, raw_content):
         scrubbed_text = self.text.parse_raw_html(raw_content)
-        if scrubbed_text:
-            words = self._get_words(scrubbed_text)
-            if len(words) < 75:
-                print 'rss entry too short, checking the web'
-                html = self.html_handler.get_url(link)
-                if html:
-                    online_text = self.text.parse_html(html)
-                    if online_text:
-                        scrubbed_text = online_text
-        # convert input to ascii
         return scrubbed_text.encode('ascii', 'ignore')
 
     def _get_words(self, raw):
