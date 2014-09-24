@@ -3,7 +3,10 @@ from time import sleep
 
 
 class CacheMedia(CacheInterface):
-    OPML = '/home/warren/git/delve-machine/source/input/feedly.opml'
+    OPML = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), 'input/feedly.opml'
+    )
+
 
     def __init__(self):
         CacheInterface.__init__(self)
