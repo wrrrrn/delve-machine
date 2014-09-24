@@ -1,12 +1,12 @@
 from source import CacheInterface
 from time import sleep
+import os
 
 
 class CacheMedia(CacheInterface):
     OPML = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), 'input/feedly.opml'
     )
-
 
     def __init__(self):
         CacheInterface.__init__(self)
