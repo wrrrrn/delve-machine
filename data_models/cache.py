@@ -22,12 +22,6 @@ class CacheModel:
             return None
 
 
-class Proto(CacheModel):
-    def __init__(self):
-        CacheModel.__init__(self)
-        self.collection = self.mongo_interface.db.test
-
-
 class Politicians(CacheModel):
     def __init__(self):
         CacheModel.__init__(self)
@@ -50,6 +44,7 @@ class Debates(CacheModel):
     def __init__(self):
         CacheModel.__init__(self)
         self.collection = self.mongo_interface.db.debates
+        self.collection.ensure_index('debate_id', unique=True)
 
     def add_subdocument(self, document_id, subdocument):
         result = self.collection.find(
@@ -69,6 +64,7 @@ class Media(CacheModel):
     def __init__(self):
         CacheModel.__init__(self)
         self.collection = self.mongo_interface.db.media
+        self.collection.ensure_index('link', unique=True)
 
 
 class PolicyAgenda(CacheModel):
