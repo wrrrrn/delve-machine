@@ -20,8 +20,8 @@ def members_of_parliament():
 def get_parliament():
     parl = parliament.ParliamentData()
     parl.import_acts()
-    #parl.import_votes()
-    #parl.import_debates()
+    parl.import_votes()
+    parl.import_debates()
 
 
 def current_media():
@@ -31,7 +31,7 @@ def current_media():
 
 
 codebook()
-#members_of_parliament()
+members_of_parliament()
 get_parliament()
-#current_media()
+current_media()
 
