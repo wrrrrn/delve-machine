@@ -17,13 +17,14 @@ def document():
     url = 'http://chrishanretty.co.uk/blog/index.php/2014/09/13/what-can-deutsche-bank-possibly-mean/'
     doc = documents.DocumentController(url)
     properties = doc.get_properties()
-    return render_template(
-        'article.html',
-        title=properties["title"],
-        content=format_content(properties["content"]),
-        mentions=properties["mentions"],
-        domain=properties["domain"]
-    )
+    if properties:
+        return render_template(
+            'article.html',
+            title=properties["title"],
+            content=format_content(properties["content"]),
+            mentions=properties["mentions"],
+            domain=properties["domain"]
+        )
 
 
 def format_content(string):

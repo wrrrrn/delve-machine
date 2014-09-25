@@ -15,6 +15,7 @@ class DocumentController:
             self.properties["content"] = self.d.vertex["content"]
             self.properties["mentions"] = self.get_mentions()
             self.properties["domain"] = self.d.vertex["publication"]
+            print self.properties
             return self.properties
         else:
             return None
