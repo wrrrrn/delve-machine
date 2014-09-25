@@ -524,12 +524,13 @@ class DebateInParliament(Document):
 
 
 class DebateArgument(Document):
-    def __init__(self, link, topic, content):
+    def __init__(self, link, topic, content, summary):
         DataModel.__init__(self)
         self.speaker = None
         self.link = link
         self.topic = topic
         self.content = content
+        self.summary = summary
         self.label = self.argument_label
         self.fetch()
 
@@ -542,7 +543,8 @@ class DebateArgument(Document):
         properties = {
             "publication": "They Work for You",
             "title": title,
-            "content": self.content
+            "content": self.content,
+            "summary": self.summary
         }
         self.set_node_properties(
             properties,

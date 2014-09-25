@@ -14,6 +14,7 @@ class ImportInterface:
         self.speech_tools = general_linguistic
         self.html_handler = web.HtmlInterface()
         self.parser = self._get_document_parser()
+        self.summerizer = general_linguistic.Summerizer()
 
     def _get_document_parser(self):
         return document_parser.DocumentParser(
