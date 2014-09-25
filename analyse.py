@@ -37,8 +37,8 @@ def current_media():
 
 print "Delve. Politic"
 
-codebook()
-members_of_parliament()
+#codebook()
+#members_of_parliament()
 get_acts()
 get_debates()
 get_votes()
