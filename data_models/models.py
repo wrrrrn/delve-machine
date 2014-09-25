@@ -442,8 +442,9 @@ class PolicyCategory(Document):
         )
 
     def get_category(self, code):
+        print code
         search_string = \
-            u"MATCH (n:`Policy Category`{code:'{0}'}) RETURN n".format(code)
+            u"MATCH (n:`Policy Category` {{code:'{0}'}}) RETURN n".format(code)
         search_test = self.g.neo4j.CypherQuery(self.g.graph, search_string)
         output = search_test.execute()
         if output:
