@@ -41,8 +41,8 @@ def format_content(string):
 @app.route('/<search_type>/<search_term>')
 def show_entries(search_type, search_term):
     if search_type == 'name':
-        name = named_entities.NamedEntityController(search_term)
-        entity = new_models.NamedEntity(search_term, db=g.db)
+        entity = named_entities.NamedEntityController(search_term)
+        entity
         if not entity.exists:
             abort(404)
     elif search_type == 'term':

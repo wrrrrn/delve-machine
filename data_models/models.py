@@ -64,6 +64,10 @@ class NounPhrase(DataModel):
         DataModel.__init__(self)
         self.noun_phrase = noun_phrase
         self.label = self.noun_label
+        self._incoming = ["MENTIONS", "MEMBER_OF", "IN_POSITION"]
+        self._outgoing = [
+            "IS_ASSOCIATED_WITH", "STATED", "MEMBER_OF", "IN_POSITION"
+        ]
         self.fetch()
 
     def fetch(self):
@@ -92,7 +96,7 @@ class NounPhrase(DataModel):
 
     def get_relationships(self, relationship):
         search_string = u"""
-            MATCH (n:`Noun Phrase` {noun_phrase:"{0}"})-[rel:`{1}`]->()
+            MATCH (n:`Noun Phrase` {{noun_phrase:"{0}"}})-[rel:`{1}`]->()
             RETURN rel
         """.format(self.vertex["noun_phrase"], relationship)
         output = self.query(search_string)
@@ -101,7 +105,7 @@ class NounPhrase(DataModel):
 
     def get_documents(self):
         search_string = u"""
-            MATCH (np:`Noun Phrase` {noun_phrase:"{0}"})<-[:MENTIONS]-(s)
+            MATCH (np:`Noun Phrase` {{noun_phrase:"{0}"}})<-[:MENTIONS]-(s)
             WITH s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
@@ -112,7 +116,7 @@ class NounPhrase(DataModel):
 
     def get_associated_documents(self):
         search_string = u"""
-            MATCH (np:`Noun Phrase` {noun_phrase:"{0}"} )-[:IS_ASSOCIATED_WITH]-(t)
+            MATCH (np:`Noun Phrase` ({noun_phrase:"{0}"}))-[:IS_ASSOCIATED_WITH]-(t)
             WITH t
             MATCH (t)<-[:MENTIONS]-(s) with s
             MATCH (s)-[:CONTAINS]-(d)
@@ -124,16 +128,42 @@ class NounPhrase(DataModel):
 
     def get_sentences(self):
         search_string = u"""
-            MATCH (np:`Noun Phrase` {noun_phrase:"{0}"})<-[:MENTIONS]-(s)
+            MATCH (np:`Noun Phrase` {{noun_phrase:"{0}"}})<-[:MENTIONS]-(s)
             RETURN DISTINCT s
         """.format(self.vertex["noun_phrase"])
         output = self.query(search_string)
         for result in output:
             yield result[0]
 
+    def get_outgoing(self):
+        output = []
+        for rel in self._outgoing:
+            search_string = u"""
+                MATCH (n:`Noun Phrase` {{noun_phrase:'{0}'}})-[:{1}]->(x)
+                RETURN DISTINCT x
+            """.format(self.vertex["noun_phrase"], rel)
+            search_result = self.query(search_string)
+            for r in search_result:
+                output.append((rel, r[0]))
+        for result in output:
+            yield result
+
+    def get_incoming(self):
+        output = []
+        for rel in self._incoming:
+            search_string = u"""
+                MATCH (n:`Noun Phrase` {{noun_phrase:'{0}'}})<-[:{1}]-(x)
+                RETURN DISTINCT x
+            """.format(self.vertex["noun_phrase"], rel)
+            search_result = self.query(search_string)
+            for r in search_result:
+                output.append((rel, r[0]))
+        for result in output:
+            yield result
+
     def get_stats(self):
         search_string = u"""
-            MATCH (t:`Noun Phrase` {noun_phrase:"{0}"})<-[:MENTIONS]-(s)
+            MATCH (t:`Noun Phrase` {{noun_phrase:"{0}"}})<-[:MENTIONS]-(s)
             WITH s, count(s) as cs
             MATCH (s)-[:CONTAINS]-(d)
             WITH cs, count(d) as cd
