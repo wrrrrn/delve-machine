@@ -7,7 +7,7 @@ class ImportDebates(ImportInterface):
         self.cache = self.cache_models.Debates()
 
     def delve(self):
-        for doc in self.cache.collection.find():
+        for doc in self.cache.fetch_all():
             self._report(doc)
             self._import(doc)
 

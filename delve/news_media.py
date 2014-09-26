@@ -8,7 +8,7 @@ class ImportMedia(ImportInterface):
         self.text = self.speech_tools.TextHandler()
 
     def delve(self):
-        for doc in self.cache.collection.find():
+        for doc in self.cache.fetch_all():
             self._import(doc)
 
     def _import(self, node):
