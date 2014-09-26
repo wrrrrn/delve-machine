@@ -22,7 +22,7 @@ class CacheModel:
             return None
 
     def fetch_all(self):
-        return self.collection.find().batch_size(60)
+        return self.collection.find().batch_size(20)
 
     def delete_data(self):
         self.collection.remove({})
