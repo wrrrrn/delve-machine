@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+      <div class="jumbotron">
+          {% if entity.node_type == 'NamedEntity' %}
+            <h1>{{ entity.name }}</h1>
+              {% if entity.type  %}
+                    <p>{{ entity.name }} is a {{ entity.type }}</p>
+               {% else %}
+                    <p>Don't know anything about {{ entity.name }} yet</p>
+              {% endif %}
+          {% elif entity.node_type == 'UniqueTerm' %}
+            <p>
+                <h1>{{ entity.term }}</h1>
+                <p>Appears in and is associated with...<p>
+            </p>
+          {% endif %}
+      </div>
+      <hr>
+{% endblock %}

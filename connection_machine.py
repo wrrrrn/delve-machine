@@ -42,9 +42,10 @@ def format_content(string):
 def show_entries(search_type, search_term):
     if search_type == 'name':
         entity = named_entities.NamedEntityController(search_term)
-        entity
         if not entity.exists:
             abort(404)
+        else:
+            return render_template('show_entities.html', entity=entity)
     elif search_type == 'term':
         entity = new_models.UniqueTerm(search_term, db=g.db)
         if not entity.exists:
