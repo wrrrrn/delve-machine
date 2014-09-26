@@ -1,5 +1,6 @@
-from flask import Flask, url_for, render_template
+from flask import Flask, url_for, render_template, abort
 from web.controllers import documents
+from web.controllers import named_entities
 import os
 
 template_dir = os.path.join(
@@ -16,8 +17,8 @@ app.config.from_object(__name__)
 def document():
     url = 'http://chrishanretty.co.uk/blog/index.php/2014/09/13/what-can-deutsche-bank-possibly-mean/'
     doc = documents.DocumentController(url)
-    properties = doc.get_properties()
-    if properties:
+    if doc.exists:
+        properties = doc.get_properties()
         return render_template(
             'article.html',
             title=properties["title"],
@@ -25,6 +26,8 @@ def document():
             mentions=properties["mentions"],
             domain=properties["domain"]
         )
+    else:
+        abort(404)
 
 
 def format_content(string):
@@ -38,6 +41,7 @@ def format_content(string):
 @app.route('/<search_type>/<search_term>')
 def show_entries(search_type, search_term):
     if search_type == 'name':
+        name = named_entities.NamedEntityController(search_term)
         entity = new_models.NamedEntity(search_term, db=g.db)
         if not entity.exists:
             abort(404)
