@@ -185,7 +185,7 @@ class MemberOfParliament(NounPhrase):
         self.fetch()
 
     def update_mp_details(self, properties=None):
-        labels = ["Noun Phrase", "Named Entity", "Member of Parliament"]
+        labels = ["Named Entity", "Member of Parliament", "Parliamentary Matters"]
         self.set_node_properties(
             properties,
             labels
@@ -217,7 +217,7 @@ class TermInParliament(NounPhrase):
         self.fetch()
 
     def update_details(self, properties=None):
-        labels = ["Term in Parliament"]
+        labels = ["Term in Parliament", "Parliamentary Matters"]
         self.set_node_properties(
             properties,
             labels
@@ -239,7 +239,7 @@ class GovernmentDepartment(NounPhrase):
         self.fetch()
 
     def update_details(self, details=None):
-        labels = ["Noun Phrase", "Named Entity", "Government Department"]
+        labels = ["Named Entity", "Government Department", "Parliamentary Matters"]
         properties = details
         self.set_node_properties(
             properties,
@@ -255,7 +255,7 @@ class GovernmentPosition(NounPhrase):
         self.fetch()
 
     def update_details(self, details=None):
-        labels = ["Noun Phrase", "Named Entity", "Government Position"]
+        labels = ["Named Entity", "Government Position", "Parliamentary Matters"]
         properties = details
         self.set_node_properties(
             properties,

@@ -35,6 +35,21 @@ class NamedEntityController:
             if rel[0] == "IS_ASSOCIATED_WITH":
                 yield rel
 
+    def stated(self):
+        for rel in self._properties["outgoing"]:
+            if rel[0] == "STATED":
+                yield rel
+
+    def is_member_of(self):
+        for rel in self._properties["outgoing"]:
+            if rel[0] == "MEMBER_OF":
+                yield rel
+
+    def in_position(self):
+        for rel in self._properties["outgoing"]:
+            if rel[0] == "IN_POSITION":
+                yield rel
+
     def _get_node_properties(self):
         stats = [x for x in self.n.get_stats()]
         self._properties["name"] = self.n.vertex["noun_phrase"]
@@ -45,15 +60,17 @@ class NamedEntityController:
         self._properties["document_count"] = stats[1]
         self._properties["term_count"] = stats[2]
         self._properties["outgoing"] = [
-            (x[0], self.get_node_name(x[1])) for x in self.n.get_outgoing()
+            (x[0], self._get_node_name(x[1])) for x in self.n.get_outgoing()
         ]
         self._properties["incoming"] = [
-            (x[0], self.get_node_name(x[1])) for x in self.n.get_incoming()
+            (x[0], self._get_node_name(x[1])) for x in self.n.get_incoming()
         ]
         if self._properties["document_count"] > 0:
             self._properties["documents"] = [
                 {"title": x['title']} for x in self.n.get_documents()
             ]
+        else:
+            self._properties["documents"] = []
         if "Member of Parliament" in self._properties["labels"]:
             self._is_mp = True
             self.get_mp_properties(self.n.vertex)
@@ -64,7 +81,7 @@ class NamedEntityController:
         self._properties["guardian_url"] = node["guardian_url"]
         self._properties["publicwhip_url"] = node["publicwhip_url"]
 
-    def get_node_name(self, node):
+    def _get_node_name(self, node):
         if "term" in node:
             return node["term"]
         elif "sentence" in node:
