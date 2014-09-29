@@ -50,7 +50,7 @@ def show_entries(search_type, search_term):
         entity = new_models.UniqueTerm(search_term, db=g.db)
         if not entity.exists:
             abort(404)
-    elif search_type == 'article':
+    elif search_type == 'document':
         entity = new_models.Article(search_term, db=g.db)
         if not entity.exists:
             abort(404)

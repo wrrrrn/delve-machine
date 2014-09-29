@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="jumbotron">
-    <h1>{{ entity.name }}</h1>
+    <h1>{{ entity.name|safe }}</h1>
     {% if entity.labels  %}
     {% for label in entity.labels %}
     <p> {{ label }}</p>
@@ -14,6 +14,7 @@
 </div>
 
 <div class="row">
+    {% if entity._has_mentioned_in %}
     <div class="span4">
         <h2>Mentions</h2>
         <p>
@@ -24,7 +25,9 @@
         {% endfor %}
         </p>
     </div>
+    {% endif %}
 
+    {% if entity._has_associated_with %}
     <div class="span4">
         <h2>Associated with</h2>
         <p>
@@ -35,6 +38,46 @@
             {% endfor %}
         </p>
     </div>
+    {% endif %}
+
+    {% if entity._has_stated %}
+    <div class="span4">
+        <h2>Debated the following</h2>
+        <p>
+            {% for link in entity.stated() %}
+            <p> <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a> </p>
+            {% else %}
+            <em>Wow. Nothing to see here</em>
+            {% endfor %}
+        </p>
+    </div>
+    {% endif %}
+
+    {% if entity._has_in_position %}
+    <div class="span4">
+        <h2>Holds the following positions</h2>
+        <p>
+            {% for link in entity.in_position() %}
+            <p> <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a> </p>
+            {% else %}
+            <em>Wow. Nothing to see here</em>
+            {% endfor %}
+        </p>
+    </div>
+    {% endif %}
+
+    {% if entity._has_member_of %}
+    <div class="span4">
+        <h2>Is a member of</h2>
+        <p>
+            {% for link in entity.member_of() %}
+            <p> <a href="{{ url_for('show_entries', search_type = 'name', search_term = link['edge']) }}">{{ link['edge'] }}</a> </p>
+            {% else %}
+            <em>Wow. Nothing to see here</em>
+            {% endfor %}
+        </p>
+    </div>
+    {% endif %}
 </div>
 <hr>
 {% endblock %}
