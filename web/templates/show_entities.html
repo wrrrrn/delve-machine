@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="jumbotron">
+
+<div class="row">
     <h1>{{ entity.name|safe }}</h1>
     {% if entity.labels  %}
     {% for label in entity.labels %}
@@ -11,73 +12,89 @@
     {% else %}
     <p>Don't know anything about {{ entity.name }} yet</p>
     {% endif %}
-</div>
+</div >
 
 <div class="row">
-    {% if entity._has_mentioned_in %}
-    <div class="span4">
-        <h2>Mentions</h2>
-        <p>
-            {% for mention in entity.is_mentioned_in() %}
-        <p> <a href="{{ url_for('show_entries', search_type = 'article', search_term = mention['title']) }}">{{ mention['title'] }}</a></p>
+    <div class="col-md-6">
+        {% if entity._has_mentioned_in %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Mentions</h2>
+            </div>
+            <ul class="list-group">
+                {% for mention in entity.is_mentioned_in() %}
+                <li class="list-group-item">
+                    <a href="{{ url_for('show_entries', search_type = 'article', search_term = mention['title']) }}">{{ mention['title'] }}</a>
+                    {% else %}
+                    <em>Unbelievable. No mentions here so far</em>
+                </li>
+            </ul>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if entity._has_stated %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Debated the following</h2>
+            </div>
+            <ul class="list-group">
+                {% for link in entity.stated() %}
+                <li class="list-group-item">
+                    <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a>
+                    {% else %}
+                    <em>Wow. Nothing to see here</em>
+                    {% endfor %}
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <div class="col-md-6">
+        {% if entity._has_member_of %}
+
+        <h3>Is a member of
+            {% for link in entity.member_of() %}
+            <a href="{{ url_for('show_entries', search_type = 'name', search_term = link['edge']) }}">{{ link['edge'] }}</a>
+        </h3>
         {% else %}
-        <em>Unbelievable. No mentions here so far</em>
+        <em>Wow. Nothing to see here</em>
         {% endfor %}
         </p>
-    </div>
-    {% endif %}
 
-    {% if entity._has_associated_with %}
-    <div class="span4">
-        <h2>Associated with</h2>
-        <p>
-            {% for link in entity.is_associated_with() %}
-            <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a>,
-            {% else %}
-            <em>Wow. Nothing to see here</em>
-            {% endfor %}
-        </p>
-    </div>
-    {% endif %}
 
-    {% if entity._has_stated %}
-    <div class="span4">
-        <h2>Debated the following</h2>
-        <p>
-            {% for link in entity.stated() %}
+        {% if entity._has_associated_with %}
+        <div class="span4">
+            <h3>Associated with
+                {% for link in entity.is_associated_with() %}
+                  <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a>
+                {% else %}
+            </h3>
+                <em>Wow. Nothing to see here</em>
+                {% endfor %}
+
+        </div>
+        {% endif %}
+
+
+        {% if entity._has_in_position %}
+        <div class="span4">
+            <h2>Holds the following positions</h2>
+            <p>
+                {% for link in entity.in_position() %}
             <p> <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a> </p>
             {% else %}
             <em>Wow. Nothing to see here</em>
             {% endfor %}
-        </p>
-    </div>
-    {% endif %}
+            </p>
+        </div>
+        {% endif %}
 
-    {% if entity._has_in_position %}
-    <div class="span4">
-        <h2>Holds the following positions</h2>
-        <p>
-            {% for link in entity.in_position() %}
-            <p> <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a> </p>
-            {% else %}
-            <em>Wow. Nothing to see here</em>
-            {% endfor %}
-        </p>
-    </div>
-    {% endif %}
 
-    {% if entity._has_member_of %}
-    <div class="span4">
-        <h2>Is a member of</h2>
-        <p>
-            {% for link in entity.member_of() %}
-            <p> <a href="{{ url_for('show_entries', search_type = 'name', search_term = link['edge']) }}">{{ link['edge'] }}</a> </p>
-            {% else %}
-            <em>Wow. Nothing to see here</em>
-            {% endfor %}
-        </p>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 <hr>
 {% endblock %}
