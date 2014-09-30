@@ -41,7 +41,7 @@ print "Delve. Politic"
 #members_of_parliament()
 #get_acts()
 #get_debates()
-get_votes()
+#get_votes()
 current_media()
 
 
