@@ -23,7 +23,7 @@ class CacheModel:
 
     def fetch_all(self, use_small_batch=False):
         if use_small_batch:
-            size = 5
+            size = 2
         else:
             size = 60
         return self.collection.find().batch_size(size)
