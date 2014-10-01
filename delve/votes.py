@@ -7,7 +7,7 @@ class ImportVotes(ImportInterface):
         self.cache = self.cache_models.Votes()
 
     def delve(self):
-        for doc in self.cache.fetch_all(use_small_batch=True):
+        for doc in self.cache.fetch_all(return_list=True):
             self._import(doc)
 
     def _import(self, node):
