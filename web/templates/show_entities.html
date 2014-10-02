@@ -2,7 +2,7 @@
 {% block body %}
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-7" >
         <h1>{{ entity.name|safe }}</h1>
         {% if entity.labels  %}
         {% for label in entity.labels %}
@@ -18,12 +18,12 @@
 </div >
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-7">
 
-        {% if entity._has_mentioned_in %}
+        {% if entity.has_mentions_in_media %}
         <h3>Mentions in the Media</h3>
         <div class="list-group">
-            {% for mention in entity.is_mentioned_in() %}
+            {% for mention in entity.mentions_in_media() %}
             <div class="list-group-item" >
                 <div class="row-action-primary">
                     <i class="icon-material-folder"></i>
@@ -31,7 +31,7 @@
                 <div class="row-content">
                     <div class="action-secondary"><i class="icon-material-info"></i></div>
                     <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
-                    <p class="list-group-item-text">Summary should go here.</p>
+                    <p class="list-group-item-text">{{ mention['summary'] }}</p>
                 </div>
             </div>
             <div class="list-group-separator"></div>
@@ -39,29 +39,29 @@
         </div>
         {% endif %}
 
-
-        {% if entity._has_stated %}
-        <h3>Debates in Parliament</h3>
+        {% if entity.has_mentions_in_debate %}
+        <h3>Mentions in Debates</h3>
         <div class="list-group">
-            {% for statement in entity.stated()  %}
-            <div class="list-group-item">
+            {% for mention in entity.mentions_in_debate() %}
+            <div class="list-group-item" >
                 <div class="row-action-primary">
                     <i class="icon-material-folder"></i>
                 </div>
                 <div class="row-content">
                     <div class="action-secondary"><i class="icon-material-info"></i></div>
-                    <h4 class="list-group-item-heading">{{ statement['edge'] }}</h4>
-                    <p class="list-group-item-text">Summary should go here.</p>
+                    <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
+                    <p class="list-group-item-text">{{ mention['summary'] }}</p>
                 </div>
             </div>
             <div class="list-group-separator"></div>
             {% endfor %}
         </div>
         {% endif %}
+
     </div>
 
 
-    <div class="col-md-6">
+    <div class="col-md-5">
         <h3>Additional Information</h3>
         {% if entity._has_member_of %}
         <li>Is a member of

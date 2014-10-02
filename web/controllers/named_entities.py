@@ -13,10 +13,12 @@ class NamedEntityController:
         self._properties = {}
         self.outgoing = []
         self.incoming = []
-        self._is_mp = False
+        self.is_mp = False
+        self.features = {}
         self._has_stated = False
         self._has_associated_with = False
-        self._has_mentioned_in = False
+        self.has_mentions_in_media = False
+        self.has_mentions_in_debate = False
         self._has_member_of = False
         self._has_in_position = False
         self._set_properties()
@@ -25,9 +27,28 @@ class NamedEntityController:
         for label in self.labels:
             yield label
 
-    def is_mentioned_in(self):
-        for doc in self._properties["documents"]:
-            yield doc
+    def mentions_in_media(self):
+        for doc, labels in self._properties["documents"]:
+            if 'Public Media' in labels:
+                yield {
+                    "publication": doc["publication"],
+                    "title": doc["title"],
+                    "summary": doc["summary"],
+                    "link": doc["link"],
+                    "sentiment": doc["sentiment_mean"],
+                    "subjectivity": doc["subjectivity_mean"]
+                }
+
+    def mentions_in_debate(self):
+        for doc, labels in self._properties["documents"]:
+            if 'Debate Argument' in labels or 'Argument' in labels:
+                yield {
+                    "publication": doc["publication"],
+                    "title": doc["title"],
+                    "link": doc["link"],
+                    "sentiment": doc["sentiment_mean"],
+                    "subjectivity": doc["subjectivity_mean"]
+                }
 
     def is_associated_with(self):
         for rel in self._properties["outgoing"]:
@@ -65,38 +86,43 @@ class NamedEntityController:
             self._get_node_properties()
             self.name = self._properties["name"]
             self.labels = self._properties["labels"]
+            self._set_documents()
+            self._set_outgoing_properties()
+            self._set_incoming_properties()
+            self._set_documents()
 
     def _get_node_properties(self):
         stats = [x for x in self.n.get_stats()]
         self._properties["name"] = self.n.vertex["noun_phrase"]
-        self._properties["labels"] = [
-            l for l in self.n.vertex.get_labels() if l not in self.exclude
-        ]
         self._properties["sentence_count"] = stats[0]
         self._properties["document_count"] = stats[1]
         self._properties["term_count"] = stats[2]
-        self._set_document_properties()
-        self._set_outgoing_properties()
-        self._set_incoming_properties()
-        self._set_document_properties()
+        self._properties["labels"] = [
+            l for l in self.n.vertex.get_labels() if l not in self.exclude
+        ]
+
+    def _set_documents(self):
+        if self._properties["document_count"] > 0:
+            self._has_mentioned_in = True
+            documents = [(d, list(d.get_labels())) for d in self.n.get_documents()]
+            doc_labels = [doc[1] for doc in documents]
+            self._properties["documents"] = documents
+            for labels in doc_labels:
+                if 'Public Media' in labels:
+                    self.has_mentions_in_media = True
+                if 'Debate Argument' in labels or 'Argument' in labels:
+                    self.has_mentions_in_debate = True
+        else:
+            self._properties["documents"] = []
 
     def _set_mp_properties(self, node):
         if "Member of Parliament" in self._properties["labels"]:
-            self._is_mp = True
+            self.is_mp = True
             self._set_mp_properties(self.n.vertex)
             self._properties["party"] = node["party"]
             self._properties["terms_in_parliament"] = node["number_of_terms"]
             self._properties["guardian_url"] = node["guardian_url"]
             self._properties["publicwhip_url"] = node["publicwhip_url"]
-
-    def _set_document_properties(self):
-        if self._properties["document_count"] > 0:
-            self._has_mentioned_in = True
-            self._properties["documents"] = [
-                {"title": x['title']} for x in self.n.get_documents()
-            ]
-        else:
-            self._properties["documents"] = []
 
     def _set_outgoing_properties(self):
         self._properties["outgoing"] = [
