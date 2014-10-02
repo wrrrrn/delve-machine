@@ -2,63 +2,72 @@
 {% block body %}
 
 <div class="row">
-    <h1>{{ entity.name|safe }}</h1>
-    {% if entity.labels  %}
-    {% for label in entity.labels %}
-    <p> {{ label }}</p>
-    {% else %}
-    <em>Unbelievable. No mentions here so far</em>
-    {% endfor %}
-    {% else %}
-    <p>Don't know anything about {{ entity.name }} yet</p>
-    {% endif %}
+    <div class="col-md-6">
+        <h1>{{ entity.name|safe }}</h1>
+        {% if entity.labels  %}
+        {% for label in entity.labels %}
+        <p> {{ label }}</p>
+        {% else %}
+        <em>Unbelievable. No mentions here so far</em>
+        {% endfor %}
+        {% else %}
+        <p>Don't know anything about {{ entity.name }} yet</p>
+        {% endif %}
+        <hr>
+    </div >
 </div >
 
 <div class="row">
     <div class="col-md-6">
+
         {% if entity._has_mentioned_in %}
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">Mentions</h2>
+        <h3>Mentions in the Media</h3>
+        <div class="list-group">
+            {% for mention in entity.is_mentioned_in() %}
+            <div class="list-group-item" >
+                <div class="row-action-primary">
+                    <i class="icon-material-folder"></i>
+                </div>
+                <div class="row-content">
+                    <div class="action-secondary"><i class="icon-material-info"></i></div>
+                    <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
+                    <p class="list-group-item-text">Summary should go here.</p>
+                </div>
             </div>
-            <ul class="list-group">
-                {% for mention in entity.is_mentioned_in() %}
-                <li class="list-group-item">
-                    <a href="{{ url_for('show_entries', search_type = 'article', search_term = mention['title']) }}">{{ mention['title'] }}</a>
-                    {% else %}
-                    <em>Unbelievable. No mentions here so far</em>
-                </li>
-            </ul>
+            <div class="list-group-separator"></div>
             {% endfor %}
         </div>
         {% endif %}
 
+
         {% if entity._has_stated %}
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">Debated the following</h2>
+        <h3>Debates in Parliament</h3>
+        <div class="list-group">
+            {% for statement in entity.stated()  %}
+            <div class="list-group-item">
+                <div class="row-action-primary">
+                    <i class="icon-material-folder"></i>
+                </div>
+                <div class="row-content">
+                    <div class="action-secondary"><i class="icon-material-info"></i></div>
+                    <h4 class="list-group-item-heading">{{ statement['edge'] }}</h4>
+                    <p class="list-group-item-text">Summary should go here.</p>
+                </div>
             </div>
-            <ul class="list-group">
-                {% for link in entity.stated() %}
-                <li class="list-group-item">
-                    <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a>
-                    {% else %}
-                    <em>Wow. Nothing to see here</em>
-                    {% endfor %}
-                </li>
-            </ul>
+            <div class="list-group-separator"></div>
+            {% endfor %}
         </div>
         {% endif %}
     </div>
 
 
     <div class="col-md-6">
+        <h3>Additional Information</h3>
         {% if entity._has_member_of %}
-
-        <h3>Is a member of
+        <li>Is a member of
             {% for link in entity.member_of() %}
             <a href="{{ url_for('show_entries', search_type = 'name', search_term = link['edge']) }}">{{ link['edge'] }}</a>
-        </h3>
+        </li>
         {% else %}
         <em>Wow. Nothing to see here</em>
         {% endfor %}
@@ -67,13 +76,13 @@
 
         {% if entity._has_associated_with %}
         <div class="span4">
-            <h3>Associated with
+            <li>Associated with
                 {% for link in entity.is_associated_with() %}
-                  <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a>
-                {% else %}
-            </h3>
-                <em>Wow. Nothing to see here</em>
-                {% endfor %}
+                <span class="label label-default">{{ link['edge'] }}</span>
+            </li>
+            {% else %}
+            <em>Wow. Nothing to see here</em>
+            {% endfor %}
 
         </div>
         {% endif %}
@@ -96,5 +105,4 @@
         {% endif %}
     </div>
 </div>
-<hr>
 {% endblock %}

@@ -37,7 +37,6 @@ def format_content(string):
         new_content += "<p>%s</p>" % para
     return new_content
 
-
 @app.route('/<search_type>/<search_term>')
 def show_entries(search_type, search_term):
     if search_type == 'name':

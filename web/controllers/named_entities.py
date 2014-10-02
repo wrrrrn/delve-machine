@@ -31,11 +31,9 @@ class NamedEntityController:
 
     def is_associated_with(self):
         for rel in self._properties["outgoing"]:
-            print rel
             if rel[0] == "IS_ASSOCIATED_WITH":
                 yield {"type": rel[1][0], "edge": rel[1][1]}
         yield None
-
 
     def stated(self):
         for rel in self._properties["outgoing"]:
