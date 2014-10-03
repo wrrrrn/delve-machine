@@ -11,16 +11,12 @@ class NamedEntityController:
         self.exclude = ['Named Entity', 'Noun Phrase']
         self.name = ""
         self._properties = {}
-        self.outgoing = []
-        self.incoming = []
         self.is_mp = False
-        self.features = {}
-        self._has_stated = False
-        self._has_associated_with = False
+        self.has_statements = False
+        self.has_associated = False
         self.has_mentions_in_media = False
         self.has_mentions_in_debate = False
-        self._has_member_of = False
-        self._has_in_position = False
+        self.has_positions = False
         self._set_properties()
 
     def labels(self):
@@ -33,6 +29,7 @@ class NamedEntityController:
                 yield {
                     "publication": doc["publication"],
                     "title": doc["title"],
+                    "content": doc["content"],
                     "summary": doc["summary"],
                     "link": doc["link"],
                     "sentiment": doc["sentiment_mean"],
@@ -50,36 +47,38 @@ class NamedEntityController:
                     "subjectivity": doc["subjectivity_mean"]
                 }
 
-    def is_associated_with(self):
-        for rel in self._properties["outgoing"]:
-            if rel[0] == "IS_ASSOCIATED_WITH":
-                yield {"type": rel[1][0], "edge": rel[1][1]}
-        yield None
+    def statements(self):
+        for statement in self._properties["statements"]:
+            yield {
+                "title": statement["title"],
+                #"summary": term["summary"],
+                "sentiment": statement["sentiment_mean"],
+                "subjectivity": statement["subjectivity_mean"]
+            }
 
-    def stated(self):
-        for rel in self._properties["outgoing"]:
-            if rel[0] == "STATED":
-                yield {"edge": rel[1]}
+    def positions(self):
+        for position in self._properties["positions"]:
+            yield position
 
-    def member_of(self):
-        for rel in self._properties["outgoing"]:
-            if rel[0] == "MEMBER_OF":
-                yield {"edge": rel[1]}
-
-    def in_position(self):
-        for rel in self._properties["outgoing"]:
-            if rel[0] == "IN_POSITION":
-                self._has_in_position = True
-                yield {"edge": rel[1]}
-
-    def show_properties(self):
-        for prop in self._properties:
-            if prop in ["outgoing", "incoming"]:
-                print "*", prop
-                for rel in self._properties[prop]:
-                    self._print_out(rel, " ")
+    def terms_in_parliament(self):
+        for term in self._properties["terms"]:
+            if term["left_house"] == "9999-12-31":
+                left = "Still in Office"
             else:
-                self._print_out(prop, self._properties[prop])
+                left = term["left_house"]
+            yield {
+                "constituency": term["constituency"],
+                "party": term["party"],
+                "entered": term["entered_house"],
+                "left": left
+            }
+
+    def associated(self):
+        for node, count in self._properties["associated"]:
+                yield {
+                    "edge": self._get_node_name(node),
+                    "count": count
+                }
 
     def _set_properties(self):
         if self.n.exists:
@@ -87,9 +86,7 @@ class NamedEntityController:
             self.name = self._properties["name"]
             self.labels = self._properties["labels"]
             self._set_documents()
-            self._set_outgoing_properties()
-            self._set_incoming_properties()
-            self._set_documents()
+            self._set_mp_properties(self.n.vertex)
 
     def _get_node_properties(self):
         stats = [x for x in self.n.get_stats()]
@@ -100,6 +97,9 @@ class NamedEntityController:
         self._properties["labels"] = [
             l for l in self.n.vertex.get_labels() if l not in self.exclude
         ]
+        self._properties["associated"] = [l for l in self.n.get_associated()]
+        if len(self._properties["associated"]) > 0:
+            self.has_associated = True
 
     def _set_documents(self):
         if self._properties["document_count"] > 0:
@@ -118,42 +118,49 @@ class NamedEntityController:
     def _set_mp_properties(self, node):
         if "Member of Parliament" in self._properties["labels"]:
             self.is_mp = True
-            self._set_mp_properties(self.n.vertex)
+            self.has_positions = True
             self._properties["party"] = node["party"]
-            self._properties["terms_in_parliament"] = node["number_of_terms"]
             self._properties["guardian_url"] = node["guardian_url"]
             self._properties["publicwhip_url"] = node["publicwhip_url"]
+            self._properties["statements"] = self._get_statements()
+            self._properties["positions"] = self._get_positions()
+            self._properties["terms"] = self._get_terms()
 
-    def _set_outgoing_properties(self):
-        self._properties["outgoing"] = [
-            (x[0], self._get_node_name(x[1])) for x in self.n.get_outgoing()
-        ]
-        for rel in self._properties["outgoing"]:
-            if rel[0] == "IS_ASSOCIATED_WITH":
-                self._has_associated_with = True
-            elif rel[0] == "STATED":
-                self._has_stated = True
-            elif rel[0] == "MEMBER_OF":
-                self._has_member_of = True
-            elif rel[0] == "IN_POSITION":
-                self._has_in_position = True
+    def _get_statements(self):
+        statements = [s for s in self.n.get_statements()]
+        if len(statements) > 0:
+            self.has_statements = True
+        return statements
 
-    def _set_incoming_properties(self):
-        self._properties["incoming"] = [
-            (x[0], self._get_node_name(x[1])) for x in self.n.get_incoming()
-        ]
+    def _get_positions(self):
+        positions = []
+        for p in self.n.get_positions():
+            positions.append(p["noun_phrase"])
+        positions.append("Member of Parliament")
+        return positions
+
+    def _get_terms(self):
+        return [t for t in self.n.get_terms_in_parliament()]
 
     def _get_node_name(self, node):
         #print node
         if "noun_phrase" in node:
-            return node["noun_phrase"]
+            return node["noun_phrase"], "noun_phrase"
         if "term" in node:
-            return "term", node["term"]
+            return node["term"], "term"
         elif "sentence" in node:
-            return node["sentence"]
+            return node["sentence"], "sentence"
         elif "title" in node:
-            return node["title"]
+            return node["title"], "document"
 
+    def show_properties(self):
+        for prop in self._properties:
+            if prop in ["outgoing", "incoming"]:
+                print "*", prop
+                for rel in self._properties[prop]:
+                    self._print_out(rel, " ")
+            else:
+                self._print_out(prop, self._properties[prop])
 
     def _print_out(self, key, value):
         print "  %-20s%-15s" % (key, value)

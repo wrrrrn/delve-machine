@@ -7,8 +7,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='bootstrap/css/bootstrap-responsive.css') }}" rel="stylesheet">
+    <!-- <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='bootstrap/css/bootstrap-responsive.css') }}" rel="stylesheet"> -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='material/css-compiled/ripples.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='material/css-compiled/material-wfont.min.css') }}" rel="stylesheet">
     <style type="text/css">
@@ -79,8 +80,17 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
+<!--
 <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script> -->
+<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+            $("[data-toggle=tooltip]").tooltip();
+        });
+
+</script>
 <script src="{{ url_for('static', filename='d3/d3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='material/scripts/ripples.js') }}"></script>
 <script src="{{ url_for('static', filename='material/scripts/material.js') }}"></script>

@@ -4,15 +4,6 @@
 <div class="row">
     <div class="col-md-7" >
         <h1>{{ entity.name|safe }}</h1>
-        {% if entity.labels  %}
-        {% for label in entity.labels %}
-        <p> {{ label }}</p>
-        {% else %}
-        <em>Unbelievable. No mentions here so far</em>
-        {% endfor %}
-        {% else %}
-        <p>Don't know anything about {{ entity.name }} yet</p>
-        {% endif %}
         <hr>
     </div >
 </div >
@@ -39,69 +30,59 @@
         </div>
         {% endif %}
 
-        {% if entity.has_mentions_in_debate %}
-        <h3>Mentions in Debates</h3>
+        {% if entity.has_statements %}
+        <h3>Debates in Parliament</h3>
         <div class="list-group">
-            {% for mention in entity.mentions_in_debate() %}
+            {% for statement in entity.statements() %}
             <div class="list-group-item" >
                 <div class="row-action-primary">
                     <i class="icon-material-folder"></i>
                 </div>
                 <div class="row-content">
                     <div class="action-secondary"><i class="icon-material-info"></i></div>
-                    <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
-                    <p class="list-group-item-text">{{ mention['summary'] }}</p>
+                    <h4 class="list-group-item-heading">{{ statement['title'] }}</h4>
+                    <p class="list-group-item-text">{{ statement['summary'] }}</p>
                 </div>
             </div>
             <div class="list-group-separator"></div>
             {% endfor %}
         </div>
         {% endif %}
-
     </div>
 
-
     <div class="col-md-5">
-        <h3>Additional Information</h3>
-        {% if entity._has_member_of %}
-        <li>Is a member of
-            {% for link in entity.member_of() %}
-            <a href="{{ url_for('show_entries', search_type = 'name', search_term = link['edge']) }}">{{ link['edge'] }}</a>
-        </li>
-        {% else %}
-        <em>Wow. Nothing to see here</em>
+        {% if entity.has_positions %}
+        {% for position in entity.positions() %}
+        <div class="row">
+            <div class="col-md-10">
+                <div class="well">
+                    {{ position }}
+                </div>
+            </div>
+        </div>
         {% endfor %}
-        </p>
-
-
-        {% if entity._has_associated_with %}
-        <div class="span4">
-            <li>Associated with
-                {% for link in entity.is_associated_with() %}
-                <span class="label label-default">{{ link['edge'] }}</span>
-            </li>
-            {% else %}
-            <em>Wow. Nothing to see here</em>
-            {% endfor %}
-
-        </div>
         {% endif %}
 
-
-        {% if entity._has_in_position %}
-        <div class="span4">
-            <h2>Holds the following positions</h2>
-            <p>
-                {% for link in entity.in_position() %}
-            <p> <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}">{{ link['edge'] }}</a> </p>
-            {% else %}
-            <em>Wow. Nothing to see here</em>
-            {% endfor %}
-            </p>
+        <h4>Terms in Parliament</h4>
+        {% for term in entity.terms_in_parliament() %}
+        <div class="row">
+            <div class="col-md-10">
+                <div class="well">
+                    <h5 class="list-group-item-heading">{{ term['constituency'] }}</h5>
+                    <p class="list-group-item-text">In office from {{ term['entered'] }} to {{ term['left'] }} </br>{{ term['party'] }}</p>
+                </div>
+            </div>
         </div>
-        {% endif %}
+        {% endfor %}
 
 
+        {% if entity.has_associated %}
+        <div class="span4">
+            <h4>{{ entity.name|safe }}'s Connections</h4>
+            {% for link in entity.associated() %}
+            <button id="tool" type="button" class="btn btn-primary btn-xs btn-raised" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'][0] }} </button>
+            {% endfor %}
+        </div>
         {% endif %}
     </div>
 </div>

@@ -114,13 +114,45 @@ class NounPhrase(DataModel):
         for result in output:
             yield result[0]
 
+    def get_associated(self):
+        search_string = u"""
+            MATCH (np:`Noun Phrase` {{noun_phrase:"{0}"}})-[:IS_ASSOCIATED_WITH]-(x)
+            WITH x
+            MATCH (x)-[]-(y)
+            RETURN x, count(y) as weight
+            ORDER BY weight DESC
+        """.format(self.vertex["noun_phrase"])
+        output = self.query(search_string)
+        for result in output:
+            yield result[0], result[1]
+
     def get_associated_documents(self):
         search_string = u"""
-            MATCH (np:`Noun Phrase` ({noun_phrase:"{0}"}))-[:IS_ASSOCIATED_WITH]-(t)
+            MATCH (np:`Noun Phrase` {{noun_phrase:"{0}"}})-[:IS_ASSOCIATED_WITH]-(t)
             WITH t
             MATCH (t)<-[:MENTIONS]-(s) with s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
+        """.format(self.vertex["noun_phrase"])
+        print search_string
+        output = self.query(search_string)
+        for result in output:
+            yield result[0]
+
+    def get_statements(self):
+        search_string = u"""
+            MATCH (`Member of Parliament`  {{noun_phrase:"{0}"}})-[:STATED]->(s)
+            RETURN DISTINCT s
+        """.format(self.vertex["noun_phrase"])
+        output = self.query(search_string)
+        for result in output:
+            yield result[0]
+
+    def get_positions(self):
+        search_string = u"""
+            MATCH (`Member of Parliament`  {{noun_phrase:"{0}"}})-
+            [:REPRESENTATIVE_FOR]->()-[:SERVED_IN]-(y)
+            RETURN DISTINCT y
         """.format(self.vertex["noun_phrase"])
         output = self.query(search_string)
         for result in output:
@@ -130,6 +162,15 @@ class NounPhrase(DataModel):
         search_string = u"""
             MATCH (np:`Noun Phrase` {{noun_phrase:"{0}"}})<-[:MENTIONS]-(s)
             RETURN DISTINCT s
+        """.format(self.vertex["noun_phrase"])
+        output = self.query(search_string)
+        for result in output:
+            yield result[0]
+
+    def get_terms_in_parliament(self):
+        search_string = u"""
+            MATCH (np:`Noun Phrase` {{noun_phrase:"{0}"}})-[:REPRESENTATIVE_FOR]->(t)
+            RETURN DISTINCT t
         """.format(self.vertex["noun_phrase"])
         output = self.query(search_string)
         for result in output:
