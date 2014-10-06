@@ -25,8 +25,8 @@ def find():
             words = text.get_words(d["text"])
             print d["title"], "\n", d["link"], "\n------------"
            # print "original:\n", d["text"], "\n------------"
-            print len(words), "summary:\n", ' '.join(summary[:3]), "\n------------"
-            print "custom:\n", ' '.join(custom[:3])
+           # print len(words), "summary:\n", ' '.join(summary[:3]), "\n------------"
+           # print "custom:\n", ' '.join(custom[:3])
             print "\n\n\n"
         except ZeroDivisionError:
             pass
