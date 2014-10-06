@@ -6,7 +6,7 @@ from math import fabs
 from fuzzywuzzy import process
 from textblob import TextBlob
 from textblob import Blobber
-from textblob_aptagger import PerceptronTagger
+#from textblob_aptagger import PerceptronTagger
 from goose import Goose
 import nltk
 import re
