@@ -329,7 +329,7 @@ class UniqueTerm(DataModel):
 
     def get_relationships(self):
         search_string = u"""
-            MATCH (t:`Unique Term` {term:"{0}"})-[rel:`IS_ASSOCIATED_WITH`]-()
+            MATCH (t:`Unique Term` {{term:"{0}"}})-[rel:`IS_ASSOCIATED_WITH`]-()
             RETURN rel
         """.format(self.vertex["term"])
         output = self.query(search_string)
@@ -338,7 +338,7 @@ class UniqueTerm(DataModel):
 
     def get_documents(self):
         search_string = u"""
-            MATCH (t:`Unique Term` {term:"{0}"})<-[:MENTIONS]-(s)
+            MATCH (t:`Unique Term` {{term:"{0}"}})<-[:MENTIONS]-(s)
             WITH s
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
@@ -347,9 +347,21 @@ class UniqueTerm(DataModel):
         for result in output:
             yield result[0]
 
+    def get_associated(self):
+        search_string = u"""
+            MATCH (np:`Unique Term` {{term:"{0}"}})-[:IS_ASSOCIATED_WITH]-(x)
+            WITH x
+            MATCH (x)-[]-(y)
+            RETURN x, count(y) as weight
+            ORDER BY weight DESC
+        """.format(self.vertex["term"])
+        output = self.query(search_string)
+        for result in output:
+            yield result[0], result[1]
+
     def get_sentences(self):
         search_string = u"""
-            MATCH (t:`Unique Term` {term:"{0}"})<-[:MENTIONS]-(s)
+            MATCH (t:`Unique Term` {{term:"{0}"}})<-[:MENTIONS]-(s)
             WITH s
             RETURN DISTINCT s
         """.format(self.vertex["term"])
@@ -359,7 +371,7 @@ class UniqueTerm(DataModel):
 
     def get_stats(self):
         search_string = u"""
-            MATCH (t:`Unique Term` {term:"{0}"})<-[:MENTIONS]-(s)
+            MATCH (t:`Unique Term` {{term:"{0}"}})<-[:MENTIONS]-(s)
             WITH s, count(s) as cs
             MATCH (s)-[:CONTAINS]-(d)
             WITH cs, count(d) as cd

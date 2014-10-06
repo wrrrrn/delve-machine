@@ -1,26 +1,15 @@
 from data_models import models
 
 
-class NamedEntityController:
-    def __init__(self, name=False):
-        self.noun_phrase = name
-        self.n = models.NounPhrase(self.noun_phrase)
-        self.n.fetch()
-        self.exists = self.n.exists
-        self.exclude = ['Named Entity', 'Noun Phrase']
-        self.name = ""
-        self._properties = {}
-        self.is_mp = False
-        self.has_statements = False
+class UniqueTermsController:
+    def __init__(self, term=False):
+        self.term = term
+        self.t = models.UniqueTerm(self.term)
+        self.t.fetch()
+        self.exists = self.t.exists
         self.has_associated = False
-        self.has_mentions_in_media = False
-        self.has_mentions_in_debate = False
-        self.has_positions = False
+        self._properties = {}
         self._set_properties()
-
-    def labels(self):
-        for label in self.labels:
-            yield label
 
     def mentions_in_media(self):
         for doc, labels in self._properties["documents"]:
@@ -47,32 +36,6 @@ class NamedEntityController:
                     "subjectivity": doc["subjectivity_mean"]
                 }
 
-    def statements(self):
-        for statement in self._properties["statements"]:
-            yield {
-                "title": statement["title"],
-                #"summary": term["summary"],
-                "sentiment": statement["sentiment_mean"],
-                "subjectivity": statement["subjectivity_mean"]
-            }
-
-    def positions(self):
-        for position in self._properties["positions"]:
-            yield position
-
-    def terms_in_parliament(self):
-        for term in self._properties["terms"]:
-            if term["left_house"] == "9999-12-31":
-                left = "Still in Office"
-            else:
-                left = term["left_house"]
-            yield {
-                "constituency": term["constituency"],
-                "party": term["party"],
-                "entered": term["entered_house"],
-                "left": left
-            }
-
     def associated(self):
         for node, count in self._properties["associated"]:
             details = self._get_node_name(node)
@@ -83,30 +46,24 @@ class NamedEntityController:
             }
 
     def _set_properties(self):
-        if self.n.exists:
+        if self.t.exists:
             self._get_node_properties()
-            self.name = self._properties["name"]
-            self.labels = self._properties["labels"]
+            self.term = self._properties["term"]
             self._set_documents()
-            self._set_mp_properties(self.n.vertex)
 
     def _get_node_properties(self):
-        stats = [x for x in self.n.get_stats()]
-        self._properties["name"] = self.n.vertex["noun_phrase"]
+        stats = [x for x in self.t.get_stats()]
+        self._properties["term"] = self.t.vertex["term"]
         self._properties["sentence_count"] = stats[0]
         self._properties["document_count"] = stats[1]
-        self._properties["term_count"] = stats[2]
-        self._properties["labels"] = [
-            l for l in self.n.vertex.get_labels() if l not in self.exclude
-        ]
-        self._properties["associated"] = [l for l in self.n.get_associated()]
+        self._properties["associated"] = [l for l in self.t.get_associated()]
         if len(self._properties["associated"]) > 0:
             self.has_associated = True
 
     def _set_documents(self):
         if self._properties["document_count"] > 0:
             self._has_mentioned_in = True
-            documents = [(d, list(d.get_labels())) for d in self.n.get_documents()]
+            documents = [(d, list(d.get_labels())) for d in self.t.get_documents()]
             doc_labels = [doc[1] for doc in documents]
             self._properties["documents"] = documents
             for labels in doc_labels:
@@ -116,30 +73,6 @@ class NamedEntityController:
                     self.has_mentions_in_debate = True
         else:
             self._properties["documents"] = []
-
-    def _set_mp_properties(self, node):
-        if "Member of Parliament" in self._properties["labels"]:
-            self.is_mp = True
-            self.has_positions = True
-            self._properties["party"] = node["party"]
-            self._properties["guardian_url"] = node["guardian_url"]
-            self._properties["publicwhip_url"] = node["publicwhip_url"]
-            self._properties["statements"] = self._get_statements()
-            self._properties["positions"] = self._get_positions()
-            self._properties["terms"] = self._get_terms()
-
-    def _get_statements(self):
-        statements = [s for s in self.n.get_statements()]
-        if len(statements) > 0:
-            self.has_statements = True
-        return statements
-
-    def _get_positions(self):
-        positions = []
-        for p in self.n.get_positions():
-            positions.append(p["noun_phrase"])
-        positions.append("Member of Parliament")
-        return positions
 
     def _get_terms(self):
         return [t for t in self.n.get_terms_in_parliament()]

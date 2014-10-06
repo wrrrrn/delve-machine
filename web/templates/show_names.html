@@ -20,7 +20,10 @@
                     <i class="icon-material-folder"></i>
                 </div>
                 <div class="row-content">
-                    <div class="action-secondary"><i class="icon-material-info"></i></div>
+                    <div class="least-content">
+                        <a href="{{ url_for('show_entries', search_type = 'document', search_term = mention['link']) }}" > link </a>
+
+                    </div>
                     <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
                     <p class="list-group-item-text">{{ mention['summary'] }}</p>
                 </div>
@@ -29,6 +32,25 @@
             {% endfor %}
         </div>
         {% endif %}
+
+        {% if entity.has_mentions_in_debate %}
+        <h3>Mentions in the Debate</h3>
+        <div class="list-group">
+            {% for mention in entity.mentions_in_debate() %}
+            <div class="list-group-item" >
+                <div class="row-action-primary">
+                    <i class="icon-material-folder"></i>
+                </div>
+                <div class="row-content">
+                    <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
+                    <p class="list-group-item-text">{{ mention['summary'] }}</p>
+                </div>
+            </div>
+            <div class="list-group-separator"></div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
 
         {% if entity.has_statements %}
         <h3>Debates in Parliament</h3>
@@ -85,7 +107,7 @@
                 <div class="alert alert-dismissable alert-success">
                     <h4>{{ entity.name|safe }}'s Connected Topics</h4>
                     {% for link in entity.associated() %}
-                    <a href="javascript:void(0)" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'][0] }} </a> /
+                    <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'] }} </a> /
                     {% endfor %}
                 </div>
             </div>

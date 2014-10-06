@@ -1,6 +1,7 @@
 from flask import Flask, url_for, render_template, abort
 from web.controllers import documents
 from web.controllers import named_entities
+from web.controllers import unique_terms
 import os
 
 template_dir = os.path.join(
@@ -16,53 +17,29 @@ app.config.from_object(__name__)
 @app.route('/document')
 def document():
     url = 'http://chrishanretty.co.uk/blog/index.php/2014/09/13/what-can-deutsche-bank-possibly-mean/'
-    doc = documents.DocumentController(url)
-    if doc.exists:
-        properties = doc.get_properties()
-        return render_template(
-            'article.html',
-            title=properties["title"],
-            content=format_content(properties["content"]),
-            mentions=properties["mentions"],
-            domain=properties["domain"]
-        )
+    entity = documents.DocumentController(url)
+    if entity.exists:
+        return render_template('show_document.html', entity=entity)
     else:
         abort(404)
 
-
-def format_content(string):
-    old_content = string.split("\n\n")
-    new_content = ""
-    for para in old_content:
-        new_content += "<p>%s</p>" % para
-    return new_content
 
 @app.route('/<search_type>/<search_term>')
 def show_entries(search_type, search_term):
     if search_type == 'name':
         entity = named_entities.NamedEntityController(search_term)
-        if not entity.exists:
-            abort(404)
-        else:
-            return render_template('show_entities.html', entity=entity)
+        if entity.exists:
+            return render_template('show_names.html', entity=entity)
     elif search_type == 'term':
-        entity = new_models.UniqueTerm(search_term, db=g.db)
-        if not entity.exists:
-            abort(404)
+        entity = unique_terms.UniqueTermsController(search_term)
+        if entity.exists:
+            return render_template('show_terms.html', entity=entity)
     elif search_type == 'document':
-        entity = new_models.Article(search_term, db=g.db)
-        if not entity.exists:
-            abort(404)
-        else:
-            return render_template(
-                'article.html',
-                title=entity.title,
-                content=entity.content,
-                mentions=entity.mentions(),
-                description=Nietzsche,
-                domain="www.next-hype.co.uk"
-            )
-    return render_template('show_entries.html', entity=entity)
+        entity = documents.DocumentController(search_term)
+        if entity.exists:
+            return render_template('show_document.html', entity=entity)
+    else:
+        abort(404)
 
 if __name__ == '__main__':
     app.debug = True
