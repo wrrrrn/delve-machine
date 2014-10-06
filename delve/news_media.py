@@ -12,9 +12,9 @@ class ImportMedia(ImportInterface):
             self._import(doc)
 
     def _import(self, node):
-        publication = node["publication"]
         title = node["title"]
         link = node["link"]
+        doc_id = node["_id"]
         date = node["date"]
         publication = node["publication"]
         text = node["text"]
@@ -31,11 +31,12 @@ class ImportMedia(ImportInterface):
             link,
             cleaned_text,
             summary,
+            doc_id,
             date
         )
         self.parser.parse_document(article, cleaned_text, map_statements=False)
 
-    def _create_article_node(self, pub, title, link, content, summary, date):
+    def _create_article_node(self, pub, title, link, content, sum, doc_id, date):
         new_document = self.data_models.Document(link)
         if not new_document.exists:
             new_document.create()
@@ -44,7 +45,8 @@ class ImportMedia(ImportInterface):
                 "publication": pub,
                 "title": title,
                 "content": content,
-                "summary": summary
+                "summary": sum,
+                "doc_id": doc_id,
             }
             new_document.set_node_properties(
                 properties,
