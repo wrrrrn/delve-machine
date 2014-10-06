@@ -24,7 +24,6 @@ def find_cached_mp(search):
 def find():
     news = cache.Media()
     text = general_linguistic.TextHandler()
-    summerizer = general_linguistic.Summerizer()
     for d in news.fetch_all(return_list=True):
         try:
             summary = Summarize(d["title"], d["text"].encode('ascii', 'ignore'))
