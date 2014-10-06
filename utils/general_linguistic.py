@@ -36,6 +36,7 @@ def multiple_occurence(original_list):
     )
     return multiple_list
 
+
 class TextHandler:
     def __init__(self):
         self.text = ""
