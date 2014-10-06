@@ -299,6 +299,9 @@ class UniqueTerm(DataModel):
         rel_count = len([x for x in self.get_relationships()])
         return sent_count, doc_count, rel_count
 
+    def associate(self, node):
+        self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", node.vertex)
+
     def link_sentence(self, sentence):
         self.create_relationship(sentence.vertex, "MENTIONS", self.vertex)
 
