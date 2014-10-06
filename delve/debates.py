@@ -5,7 +5,6 @@ class ImportDebates(ImportInterface):
     def __init__(self):
         ImportInterface.__init__(self)
         self.cache = self.cache_models.Debates()
-        self.proto = self.cache_models.Proto()
 
     def delve(self):
         for doc in self.cache.collection.find():
