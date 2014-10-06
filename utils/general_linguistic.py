@@ -45,7 +45,7 @@ class TextHandler:
         self.stopwords = stopwords.words('english')
         self.fuzzy_match = process
         self.text_blob = TextBlob
-        self.blob_parser = Blobber(pos_tagger=PerceptronTagger())
+        #self.blob_parser = Blobber(pos_tagger=PerceptronTagger())
 
     def get_words(self, text, with_punctuation=True, remove_stopwords=False):
         self.text = text
@@ -87,9 +87,9 @@ class TextHandler:
     def parts_of_speech(self, text, tagger="nltk"):
         if tagger == "nltk":
             return nltk.pos_tag(text)
-        elif tagger == "textblob":
-            b2 = self.blob_parser(text)
-            return b2.tags
+        #elif tagger == "textblob":
+        #    b2 = self.blob_parser(text)
+        #    return b2.tags
 
     def get_named_entities(self, words):
         named_entities = []
