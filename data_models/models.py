@@ -407,6 +407,7 @@ class Policy(Document):
         self.policy = policy
         self.code = code
         self.link = u"{0}-{1}".format(self.code, self.policy)
+        self.doc_id = self.link
         self.label = self.policy_label
         self.fetch()
 
@@ -415,7 +416,8 @@ class Policy(Document):
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.policy,
-            "code": self.code
+            "code": self.code,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -429,6 +431,7 @@ class PolicyCategory(Document):
         self.category = category
         self.code = code
         self.link = u"{0}-{1}".format(self.code, self.category)
+        self.doc_id = self.link
         self.label = self.category_label
         self.fetch()
 
@@ -437,7 +440,8 @@ class PolicyCategory(Document):
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.category,
-            "code": self.code
+            "code": self.code,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
