@@ -22,8 +22,6 @@ def find():
     text = general_linguistic.TextHandler()
     for d in news.fetch_all(return_list=True):
         try:
-            summary = Summarize(d["title"], d["text"].encode('ascii', 'ignore'))
-            custom = summerizer.summarize(d["title"], d["text"])
             words = text.get_words(d["text"])
             print d["title"], "\n", d["link"], "\n------------"
            # print "original:\n", d["text"], "\n------------"
