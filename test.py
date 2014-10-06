@@ -1,4 +1,3 @@
-from pyteaser import Summarize
 from data_models import cache, core
 from fuzzywuzzy import process
 from data_models import models
