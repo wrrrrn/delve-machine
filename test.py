@@ -2,9 +2,6 @@ from data_models import cache, core
 from fuzzywuzzy import process
 from data_models import models
 from utils import general_linguistic
-from web.controllers import documents
-from web.controllers import named_entities
-from web.controllers import unique_terms
 from utils.experimental_parser import ExperimentalParser
 
 ALL_PARTIES_API = 'http://www.theguardian.com/politics/api/party/all/json'
@@ -47,35 +44,6 @@ def test_parser():
         parser.parse_document(d["text"])
 
 
-def doc_test():
-    url = 'http://chrishanretty.co.uk/blog/index.php/2014/09/13/what-can-deutsche-bank-possibly-mean/'
-    doc = documents.DocumentController(url)
-    properties = doc.get_properties()
-    print properties
-
-
-def name_test():
-    exclude = ["Document"]
-    names = ['Alex Cunningham', 'Alistair Brightman', 'Jim Dowd', 'David Cameron']
-    for name in names:
-        print "\n---"
-        name = named_entities.NamedEntityController(name)
-        if name.exists:
-            print name.name, "\n-"
-            name.show_properties()
-
-        else:
-            print "huh?"
-
-
-def term_test():
-    terms = ['tax']
-    for term in terms:
-        print "\n---"
-        t = unique_terms.UniqueTermsController(term)
-        if t.exists:
-            print t.term, "\n-"
-            t.show_properties()
 
 #find()
 #doc_test()
