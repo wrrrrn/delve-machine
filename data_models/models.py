@@ -87,8 +87,8 @@ class NounPhrase(DataModel):
     def link_sentence(self, sentence):
         self.create_relationship(sentence.vertex, "MENTIONS", self.vertex)
 
-    def link_term(self, term):
-        self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", term.vertex)
+    def associate(self, node):
+        self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", node.vertex)
 
     def get_relationships(self, relationship):
         search_string = u"""
@@ -524,13 +524,14 @@ class DebateInParliament(Document):
 
 
 class DebateArgument(Document):
-    def __init__(self, link, topic, content, summary):
+    def __init__(self, link, topic, content, summary, doc_id):
         DataModel.__init__(self)
         self.speaker = None
         self.link = link
         self.topic = topic
         self.content = content
         self.summary = summary
+        self.doc_id = doc_id
         self.label = self.argument_label
         self.fetch()
 

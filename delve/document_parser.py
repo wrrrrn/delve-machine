@@ -93,9 +93,15 @@ class DocumentParser:
         if len(names) > 0 and len(terms) > 0:
             for n in names:
                 name = self.data_models.NounPhrase(n)
+                for n2 in names:
+                    name2 = self.data_models.NounPhrase(n2)
+                    name.associate(name2)
                 for t in terms:
                     term = self.data_models.UniqueTerm(t)
-                    name.link_term(term)
+                    name.associate(term)
+                    for t2 in terms:
+                        term2 = self.data_models.UniqueTerm(t2)
+                        term.associate(term2)
 
     def _map_statement(self, sentence, text):
         new_relations = self._get_statement(text)

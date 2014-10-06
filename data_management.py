@@ -14,4 +14,4 @@ def delete_all_data():
     debates.delete_data()
     agendas.delete_data()
 
-delete_all_data()
+#delete_all_data()
