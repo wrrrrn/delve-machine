@@ -472,6 +472,7 @@ class ActOfParliament(Document):
     def __init__(self, full_name=None):
         DataModel.__init__(self)
         self.link = full_name
+        self.doc_id = self.link
         self.label = self.act_label
         self.fetch()
 
@@ -480,7 +481,8 @@ class ActOfParliament(Document):
         properties = {
             "publication": "UK Parliament",
             "title": name,
-            "content": description
+            "content": description,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -493,6 +495,7 @@ class DebateInParliament(Document):
     def __init__(self, link):
         DataModel.__init__(self)
         self.link = link
+        self.doc_id = self.link
         self.label = self.debate_label
         self.fetch()
 
@@ -501,6 +504,7 @@ class DebateInParliament(Document):
         properties = {
             "publication": "They Work for You",
             "topic": topic,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -528,6 +532,7 @@ class DebateArgument(Document):
         DataModel.__init__(self)
         self.speaker = None
         self.link = link
+        self.doc_id = self.link
         self.topic = topic
         self.content = content
         self.summary = summary
@@ -545,7 +550,8 @@ class DebateArgument(Document):
             "publication": "They Work for You",
             "title": title,
             "content": self.content,
-            "summary": self.summary
+            "summary": self.summary,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -579,6 +585,7 @@ class VoteinParliament(Document):
         self.bill = topic
         self.vote_number = vote_number
         self.link = u"{0} - {1}".format(vote_number, self.bill)
+        self.doc_id = self.link
         self.label = self.vote_label
         self.fetch()
 
@@ -586,7 +593,8 @@ class VoteinParliament(Document):
         labels = ["Parliamentary Matters", "Document"]
         properties = {
             "publication": "Public Whip",
-            "bill": self.bill
+            "bill": self.bill,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -609,13 +617,15 @@ class VoteCategory(Document):
         self.vote_category = category
         self.label = self.votecategory_label
         self.link = u"{0} - {1}".format(bill, category)
+        self.doc_id = self.link
         self.fetch()
 
     def make_category(self):
         labels = ["Parliamentary Matters"]
         properties = {
             "publication": "Public Whip",
-            "category": self.link
+            "category": self.link,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
