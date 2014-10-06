@@ -4,6 +4,7 @@ from time import sleep
 
 class ParliamentData:
     def __init__(self):
+        print "Importing Parliament Data"
         self.acts = ActsOfParliament()
         self.votes = VotesinParliament()
         self.debates = DebatesinParliament()

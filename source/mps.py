@@ -7,6 +7,7 @@ class CacheMPs(CacheInterface):
     TEST = None
 
     def __init__(self):
+        print "Importing MPs"
         CacheInterface.__init__(self)
         self.text = self.speech_tools.TextHandler()
         self.fuzzy = self.text.fuzzy_match
@@ -21,6 +22,7 @@ class CacheMPs(CacheInterface):
         self._get_publicwhip_data()
 
     def _get_twfy_data(self):
+        print "Getting Mps from TWFY"
         for mp in self.mps:
             self._print_out("MP", mp["name"])
             self._print_out("Party", mp["party"])

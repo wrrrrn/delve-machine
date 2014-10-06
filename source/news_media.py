@@ -10,6 +10,7 @@ class CacheMedia(CacheInterface):
 
     def __init__(self):
         CacheInterface.__init__(self)
+        print "Importing News Media"
         self.text = self.speech_tools.TextHandler()
         self.html_handler = self.web_handler.HtmlInterface()
         self.opml = self.web_handler.OpmlInterface(CacheMedia.OPML)

@@ -30,8 +30,8 @@ def current_media():
 
 
 
-#codebook()
+codebook()
 members_of_parliament()
-#get_parliament()
+get_parliament()
 #current_media()
 

@@ -22,7 +22,6 @@
                 <div class="row-content">
                     <div class="least-content">
                         <a href="{{ url_for('show_entries', search_type = 'document', search_term = mention['link']) }}" > link </a>
-
                     </div>
                     <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
                     <p class="list-group-item-text">{{ mention['summary'] }}</p>
@@ -42,6 +41,9 @@
                     <i class="icon-material-folder"></i>
                 </div>
                 <div class="row-content">
+                    <div class="least-content">
+                        <a href="{{ url_for('show_entries', search_type = 'document', search_term = mention['link']) }}" > link </a>
+                    </div>
                     <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
                     <p class="list-group-item-text">{{ mention['summary'] }}</p>
                 </div>
@@ -61,7 +63,9 @@
                     <i class="icon-material-folder"></i>
                 </div>
                 <div class="row-content">
-                    <div class="action-secondary"><i class="icon-material-info"></i></div>
+                    <div class="least-content">
+                        <a href="{{ url_for('show_entries', search_type = 'document', search_term = statement['link']) }}" > link </a>
+                    </div>
                     <h4 class="list-group-item-heading">{{ statement['title'] }}</h4>
                     <p class="list-group-item-text">{{ statement['summary'] }}</p>
                 </div>

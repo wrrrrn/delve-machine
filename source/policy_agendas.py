@@ -7,6 +7,7 @@ class PolicyResearch(CacheInterface):
         self.codebook_csv = \
             'source/input/policyagenda_UK_Topics_Codebook-main.csv'
         self.cache = self.cache_models.PolicyAgenda()
+        print "Importing Codebook"
 
     def import_policies(self):
         self.csv_handler.open(self.codebook_csv)
