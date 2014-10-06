@@ -5,6 +5,8 @@ from collections import Counter
 from math import fabs
 from fuzzywuzzy import process
 from textblob import TextBlob
+from textblob import Blobber
+from textblob_aptagger import PerceptronTagger
 from goose import Goose
 import nltk
 import re
@@ -34,7 +36,6 @@ def multiple_occurence(original_list):
     )
     return multiple_list
 
-
 class TextHandler:
     def __init__(self):
         self.text = ""
@@ -43,6 +44,7 @@ class TextHandler:
         self.stopwords = stopwords.words('english')
         self.fuzzy_match = process
         self.text_blob = TextBlob
+        self.blob_parser = Blobber(pos_tagger=PerceptronTagger())
 
     def get_words(self, text, with_punctuation=True, remove_stopwords=False):
         self.text = text
@@ -62,15 +64,15 @@ class TextHandler:
             ]
         return tokens
 
+    def get_sentences(self, text):
+        self.text = text
+        return nltk.sent_tokenize(self.text)
+
     def get_definitions(self, word):
         return wordnet.synsets(word)
 
     def lemma(self, word):
         return self.lemmatizer.lemmatize(word)
-
-    def get_sentences(self, text):
-        self.text = text
-        return nltk.sent_tokenize(self.text)
 
     def unique_lemmas(self, tokens):
         lemmas = [self.lemma(x) for x in tokens]
@@ -80,6 +82,13 @@ class TextHandler:
         seen = set()
         seen_add = seen.add
         return [x for x in seq if x not in seen and not seen_add(x)]
+
+    def parts_of_speech(self, text, tagger="nltk"):
+        if tagger == "nltk":
+            return nltk.pos_tag(text)
+        elif tagger == "textblob":
+            b2 = self.blob_parser(text)
+            return b2.tags
 
     def get_named_entities(self, words):
         named_entities = []
