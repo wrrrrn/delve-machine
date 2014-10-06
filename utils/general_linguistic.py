@@ -81,9 +81,10 @@ class TextHandler:
         seen_add = seen.add
         return [x for x in seq if x not in seen and not seen_add(x)]
 
-    def get_named_entities(self, words):
+    def get_named_entities(self, text):
         named_entities = []
-        chunked_entities = nltk.ne_chunk(nltk.pos_tag(words), binary=False)
+        text_pos = nltk.pos_tag(text)
+        chunked_entities = nltk.ne_chunk(text_pos, binary=False)
         named_chunks = [c for c in chunked_entities if hasattr(c, 'node')]
         for chunk in named_chunks:
             named_entities.append(

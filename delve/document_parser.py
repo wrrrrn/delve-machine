@@ -15,7 +15,6 @@ class DocumentParser:
         self._semantic_feats = []
 
     def parse_document(self, document, content, map_statements=True):
-        self.map_statements = map_statements
         bag_of_words = self.text_tools.get_words(
             content,
             with_punctuation=False,
@@ -37,9 +36,7 @@ class DocumentParser:
                 prev_sentence = self._create_sentence_node(prev_sentence_id, s)
                 if prev_sentence.exists:
                     sentence.link_previous(prev_sentence)
-            self._map_semantics(sentence, s)
-            if self.map_statements:
-                self._map_statement(sentence, s)
+            self._map_features(sentence, s)
         self._get_semantic_stats(document)
 
     def _create_sentence_node(self, sentence_id, sentence):
@@ -53,10 +50,10 @@ class DocumentParser:
         tfidf_results = self.tfidf_model.classify(words, score=False)
         self.document_terms = tfidf_results
 
-    def _map_semantics(self, sentence, text):
-        names, terms, sentiment, subjectivity = self._get_semantics(text)
-        sentence.vertex["sentiment"] = sentiment
-        sentence.vertex["subjectivity"] = subjectivity
+    def _map_features(self, sentence, text):
+        names, terms, senti, subj = self._get_semantic_features(text)
+        sentence.vertex["sentiment"] = senti
+        sentence.vertex["subjectivity"] = subj
         for name in names:
             new_name = self.data_models.NounPhrase(name)
             if not new_name.exists:
@@ -70,7 +67,7 @@ class DocumentParser:
             new_term.link_sentence(sentence)
         self._link_names_and_terms(names, terms)
 
-    def _get_semantics(self, sentence):
+    def _get_semantic_features(self, sentence):
         words = self.text_tools.get_words(sentence)
         text_blob = self.text_tools.text_blob(sentence)
         names = self.text_tools.get_all_entities(sentence)
@@ -103,32 +100,6 @@ class DocumentParser:
                         term2 = self.data_models.UniqueTerm(t2)
                         term.associate(term2)
 
-    def _map_statement(self, sentence, text):
-        new_relations = self._get_statement(text)
-        for i, relation in enumerate(new_relations):
-            sub, rel, obj = relation
-            self._all_nounphrases.extend([sub, obj])
-            self._all_relations.extend([rel])
-            print "** relations:", sub, '->', rel, '->', obj
-            extracted_statement = "%s %s %s" % (sub, rel, obj)
-            statement_id = "%s::%s" % (
-                sentence.vertex["sentence_id"], i
-            )
-            self._all_statements.extend([extracted_statement])
-            statement = self.data_models.Statement(statement_id)
-            if not statement.exists:
-                statement.create()
-                statement.vertex["statement"] = extracted_statement
-            sentence.link_statement(statement)
-            statement.link_elements(sub, rel, obj)
-        print '\n'
-
-    def _get_statement(self, text):
-        new_relations = self.relation_extractor.extract_triples(
-            text, lex_syn_constraints=True
-        )
-        return new_relations
-
     def _get_semantic_stats(self, document):
         pos_sentiment = [x for x in self._all_sentiment if x > 0]
         neg_sentiment = [x for x in self._all_sentiment if x < 0]
@@ -146,13 +117,6 @@ class DocumentParser:
             "subjectivity_mean":
                 sum(self._all_subjectivity)/len(self._all_subjectivity)
         }
-        if self.map_statements:
-            noun_phrase_unique = len(
-                self.text_tools.unique_lemmas(self._all_nounphrases)
-            )
-            self._semantic_feats["noun_phrase_count"] = noun_phrase_unique
-            self._semantic_feats["relations_unique"] = len(self._all_relations)
-            self._semantic_feats["statement_count"] = len(self._all_statements)
         document.set_node_properties(self._semantic_feats)
         self._print_out()
         self._set_counters()
