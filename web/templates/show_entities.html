@@ -63,6 +63,7 @@
         {% endfor %}
         {% endif %}
 
+        {% if entity.is_mp %}
         <h4>Terms in Parliament</h4>
         {% for term in entity.terms_in_parliament() %}
         <div class="row">
@@ -74,16 +75,23 @@
             </div>
         </div>
         {% endfor %}
+        {% endif %}
 
 
         {% if entity.has_associated %}
-        <div class="span4">
-            <h4>{{ entity.name|safe }}'s Connections</h4>
-            {% for link in entity.associated() %}
-            <button id="tool" type="button" class="btn btn-primary btn-xs btn-raised" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'][0] }} </button>
-            {% endfor %}
+        <div class="row">
+            <div class="col-md-10">
+
+                <div class="alert alert-dismissable alert-success">
+                    <h4>{{ entity.name|safe }}'s Connected Topics</h4>
+                    {% for link in entity.associated() %}
+                    <a href="javascript:void(0)" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'][0] }} </a> /
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         {% endif %}
+
     </div>
 </div>
 {% endblock %}

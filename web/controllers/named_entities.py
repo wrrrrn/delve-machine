@@ -42,6 +42,7 @@ class NamedEntityController:
                 yield {
                     "publication": doc["publication"],
                     "title": doc["title"],
+                    "content": doc["content"],
                     "link": doc["link"],
                     "sentiment": doc["sentiment_mean"],
                     "subjectivity": doc["subjectivity_mean"]

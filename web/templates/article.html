@@ -1,23 +1,43 @@
 {% extends "layout.html" %}
 {% block article %}
-    <div class="hero-unit">
-        <h2>{{ title }}</h2>
+
+<div class="row">
+    <div class="col-md-7" >
+        <h1>{{ title }}</h1>
         <p>{{ description|safe }}</p>
-    </div>
-    <div class="row">
-        <div class="span10 offset1" >
-            <p>{{ content|safe }}</p>
+        <hr>
+    </div >
+</div>
+
+<div class="row">
+
+    <div class="col-md-7">
+
+
+        <div class="list-group">
+            <div class="list-group-item" >
+                <div class="row-action-primary">
+                    <i class="icon-material-folder"></i>
+                </div>
+                <div class="row-content">
+                    <p class="list-group-item-text">{{ content|safe }}</p>
+                </div>
+            </div>
+            <div class="list-group-separator"></div>
         </div>
     </div>
-     <div class="row">
-        <div class="span10 offset1" >
-            <p>
-                {% for mention in mentions %}
-                    <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}">{{ mention['value'] }}</a>,
-                {% else %}
-                    <em>Wow. Nothing to see here</em>
-                {% endfor %}
-            </p>
+
+    <div class="col-md-5">
+        <div class="row">
+            {% for mention in mentions %}
+            <!-- <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}">{{ mention['value'] }}</a> -->
+            <!--  <button id="tool" type="button" class="btn btn-primary btn-xs btn-raised" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['value'] }}">{{ mention['value'] }}</button> -->
+            <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" role="button" class="btn btn-primary btn-xs btn-raised" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['value'] }}">{{ mention['value'] }}</a>
+            {% else %}
+            <em>Wow. Nothing to see here</em>
+            {% endfor %}
         </div>
+
     </div>
+</div>
 {% endblock article %}
