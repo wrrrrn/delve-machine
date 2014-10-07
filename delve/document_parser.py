@@ -144,7 +144,7 @@ class DocumentParser:
         }
         if len(self._all_sentiment) > 0:
             self._semantic_feats["sentiment_mean"] = \
-                sum(self._all_sentiment)/len(self._all_sentiment),
+                sum(self._all_sentiment)/len(self._all_sentiment)
         else:
             self._semantic_feats["sentiment_mean"] = 0
         if len(self._all_subjectivity) > 0:
