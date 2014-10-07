@@ -24,14 +24,15 @@ class ImportMedia(ImportInterface):
         )
         summary = ' '.join(summary)
         print '\n\n', publication, '\n', title, '\n', link, '\n', date
-        cleaned_text = self._get_text(text)
+        #cleaned_text = self._get_text(text)
+        cleaned_text = text
         article = self._create_article_node(
             publication,
             title,
             link,
-            cleaned_text,
+            text,
             summary,
-            doc_id,
+            str(doc_id),
             date
         )
         self.parser.parse_document(article, cleaned_text, map_statements=False)
@@ -57,8 +58,10 @@ class ImportMedia(ImportInterface):
         return new_document
 
     def _get_text(self, raw_content):
-        scrubbed_text = self.text.parse_raw_html(raw_content)
-        return scrubbed_text.encode('ascii', 'ignore')
+        if len(raw_content) == 0:
+            return False
+        else:
+            return self.text.parse_html(raw_content)
 
     def print_out(self, label, value):
         print " %-30s%-25s%-20s" % (label, value, "")

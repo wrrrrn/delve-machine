@@ -111,12 +111,18 @@ class DocumentParser:
             "named_entity_count": named_entity_unique,
             "unique_term_count": len(self._all_terms),
             "pos_sentiments": len(pos_sentiment),
-            "neg_sentiments": len(neg_sentiment),
-            "sentiment_mean":
-                sum(self._all_sentiment)/len(self._all_sentiment),
-            "subjectivity_mean":
-                sum(self._all_subjectivity)/len(self._all_subjectivity)
+            "neg_sentiments": len(neg_sentiment)
         }
+        if len(self._all_sentiment) > 0:
+            self._semantic_feats["sentiment_mean"] = \
+                sum(self._all_sentiment)/len(self._all_sentiment)
+        else:
+            self._semantic_feats["sentiment_mean"] = 0
+        if len(self._all_subjectivity) > 0:
+            self._semantic_feats["subjectivity_mean"] = \
+                sum(self._all_subjectivity)/len(self._all_subjectivity)
+        else:
+            self._semantic_feats["subjectivity_mean"] = 0
         document.set_node_properties(self._semantic_feats)
         self._print_out()
         self._set_counters()

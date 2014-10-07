@@ -62,15 +62,15 @@ class TextHandler:
             ]
         return tokens
 
+    def get_sentences(self, text):
+        self.text = text
+        return nltk.sent_tokenize(self.text)
+
     def get_definitions(self, word):
         return wordnet.synsets(word)
 
     def lemma(self, word):
         return self.lemmatizer.lemmatize(word)
-
-    def get_sentences(self, text):
-        self.text = text
-        return nltk.sent_tokenize(self.text)
 
     def unique_lemmas(self, tokens):
         lemmas = [self.lemma(x) for x in tokens]
@@ -81,14 +81,17 @@ class TextHandler:
         seen_add = seen.add
         return [x for x in seq if x not in seen and not seen_add(x)]
 
-    def get_named_entities(self, text):
+    def parts_of_speech(self, words):
+        return nltk.pos_tag(words)
+
+    def named_entities(self, words):
         named_entities = []
-        text_pos = nltk.pos_tag(text)
-        chunked_entities = nltk.ne_chunk(text_pos, binary=False)
-        named_chunks = [c for c in chunked_entities if hasattr(c, 'node')]
+        words_pos = self.parts_of_speech(words)
+        chunked_entities = nltk.ne_chunk(words_pos, binary=True)
+        named_chunks = [c for c in chunked_entities if type(c) is nltk.Tree]
         for chunk in named_chunks:
             named_entities.append(
-                (' '.join(c[0] for c in chunk.leaves()), chunk.node,)
+                (' '.join(c[0] for c in chunk.leaves()), chunk.label(),)
             )
         return named_entities
 
@@ -97,7 +100,7 @@ class TextHandler:
         sentences = self.get_sentences(text)
         for sentence in sentences:
             words = self.get_words(sentence)
-            entities = self.get_named_entities(words)
+            entities = self.named_entities(words)
             if entities:
                 all_named_entities.extend([entity for entity, tag in entities])
         return all_named_entities
