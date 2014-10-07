@@ -1,4 +1,4 @@
-
+from utils.mitie.entity_extraction import NamedEntityExtractor
 
 class ExperimentalParser:
     def __init__(self, speech_tools):
@@ -8,6 +8,7 @@ class ExperimentalParser:
         self.tfidf_model.load()
         self._reset_counters()
         self._semantic_feats = []
+        self.ner_extractor = NamedEntityExtractor()
 
     def parse_document(self, document):
         bag_of_words = self.text_tools.get_words(
@@ -26,13 +27,11 @@ class ExperimentalParser:
     def _map_features(self, text):
         names, names2, terms, senti, subj = self._get_semantic_features(text)
 
-
     def _get_semantic_features(self, sentence):
         words = self.text_tools.get_words(sentence)
         text_blob = self.text_tools.text_blob(sentence)
         names = self.text_tools.get_all_entities(sentence)
-        #names2 = self.text_tools.get_all_entities(sentence)
-        names2 = self.text_tools.get_all_entities_blob(sentence)
+        names2 = self.ner_extractor.get_entities(sentence)
         # noun_phrases = text_blob.noun_phrases
         sentiment = text_blob.sentiment.polarity
         subjectivity = text_blob.sentiment.subjectivity
