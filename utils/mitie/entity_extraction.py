@@ -3,7 +3,7 @@ import sys
 import os
 parent = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(parent + '/../../mitielib')
-from mitie import *
+from mit_ie_interface import *
 
 
 class NamedEntityExtractor:

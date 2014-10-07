@@ -1,6 +1,7 @@
 from nltk.corpus import stopwords, wordnet
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim import corpora, models as gensim_models
+from utils.mitie.entity_extraction import NamedEntityExtractor
 from collections import Counter
 from math import fabs
 from fuzzywuzzy import process
@@ -43,6 +44,7 @@ class TextHandler:
         self.stopwords = stopwords.words('english')
         self.fuzzy_match = process
         self.text_blob = TextBlob
+        self.ner_extractor = NamedEntityExtractor()
 
     def get_words(self, text, with_punctuation=True, remove_stopwords=False):
         self.text = text
@@ -84,26 +86,13 @@ class TextHandler:
     def parts_of_speech(self, words):
         return nltk.pos_tag(words)
 
-    def named_entities(self, words):
-        named_entities = []
-        words_pos = self.parts_of_speech(words)
-        chunked_entities = nltk.ne_chunk(words_pos, binary=True)
-        named_chunks = [c for c in chunked_entities if type(c) is nltk.Tree]
-        for chunk in named_chunks:
-            named_entities.append(
-                (' '.join(c[0] for c in chunk.leaves()), chunk.label(),)
-            )
-        return named_entities
-
-    def get_all_entities(self, text):
-        all_named_entities = []
+    def get_named_entities(self, text):
+        all_entities = []
         sentences = self.get_sentences(text)
         for sentence in sentences:
-            words = self.get_words(sentence)
-            entities = self.named_entities(words)
-            if entities:
-                all_named_entities.extend([entity for entity, tag in entities])
-        return all_named_entities
+            entities = self.ner_extractor.get_entities(sentence)
+            all_entities.extend(entities)
+        return unique_list(all_entities)
 
     def parse_html(self, html):
         try:

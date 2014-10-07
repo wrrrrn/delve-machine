@@ -70,7 +70,8 @@ class DocumentParser:
     def _get_semantic_features(self, sentence):
         words = self.text_tools.get_words(sentence)
         text_blob = self.text_tools.text_blob(sentence)
-        names = self.text_tools.get_all_entities(sentence)
+        #names = self.text_tools.get_all_entities(sentence)
+        names = self.text_tools.get_named_entities(sentence)
         # noun_phrases = text_blob.noun_phrases
         sentiment = text_blob.sentiment.polarity
         subjectivity = text_blob.sentiment.subjectivity
@@ -96,9 +97,11 @@ class DocumentParser:
                 for t in terms:
                     term = self.data_models.UniqueTerm(t)
                     name.associate(term)
-                    for t2 in terms:
-                        term2 = self.data_models.UniqueTerm(t2)
-                        term.associate(term2)
+            for t in terms:
+                term = self.data_models.UniqueTerm(t)
+                for t2 in terms:
+                    term2 = self.data_models.UniqueTerm(t2)
+                    term.associate(term2)
 
     def _get_semantic_stats(self, document):
         pos_sentiment = [x for x in self._all_sentiment if x > 0]

@@ -32,6 +32,7 @@ test.py
 test.py.lprof
 utils/system_stats.r
 utils/experimental_parser.py
+utils/mitie/MITIE-models/
 imports.py.lprof
 
 

@@ -30,7 +30,7 @@ class ExperimentalParser:
     def _get_semantic_features(self, sentence):
         words = self.text_tools.get_words(sentence)
         text_blob = self.text_tools.text_blob(sentence)
-        names = self.text_tools.get_all_entities(sentence)
+        names = self.text_tools.get_named_entities(sentence)
         names2 = self.ner_extractor.get_entities(sentence)
         # noun_phrases = text_blob.noun_phrases
         sentiment = text_blob.sentiment.polarity
