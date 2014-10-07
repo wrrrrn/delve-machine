@@ -38,7 +38,7 @@ def test_parser():
     summerizer = general_linguistic.Summerizer()
     for d in docs.fetch_all(return_list=True):
         print "----\n", d["_id"], d["title"]
-        print d["text"]
+        #print d["text"]
         parser.parse_document(d["text"])
 
 

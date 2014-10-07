@@ -6,14 +6,15 @@ from math import fabs
 from fuzzywuzzy import process
 from textblob import TextBlob
 from textblob import Blobber
-#from textblob_aptagger import PerceptronTagger
+from textblob_aptagger import PerceptronTagger
+from textblob.np_extractors import ConllExtractor
 from goose import Goose
 import nltk
 import re
 import os
 
 goose = Goose()
-
+extractor = ConllExtractor()
 
 def intersection(list1, list2):
     set1 = set(list1)
@@ -45,7 +46,7 @@ class TextHandler:
         self.stopwords = stopwords.words('english')
         self.fuzzy_match = process
         self.text_blob = TextBlob
-        #self.blob_parser = Blobber(pos_tagger=PerceptronTagger())
+        self.blob_parser = Blobber(pos_tagger=PerceptronTagger())
 
     def get_words(self, text, with_punctuation=True, remove_stopwords=False):
         self.text = text
@@ -84,21 +85,17 @@ class TextHandler:
         seen_add = seen.add
         return [x for x in seq if x not in seen and not seen_add(x)]
 
-    def parts_of_speech(self, words, tagger="nltk"):
-        if tagger == "nltk":
-            return nltk.pos_tag(words)
-        #elif tagger == "textblob":
-        #    b2 = self.blob_parser(text)
-        #    return b2.tags
+    def parts_of_speech(self, words):
+        return nltk.pos_tag(words)
 
-    def get_named_entities(self, words):
+    def named_entities(self, words):
         named_entities = []
-        chunked_entities = nltk.ne_chunk(nltk.pos_tag(words), binary=False)
-        named_chunks = [c for c in chunked_entities if hasattr(c, 'node')]
-        print named_chunks
+        words_pos = self.parts_of_speech(words)
+        chunked_entities = nltk.ne_chunk(words_pos, binary=True)
+        named_chunks = [c for c in chunked_entities if type(c) is nltk.Tree]
         for chunk in named_chunks:
             named_entities.append(
-                (' '.join(c[0] for c in chunk.leaves()), chunk.node,)
+                (' '.join(c[0] for c in chunk.leaves()), chunk.label(),)
             )
         return named_entities
 
@@ -107,7 +104,7 @@ class TextHandler:
         sentences = self.get_sentences(text)
         for sentence in sentences:
             words = self.get_words(sentence)
-            entities = self.get_named_entities(words)
+            entities = self.named_entities(words)
             if entities:
                 all_named_entities.extend([entity for entity, tag in entities])
         return all_named_entities

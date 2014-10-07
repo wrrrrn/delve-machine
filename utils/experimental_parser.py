@@ -24,13 +24,15 @@ class ExperimentalParser:
         self._get_semantic_stats()
 
     def _map_features(self, text):
-        names, terms, senti, subj = self._get_semantic_features(text)
+        names, names2, terms, senti, subj = self._get_semantic_features(text)
 
 
     def _get_semantic_features(self, sentence):
         words = self.text_tools.get_words(sentence)
         text_blob = self.text_tools.text_blob(sentence)
         names = self.text_tools.get_all_entities(sentence)
+        #names2 = self.text_tools.get_all_entities(sentence)
+        names2 = self.text_tools.get_all_entities_blob(sentence)
         # noun_phrases = text_blob.noun_phrases
         sentiment = text_blob.sentiment.polarity
         subjectivity = text_blob.sentiment.subjectivity
@@ -43,8 +45,8 @@ class ExperimentalParser:
             self._all_terms.extend(terms)
         self._all_sentiment.extend([sentiment])
         self._all_subjectivity.extend([subjectivity])
-        self._print_semantics(names, terms, sentiment, subjectivity)
-        return names, terms, sentiment, subjectivity
+        self._print_semantics(names, names2, terms, sentiment, subjectivity)
+        return names, names2, terms, sentiment, subjectivity
 
     def _get_terms(self, words):
         tfidf_results = self.tfidf_model.classify(words, score=False)
@@ -73,8 +75,9 @@ class ExperimentalParser:
         self._print_out()
         self._reset_counters()
 
-    def _print_semantics(self, names, terms, sentiment, subjectivity):
+    def _print_semantics(self, names, names2, terms, sentiment, subjectivity):
         print "\n** named entities", names
+        print "** named entities", names2
         print "** unique terms", terms
         #print "** noun phrases", noun_phrases
         print "** sentiment", sentiment
