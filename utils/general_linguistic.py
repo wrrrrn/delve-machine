@@ -43,7 +43,6 @@ class TextHandler:
         self.stopwords = stopwords.words('english')
         self.fuzzy_match = process
         self.text_blob = TextBlob
-        self.blob_parser = Blobber(pos_tagger=PerceptronTagger())
 
     def get_words(self, text, with_punctuation=True, remove_stopwords=False):
         self.text = text
