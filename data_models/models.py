@@ -265,6 +265,9 @@ class UniqueTerm(DataModel):
         for result in output:
             yield result[0]
 
+    def associate(self, node):
+        self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", node.vertex)
+
     def get_documents(self):
         search_string = u"""
             MATCH (t:`Unique Term` {term:"{0}"})<-[:MENTIONS]-(s)
