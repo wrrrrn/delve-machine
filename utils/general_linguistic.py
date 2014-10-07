@@ -84,9 +84,9 @@ class TextHandler:
         seen_add = seen.add
         return [x for x in seq if x not in seen and not seen_add(x)]
 
-    def parts_of_speech(self, text, tagger="nltk"):
+    def parts_of_speech(self, words, tagger="nltk"):
         if tagger == "nltk":
-            return nltk.pos_tag(text)
+            return nltk.pos_tag(words)
         #elif tagger == "textblob":
         #    b2 = self.blob_parser(text)
         #    return b2.tags
@@ -95,6 +95,7 @@ class TextHandler:
         named_entities = []
         chunked_entities = nltk.ne_chunk(nltk.pos_tag(words), binary=False)
         named_chunks = [c for c in chunked_entities if hasattr(c, 'node')]
+        print named_chunks
         for chunk in named_chunks:
             named_entities.append(
                 (' '.join(c[0] for c in chunk.leaves()), chunk.node,)
