@@ -1,15 +1,18 @@
+from collections import Counter
+from math import fabs
+import re
+import os
+
 from nltk.corpus import stopwords, wordnet
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim import corpora, models as gensim_models
-from utils.mitie.entity_extraction import NamedEntityExtractor
-from collections import Counter
-from math import fabs
 from fuzzywuzzy import process
 from textblob import TextBlob
 from goose import Goose
 import nltk
-import re
-import os
+
+from utils.entity_extraction import NamedEntityExtractor
+
 
 goose = Goose()
 

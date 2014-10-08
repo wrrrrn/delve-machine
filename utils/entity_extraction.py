@@ -3,12 +3,12 @@ import sys
 import os
 parent = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(parent + '/../../mitielib')
-from mit_ie_interface import *
+from mitie.mit_ie_interface import *
 
 
 class NamedEntityExtractor:
-    SYSTEM_PATH = os.curdir
-    MIT_NLP = '/utils/mitie/'
+    SYSTEM_PATH = os.path.dirname(os.path.realpath(__file__))
+    MIT_NLP = '/mitie/'
     NE_MODELS = "MITIE-models/english/ner_model.dat"
     NE_DATA = SYSTEM_PATH + MIT_NLP + NE_MODELS
 
@@ -24,7 +24,7 @@ class NamedEntityExtractor:
         for e in entities:
             range = e[0]
             tag = e[1]
-            entity_text = " ".join(tokens[i] for i in range)
+            entity_text = u" ".join(tokens[i].decode('utf-8') for i in range)
             entities_text.append(entity_text)
         return entities_text
 

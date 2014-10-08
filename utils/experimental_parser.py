@@ -1,4 +1,4 @@
-from utils.mitie.entity_extraction import NamedEntityExtractor
+from utils.entity_extraction import NamedEntityExtractor
 
 class ExperimentalParser:
     def __init__(self, speech_tools):
