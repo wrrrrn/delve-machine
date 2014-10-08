@@ -48,6 +48,7 @@ class ImportMedia(ImportInterface):
                 "content": content,
                 "summary": sum,
                 "doc_id": doc_id,
+                "date": date
             }
             new_document.set_node_properties(
                 properties,
