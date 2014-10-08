@@ -69,7 +69,7 @@ class DataModel:
         #return self.g.create_relationship(vertex1, relationship, vertex2)
         rel_query = """
             START n=node({0}), m=node({1})
-            MERGE (n)-[r:{2}]->(m)
+            MERGE (n)-[r:{2}]-(m)
             RETURN r
         """.format(vertex1._id, vertex2._id, relationship)
         return self.query(rel_query)
