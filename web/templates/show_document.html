@@ -25,15 +25,15 @@
 
     <div class="col-md-5">
         <div class="row">
-            {% for mention in entity.mentions() %}
-            <!-- <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}">{{ mention['value'] }}</a> -->
-            <!--  <button id="tool" type="button" class="btn btn-primary btn-xs btn-raised" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['value'] }}">{{ mention['value'] }}</button> -->
-            <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" role="button" class="btn btn-primary btn-xs btn-raised" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['value'] }}">{{ mention['value'] }}</a>
-            {% else %}
-            <em>Wow. Nothing to see here</em>
-            {% endfor %}
+            <div class="col-md-10">
+                <div class="alert alert-dismissable alert-success">
+                    <h4>Connected Topics</h4>
+                    {% for mention in entity.mentions() %}
+                    <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['value'] }}">{{ mention['value'] }}</a> /
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-
     </div>
 </div>
 {% endblock article %}

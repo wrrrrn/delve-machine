@@ -16,7 +16,7 @@ app.config.from_object(__name__)
 
 @app.route('/document')
 def document():
-    url = 'http://chrishanretty.co.uk/blog/index.php/2014/09/13/what-can-deutsche-bank-possibly-mean/'
+    url = 'http://owni.eu/2012/08/27/where-are-the-post-wikileaks-digital-whistleblowers-assange/'
     entity = documents.DocumentController(url)
     if entity.exists:
         return render_template('show_document.html', entity=entity)
