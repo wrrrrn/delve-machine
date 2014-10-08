@@ -11,14 +11,15 @@ class DataProfiler:
         self.node_types = [
             "Document",
             "Argument",
-            "Sentence",
+            "Public Media"
+            "Act of Parliament",
             "Policy Category",
             #"Statement",
             "Policy Agenda",
+            "Sentence",
             "Unique Term",
             "Noun Phrase",
             "Named Entity",
-            "Act of Parliament",
             "Member of Parliament",
             "Term in Parliament",
             "Government Department",
