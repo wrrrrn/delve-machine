@@ -11,7 +11,7 @@ class DataProfiler:
         self.node_types = [
             "Document",
             "Argument",
-            "Public Media"
+            "Public Media",
             "Act of Parliament",
             "Policy Category",
             #"Statement",
