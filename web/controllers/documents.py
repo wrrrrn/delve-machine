@@ -14,9 +14,16 @@ class DocumentController:
         self._properties = {}
         self._set_properties()
 
-    def mentions(self):
+    def name_mentions(self):
         for mention in self._properties["mentions"]:
-            yield mention
+            if mention["type"] == "name":
+                yield mention
+
+    def topic_mentions(self):
+        for mention in self._properties["mentions"]:
+            if mention["type"] == "term":
+                print mention
+                yield mention
 
     def _set_properties(self):
         if self.d.exists:
