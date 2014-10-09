@@ -546,7 +546,6 @@ class DebateArgument(Document):
         self.topic = topic
         self.content = content
         self.summary = summary
-        #self.doc_id = doc_id
         self.label = self.argument_label
         self.fetch()
 
@@ -556,6 +555,7 @@ class DebateArgument(Document):
             title = u"{0} - {1}".format(self.topic, self.speaker)
         else:
             title = self.topic
+        print self.doc_id
         properties = {
             "publication": "They Work for You",
             "title": title,
