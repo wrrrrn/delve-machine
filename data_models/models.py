@@ -555,7 +555,6 @@ class DebateArgument(Document):
             title = u"{0} - {1}".format(self.topic, self.speaker)
         else:
             title = self.topic
-        print self.doc_id
         properties = {
             "publication": "They Work for You",
             "title": title,

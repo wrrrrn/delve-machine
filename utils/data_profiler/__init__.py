@@ -10,7 +10,7 @@ class DataProfiler:
         self.csv_handler = text_io.TextInput()
         self.node_types = [
             "Document",
-            "Argument",
+            "Debate Argument",
             "Public Media",
             "Act of Parliament",
             "Policy Category",
