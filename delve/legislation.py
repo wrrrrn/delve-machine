@@ -7,7 +7,7 @@ class ImportActs(ImportInterface):
         self.cache = self.cache_models.Legislation()
 
     def delve(self):
-        for doc in self.cache.collection.find():
+        for doc in self.cache.fetch_all():
             self._import(doc)
 
     def _import(self, node):

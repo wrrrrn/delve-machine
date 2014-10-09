@@ -1,16 +1,42 @@
+from collections import Counter
+from math import fabs
+import re
+import os
+
 from nltk.corpus import stopwords, wordnet
-from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
-from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim import corpora, models as gensim_models
 from fuzzywuzzy import process
 from textblob import TextBlob
 from goose import Goose
 import nltk
-import re
-import os
+
+from utils.entity_extraction import NamedEntityExtractor
+
 
 goose = Goose()
+
+
+def intersection(list1, list2):
+    set1 = set(list1)
+    set2 = set(list2)
+    return list(set1.intersection(set2))
+
+
+def unique_list(original_list):
+    all_list_items = sum([original_list], [])
+    unique_list = set(
+        item for item in set(all_list_items) if all_list_items.count(item) == 1
+    )
+    return list(unique_list)
+
+
+def multiple_occurence(original_list):
+    all_list_items = sum([original_list], [])
+    multiple_list = set(
+        item for item in set(original_list) if all_list_items.count(item) > 1
+    )
+    return multiple_list
 
 
 class TextHandler:
@@ -19,11 +45,9 @@ class TextHandler:
         self.parsed_text = ""
         self.lemmatizer = WordNetLemmatizer()
         self.stopwords = stopwords.words('english')
-        self.bigram_score_function = BigramAssocMeasures.chi_sq
-        self.trigram_score_function = TrigramAssocMeasures.chi_sq
-        self.top_ngram_count = 400
         self.fuzzy_match = process
         self.text_blob = TextBlob
+        self.ner_extractor = NamedEntityExtractor()
 
     def get_words(self, text, with_punctuation=True, remove_stopwords=False):
         self.text = text
@@ -43,31 +67,15 @@ class TextHandler:
             ]
         return tokens
 
+    def get_sentences(self, text):
+        self.text = text
+        return nltk.sent_tokenize(self.text)
+
     def get_definitions(self, word):
         return wordnet.synsets(word)
 
     def lemma(self, word):
         return self.lemmatizer.lemmatize(word)
-
-    def get_sentences(self, text):
-        self.text = text
-        return nltk.sent_tokenize(self.text)
-
-    def get_bigrams(self, words):
-        bigram_finder = BigramCollocationFinder.from_words(words)
-        self.biagrams = bigram_finder.nbest(
-            self.bigram_score_function,
-            self.top_ngram_count
-        )
-        return self.biagrams
-
-    def get_trigrams(self, words):
-        trigram_finder = TrigramCollocationFinder.from_words(words)
-        self.trigrams = trigram_finder.nbest(
-            self.trigram_score_function,
-            self.top_ngram_count
-        )
-        return self.trigrams
 
     def unique_lemmas(self, tokens):
         lemmas = [self.lemma(x) for x in tokens]
@@ -78,25 +86,16 @@ class TextHandler:
         seen_add = seen.add
         return [x for x in seq if x not in seen and not seen_add(x)]
 
-    def get_named_entities(self, words):
-        named_entities = []
-        chunked_entities = nltk.ne_chunk(nltk.pos_tag(words), binary=False)
-        named_chunks = [c for c in chunked_entities if hasattr(c, 'node')]
-        for chunk in named_chunks:
-            named_entities.append(
-                (' '.join(c[0] for c in chunk.leaves()), chunk.node,)
-            )
-        return named_entities
+    def parts_of_speech(self, words):
+        return nltk.pos_tag(words)
 
-    def get_all_entities(self, text):
-        all_named_entities = []
+    def get_named_entities(self, text):
+        all_entities = []
         sentences = self.get_sentences(text)
         for sentence in sentences:
-            words = self.get_words(sentence)
-            entities = self.get_named_entities(words)
-            if entities:
-                all_named_entities.extend([entity for entity, tag in entities])
-        return all_named_entities
+            entities = self.ner_extractor.get_entities(sentence)
+            all_entities.extend(entities)
+        return unique_list(all_entities)
 
     def parse_html(self, html):
         try:
@@ -120,33 +119,6 @@ class TextHandler:
         except Exception, e:
             print '->Unable to parse raw html. Error: %s' % e
             return False
-
-    def get_semantic_details(self, word):
-        word_dict = {}
-        synset_detail = []
-        wordnet_synset = ['word', 'wordnet_entry', 'part_of_speech', 'definition']
-        synsets = self.get_definitions(word)
-        for synset in synsets:
-            word_detail = [
-                word,
-                synset.name,
-                synset.lexname,
-                synset.definition
-            ]
-            if word_detail:
-                word_dict = dict(zip(wordnet_synset, word_detail))
-                synonyms = self.get_synonyms(word, synset.name, synset.lemma_names)
-                if synonyms:
-                    word_dict['synonyms'] = synonyms
-                synset_detail.append(word_dict)
-        return synset_detail
-
-    def get_synonyms(self, word, definition_word, synonyms):
-        relevant_synonyms = []
-        for synonym in synonyms:
-            if synonym.lower() != word.lower() and synonym.lower() != definition_word.lower():
-                relevant_synonyms.append(synonym)
-        return relevant_synonyms
 
 
 class TfidfModel(object):
@@ -210,23 +182,128 @@ class TfidfModel(object):
         return corpora.Dictionary.load(path)
 
 
-def intersection(list1, list2):
-    set1 = set(list1)
-    set2 = set(list2)
-    return list(set1.intersection(set2))
+class Summerizer:
+    def __init__(self):
+        self.ideal = 20.0
+        self.stopwords = stopwords.words('english')
+        self.text_handler = TextHandler()
 
+    def summarize(self, title, text):
+        summaries = []
+        sentences = self.text_handler.get_sentences(text)
+        keys = self._keywords(text)
+        title_words = self.text_handler.get_words(
+            title,
+            with_punctuation=False
+        )
+        if len(sentences) <= 5:
+            return sentences
+        #score sentences, and use the top 5 sentences
+        ranks = self._score(sentences, title_words, keys).most_common(5)
+        for rank in ranks:
+            summaries.append(rank[0])
+        return summaries[:3]
 
-def unique_list(original_list):
-    all_list_items = sum([original_list], [])
-    unique_list = set(
-        item for item in set(all_list_items) if all_list_items.count(item) == 1
-    )
-    return list(unique_list)
+    def _score(self, sentences, title_words, keywords):
+        length = len(sentences)
+        ranks = Counter()
+        for i, s in enumerate(sentences):
+            sentence = self.text_handler.get_words(s, with_punctuation=False)
+            title_feature = self._title_score(title_words, sentence)
+            sentence_length = self._length_score(sentence)
+            position = self._sentence_position(i+1, length)
+            sbs_feature = self._sbs(sentence, keywords)
+            dbs_feature = self._dbs(sentence, keywords)
+            frequency = (sbs_feature + dbs_feature) / 2.0 * 10.0
+            #weighted average of scores from four categories
+            total_score = (
+                title_feature*1.5 + frequency*2.0 +
+                sentence_length*1.0 + position*1.0
+            ) / 4.0
+            ranks[s] = total_score
+        return ranks
 
+    def _sbs(self, words, keywords):
+        score = 0.0
+        if len(words) == 0:
+            return 0
+        for word in words:
+            if word in keywords:
+                score += keywords[word]
+        return (1.0 / fabs(len(words)) * score)/10.0
 
-def multiple_occurence(original_list):
-    all_list_items = sum([original_list], [])
-    multiple_list = set(
-        item for item in set(original_list) if all_list_items.count(item) > 1
-    )
-    return multiple_list
+    def _dbs(self, words, keywords):
+        if len(words) == 0:
+            return 0
+        summ = 0
+        first = []
+        second = []
+        for i, word in enumerate(words):
+            if word in keywords:
+                score = keywords[word]
+                if first == []:
+                    first = [i, score]
+                else:
+                    second = first
+                    first = [i, score]
+                    dif = first[0] - second[0]
+                    summ += (first[1]*second[1]) / (dif ** 2)
+        # number of intersections
+        k = len(set(keywords.keys()).intersection(set(words))) + 1
+        return 1/(k*(k+1.0))*summ
+
+    def _keywords(self, text):
+        """
+            get the top 10 keywords and their frequency scores
+            ignores blacklisted words in stopWords,
+            counts the number of occurrences of each word
+        """
+        text = self.text_handler.get_words(text, with_punctuation=False)
+        word_count = len(text)  # of words before removing blacklist words
+        freq = Counter(x for x in text if x not in self.stopwords)
+        min_size = min(10, len(freq))  # get first 10
+        keywords = {x: y for x, y in freq.most_common(min_size)}  # recreate a dict
+        for k in keywords:
+            article_score = keywords[k]*1.0 / word_count
+            keywords[k] = article_score * 1.5 + 1
+        return keywords
+
+    def _length_score(self, sentence):
+        return 1 - fabs(self.ideal - len(sentence)) / self.ideal
+
+    def _title_score(self, title, sentence):
+        title = [x for x in title if x not in self.stopwords]
+        count = 0.0
+        for word in sentence:
+            if word not in self.stopwords and word in title:
+                count += 1.0
+        return count/len(title)
+
+    def _sentence_position(self, i, size):
+        """
+            different sentence positions indicate different
+            probability of being an important sentence
+        """
+        normalized = i*1.0 / size
+        if 0 < normalized <= 0.1:
+            return 0.17
+        elif 0.1 < normalized <= 0.2:
+            return 0.23
+        elif 0.2 < normalized <= 0.3:
+            return 0.14
+        elif 0.3 < normalized <= 0.4:
+            return 0.08
+        elif 0.4 < normalized <= 0.5:
+            return 0.05
+        elif 0.5 < normalized <= 0.6:
+            return 0.04
+        elif 0.6 < normalized <= 0.7:
+            return 0.06
+        elif 0.7 < normalized <= 0.8:
+            return 0.04
+        elif 0.8 < normalized <= 0.9:
+            return 0.04
+        elif 0.9 < normalized <= 1.0:
+            return 0.15
+        else:
+            return 0

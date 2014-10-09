@@ -29,9 +29,9 @@ def current_media():
     media.iterate_sources()
 
 
+#codebook()
+#members_of_parliament()
+#get_parliament()
+current_media()
 
-codebook()
-members_of_parliament()
-get_parliament()
-#current_media()
 

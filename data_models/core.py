@@ -69,7 +69,7 @@ class DataModel:
         #return self.g.create_relationship(vertex1, relationship, vertex2)
         rel_query = u"""
             START n=node({0}), m=node({1})
-            MERGE (n)-[r:{2}]->(m)
+            MERGE (n)-[r:{2}]-(m)
             RETURN r
         """.format(vertex1._id, vertex2._id, relationship)
         return self.query(rel_query)
@@ -175,7 +175,7 @@ class Document(DataModel):
         for result in output:
             yield result[0]
 
-    def get_mentions(self, feature):
+    def get_doc_features(self, feature):
         search_string = u"""
             MATCH (d:`Document`) WHERE d.link = "{0}" WITH d
             MATCH (d)-[:CONTAINS]->(s) WITH s
@@ -197,6 +197,19 @@ class Document(DataModel):
         output = self.query(search_string)
         for result in output:
             yield result[0]
+
+    def get_training_documents(self, doc_limit):
+        search_string = u"""
+            MATCH (n:`Document`)
+            WHERE n.nounphrase_common < 10
+            AND n.publication <> "Bad Science"
+            RETURN n.title, n.content "
+            LIMIT {0}
+        """.format(doc_limit)
+        search_test = self.g.neo4j.CypherQuery(self.g.graph, search_string)
+        output = search_test.execute()
+        for result in output:
+            yield result[0], result[1]
 
     def update_content(self, content):
         self.vertex.content = self._format_content(content)

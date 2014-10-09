@@ -2,9 +2,6 @@
 __pycache__/
 *.py[cod]
 
-# C extensions
-*.so
-
 # Distribution / packaging
 .Python
 env/
@@ -27,10 +24,12 @@ analyse.py
 document_update.py
 utils/vectors/recreate_vectors.py
 source/input/document_metrics-14042014.csv
+web/
 test.py
 test.py.lprof
 utils/system_stats.r
 utils/mitie/MITIE-models
+utils/experimental_parser.py
 imports.py.lprof
 
 

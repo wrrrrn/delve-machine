@@ -91,8 +91,8 @@ class NounPhrase(DataModel):
     def link_sentence(self, sentence):
         self.create_relationship(sentence.vertex, "MENTIONS", self.vertex)
 
-    def link_term(self, term):
-        self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", term.vertex)
+    def associate(self, node):
+        self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", node.vertex)
 
     def get_relationships(self, relationship):
         search_string = u"""
@@ -336,6 +336,9 @@ class UniqueTerm(DataModel):
         for result in output:
             yield result[0]
 
+    def associate(self, node):
+        self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", node.vertex)
+
     def get_documents(self):
         search_string = u"""
             MATCH (t:`Unique Term` {{term:"{0}"}})<-[:MENTIONS]-(s)
@@ -382,6 +385,9 @@ class UniqueTerm(DataModel):
         rel_count = len([x for x in self.get_relationships()])
         return sent_count, doc_count, rel_count
 
+    def associate(self, node):
+        self.create_relationship(self.vertex, "IS_ASSOCIATED_WITH", node.vertex)
+
     def link_sentence(self, sentence):
         self.create_relationship(sentence.vertex, "MENTIONS", self.vertex)
 
@@ -392,6 +398,7 @@ class Policy(Document):
         self.policy = policy
         self.code = code
         self.link = u"{0}-{1}".format(self.code, self.policy)
+        self.doc_id = self.link
         self.label = self.policy_label
         self.fetch()
 
@@ -400,7 +407,8 @@ class Policy(Document):
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.policy,
-            "code": self.code
+            "code": self.code,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -414,6 +422,7 @@ class PolicyCategory(Document):
         self.category = category
         self.code = code
         self.link = u"{0}-{1}".format(self.code, self.category)
+        self.doc_id = self.link
         self.label = self.category_label
         self.fetch()
 
@@ -422,7 +431,8 @@ class PolicyCategory(Document):
         properties = {
             "publication": "UK Policy Agendas",
             "title": self.category,
-            "code": self.code
+            "code": self.code,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -431,7 +441,7 @@ class PolicyCategory(Document):
 
     def get_category(self, code):
         search_string = \
-            u"MATCH (n:`Policy Category`{code:'{0}'}) RETURN n".format(code)
+            u"MATCH (n:`Policy Category` {{code:'{0}'}}) RETURN n".format(code)
         search_test = self.g.neo4j.CypherQuery(self.g.graph, search_string)
         output = search_test.execute()
         if output:
@@ -460,6 +470,7 @@ class ActOfParliament(Document):
     def __init__(self, full_name=None):
         DataModel.__init__(self)
         self.link = full_name
+        self.doc_id = self.link
         self.label = self.act_label
         self.fetch()
 
@@ -468,7 +479,8 @@ class ActOfParliament(Document):
         properties = {
             "publication": "UK Parliament",
             "title": name,
-            "content": description
+            "content": description,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -481,6 +493,7 @@ class DebateInParliament(Document):
     def __init__(self, link):
         DataModel.__init__(self)
         self.link = link
+        self.doc_id = self.link
         self.label = self.debate_label
         self.fetch()
 
@@ -489,6 +502,7 @@ class DebateInParliament(Document):
         properties = {
             "publication": "They Work for You",
             "topic": topic,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -512,12 +526,14 @@ class DebateInParliament(Document):
 
 
 class DebateArgument(Document):
-    def __init__(self, link, topic, content):
+    def __init__(self, link, topic, content, summary):
         DataModel.__init__(self)
         self.speaker = None
         self.link = link
+        self.doc_id = self.link
         self.topic = topic
         self.content = content
+        self.summary = summary
         self.label = self.argument_label
         self.fetch()
 
@@ -530,7 +546,9 @@ class DebateArgument(Document):
         properties = {
             "publication": "They Work for You",
             "title": title,
-            "content": self.content
+            "content": self.content,
+            "doc_id": self.doc_id,
+            "summary": self.summary
         }
         self.set_node_properties(
             properties,
@@ -564,6 +582,7 @@ class VoteinParliament(Document):
         self.bill = topic
         self.vote_number = vote_number
         self.link = u"{0} - {1}".format(vote_number, self.bill)
+        self.doc_id = self.link
         self.label = self.vote_label
         self.fetch()
 
@@ -571,7 +590,8 @@ class VoteinParliament(Document):
         labels = ["Parliamentary Matters", "Document"]
         properties = {
             "publication": "Public Whip",
-            "bill": self.bill
+            "bill": self.bill,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,
@@ -594,13 +614,15 @@ class VoteCategory(Document):
         self.vote_category = category
         self.label = self.votecategory_label
         self.link = u"{0} - {1}".format(bill, category)
+        self.doc_id = self.link
         self.fetch()
 
     def make_category(self):
         labels = ["Parliamentary Matters"]
         properties = {
             "publication": "Public Whip",
-            "category": self.link
+            "category": self.link,
+            "doc_id": self.doc_id
         }
         self.set_node_properties(
             properties,

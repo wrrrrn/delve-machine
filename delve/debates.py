@@ -7,7 +7,7 @@ class ImportDebates(ImportInterface):
         self.cache = self.cache_models.Debates()
 
     def delve(self):
-        for doc in self.cache.collection.find():
+        for doc in self.cache.fetch_all(return_list=True):
             self._report(doc)
             self._import(doc)
 
@@ -33,10 +33,17 @@ class ImportDebates(ImportInterface):
         for entry in arguments:
             text = entry["text"]
             topic = debate_node.vertex["topic"]
-            new_argument = self._create_argument(
-                debate_node.vertex["debate_id"],
+            argument_id = entry["argument_id"]
+            summary = self.summerizer.summarize(
                 topic,
                 text
+            )
+            summary = ' '.join(summary)
+            new_argument = self._create_argument(
+                argument_id,
+                topic,
+                text,
+                summary
             )
             debate_node.link_argument(new_argument)
             if "speaker" in entry:
@@ -49,11 +56,11 @@ class ImportDebates(ImportInterface):
             new_argument.link_previous(previous_argument)
             previous_argument = new_argument
 
-    def _create_argument(self, link, topic, text):
-        argument = self.data_models.DebateArgument(link, topic, text)
-        if not argument.exists:
-            argument.create()
-        return argument
+    def _create_argument(self, link, topic, text, summary):
+        arg = self.data_models.DebateArgument(link, topic, text, summary)
+        if not arg.exists:
+            arg.create()
+        return arg
 
     def _report(self, node):
         print node["topic"]

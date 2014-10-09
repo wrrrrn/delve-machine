@@ -21,6 +21,14 @@ class CacheModel:
         else:
             return None
 
+    def fetch_all(self, return_list=False):
+        if return_list:
+            #size = 2
+            return list(self.collection.find())
+        else:
+            size = 60
+            return self.collection.find().batch_size(size)
+
     def delete_data(self):
         self.collection.remove({})
 

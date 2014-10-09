@@ -16,7 +16,6 @@ def delete_all_cached():
     debates.delete_data()
     agendas.delete_data()
 
-
 def delete_terms():
     list = [
         "get", "-", "d", "j", "233", "hon", "8212", "would", "163", "also", "1", "could", "might",

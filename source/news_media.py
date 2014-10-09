@@ -5,7 +5,11 @@ import os
 
 class CacheMedia(CacheInterface):
     OPML = os.path.join(
+<<<<<<< HEAD
     os.path.dirname(os.path.abspath(__file__)), 'input/feedly.opml'
+=======
+        os.path.dirname(os.path.abspath(__file__)), 'input/feedly.opml'
+>>>>>>> master
     )
 
     def __init__(self):
@@ -19,7 +23,7 @@ class CacheMedia(CacheInterface):
 
     def iterate_sources(self):
         for pub, entry, link, text, date in self.opml.iterate('Politics'):
-            print '\n\n', pub, '\n', entry, '\n', link, '\n', date
+            print '\n\n', entry, '\n', pub, '\n', link, '\n', date
             if not link in self.cached_docs:
                 full_text = self._get_full_text(text, link)
                 document = {
@@ -37,7 +41,7 @@ class CacheMedia(CacheInterface):
     def _get_full_text(self, raw_content, link):
         raw_text = self.text.parse_raw_html(raw_content)
         if raw_text:
-            words = self._get_words(raw_text)
+            words = self.text.get_words(raw_text)
             if len(words) < 75:
                 print 'rss entry too short, checking the web'
                 html = self.html_handler.get_url(link)
@@ -46,14 +50,6 @@ class CacheMedia(CacheInterface):
                     if online_text:
                         raw_text = online_text
         return u'{0}'.format(raw_text)
-
-    def _get_words(self, raw):
-        words = self.text.get_words(
-            raw,
-            with_punctuation=False,
-            remove_stopwords=True
-        )
-        return words
 
     def print_out(self, label, value):
         print " %-30s%-25s%-20s" % (label, value, "")
