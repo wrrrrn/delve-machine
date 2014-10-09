@@ -33,6 +33,7 @@ class ImportDebates(ImportInterface):
         for entry in arguments:
             text = entry["text"]
             topic = debate_node.vertex["topic"]
+            doci_id = entry["_id"]
             summary = self.summerizer.summarize(
                 topic,
                 text
@@ -42,7 +43,8 @@ class ImportDebates(ImportInterface):
                 debate_node.vertex["debate_id"],
                 topic,
                 text,
-                summary
+                summary,
+                doci_id
             )
             debate_node.link_argument(new_argument)
             if "speaker" in entry:
@@ -55,11 +57,11 @@ class ImportDebates(ImportInterface):
             new_argument.link_previous(previous_argument)
             previous_argument = new_argument
 
-    def _create_argument(self, link, topic, text, summary):
-        argument = self.data_models.DebateArgument(link, topic, text, summary)
-        if not argument.exists:
-            argument.create()
-        return argument
+    def _create_argument(self, link, topic, text, summary, doc_id):
+        arg = self.data_models.DebateArgument(link, topic, text, summary, doc_id)
+        if not arg.exists:
+            arg.create()
+        return arg
 
     def _report(self, node):
         print node["topic"]

@@ -542,7 +542,7 @@ class DebateArgument(Document):
         DataModel.__init__(self)
         self.speaker = None
         self.link = link
-        self.doc_id = self.link
+        #self.doc_id = self.link
         self.topic = topic
         self.content = content
         self.summary = summary
