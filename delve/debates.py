@@ -55,8 +55,8 @@ class ImportDebates(ImportInterface):
             new_argument.link_previous(previous_argument)
             previous_argument = new_argument
 
-    def _create_argument(self, link, topic, text, summary, doc_id):
-        arg = self.data_models.DebateArgument(link, topic, text, summary, doc_id)
+    def _create_argument(self, link, topic, text, summary):
+        arg = self.data_models.DebateArgument(link, topic, text, summary)
         if not arg.exists:
             arg.create()
         return arg
