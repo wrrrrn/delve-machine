@@ -33,7 +33,6 @@ class ImportDebates(ImportInterface):
         for entry in arguments:
             text = entry["text"]
             topic = debate_node.vertex["topic"]
-            doci_id = entry["_id"]
             summary = self.summerizer.summarize(
                 topic,
                 text
@@ -43,8 +42,7 @@ class ImportDebates(ImportInterface):
                 debate_node.vertex["debate_id"],
                 topic,
                 text,
-                summary,
-                doci_id
+                summary
             )
             debate_node.link_argument(new_argument)
             if "speaker" in entry:

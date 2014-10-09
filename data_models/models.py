@@ -538,15 +538,15 @@ class DebateInParliament(Document):
 
 
 class DebateArgument(Document):
-    def __init__(self, link, topic, content, summary, doc_id):
+    def __init__(self, link, topic, content, summary):
         DataModel.__init__(self)
         self.speaker = None
         self.link = link
-        #self.doc_id = self.link
+        self.doc_id = self.link
         self.topic = topic
         self.content = content
         self.summary = summary
-        self.doc_id = doc_id
+        #self.doc_id = doc_id
         self.label = self.argument_label
         self.fetch()
 
