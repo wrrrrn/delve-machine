@@ -16,10 +16,11 @@ def delete_all_cached():
     debates.delete_data()
     agendas.delete_data()
 
+
 def delete_terms():
     list = [
         "get", "-", "d", "j", "233", "hon", "8212", "would", "163", "also", "1", "could", "might",
-        "put", "8217", "said", "8221", "8220", "got"
+        "put", "8217", "said", "8221", "8220", "got", "says"
     ]
     for t in list:
         string = u"""
@@ -47,4 +48,4 @@ def delete_names():
 #delete_all_cached()
 
 delete_terms()
-delete_names()
+#delete_names()

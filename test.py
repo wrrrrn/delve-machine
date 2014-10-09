@@ -2,6 +2,7 @@ from data_models import cache, core
 from fuzzywuzzy import process
 from data_models import models
 from utils import general_linguistic
+from web.controllers import documents
 from utils.experimental_parser import ExperimentalParser
 
 ALL_PARTIES_API = 'http://www.theguardian.com/politics/api/party/all/json'
@@ -42,13 +43,21 @@ def test_parser():
         parser.parse_document(d["text"])
 
 
+def test_doc():
+    url = 'http://owni.eu/2012/08/27/where-are-the-post-wikileaks-digital-whistleblowers-assange/'
+    entity = documents.DocumentController(url)
+    if entity.exists:
+        for m in entity.topic_mentions():
+            print m
+
 
 #find()
 #doc_test()
 #name_test()
 #term_test()
 #find_id()
-test_parser()
+#test_parser()
+test_doc()
 
 
 

@@ -110,7 +110,17 @@
 
                 <div class="alert alert-dismissable alert-success">
                     <h4>{{ entity.name|safe }}'s Connected Topics</h4>
-                    {% for link in entity.associated() %}
+                    {% for link in entity.associated_topics() %}
+                    <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'] }} </a> /
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-md-10">
+
+                <div class="alert alert-dismissable alert-success">
+                    <h4>{{ entity.name|safe }}'s Connected Names</h4>
+                    {% for link in entity.associated_names() %}
                     <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'] }} </a> /
                     {% endfor %}
                 </div>

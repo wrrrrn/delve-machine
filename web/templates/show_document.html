@@ -29,7 +29,7 @@
                 <div class="alert alert-dismissable alert-success">
                     <h4>Connected Topics</h4>
                     {% for mention in entity.topic_mentions() %}
-                    <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['value'] }}">{{ mention['value'] }}</a> /
+                    <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['count'] }}">{{ mention['value'] }}</a> /
                     {% endfor %}
                 </div>
             </div>
@@ -38,7 +38,7 @@
                 <div class="alert alert-dismissable alert-success">
                     <h4>Connected Names</h4>
                     {% for mention in entity.name_mentions() %}
-                    <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['value'] }}">{{ mention['value'] }}</a> /
+                    <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['count'] }}">{{ mention['value'] }}</a> /
                     {% endfor %}
                 </div>
             </div>

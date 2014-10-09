@@ -73,14 +73,25 @@ class NamedEntityController:
                 "left": left
             }
 
-    def associated(self):
+    def associated_names(self):
         for node, count in self._properties["associated"]:
             details = self._get_node_name(node)
-            yield {
-                "edge": details[0],
-                "type": details[1],
-                "count": count
-            }
+            if details[1] == "name":
+                yield {
+                    "edge": details[0],
+                    "type": details[1],
+                    "count": count
+                }
+
+    def associated_topics(self):
+        for node, count in self._properties["associated"]:
+            details = self._get_node_name(node)
+            if details[1] == "term":
+                yield {
+                    "edge": details[0],
+                    "type": details[1],
+                    "count": count
+                }
 
     def _set_properties(self):
         if self.n.exists:

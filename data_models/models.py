@@ -117,9 +117,9 @@ class NounPhrase(DataModel):
     def get_associated(self):
         search_string = u"""
             MATCH (np:`Noun Phrase` {{noun_phrase:"{0}"}})-[:IS_ASSOCIATED_WITH]-(x)
-            WITH x
-            MATCH (x)-[]-(y)
-            RETURN x, count(y) as weight
+            WITH np, x
+            MATCH (s)-[:MENTIONS]-(x)-[:IS_ASSOCIATED_WITH]-(np)
+            RETURN x, count(s) as weight
             ORDER BY weight DESC
         """.format(self.vertex["noun_phrase"])
         output = self.query(search_string)
@@ -352,10 +352,10 @@ class UniqueTerm(DataModel):
 
     def get_associated(self):
         search_string = u"""
-            MATCH (np:`Unique Term` {{term:"{0}"}})-[:IS_ASSOCIATED_WITH]-(x)
-            WITH x
-            MATCH (x)-[]-(y)
-            RETURN x, count(y) as weight
+            MATCH (t:`Unique Term` {{term:"{0}"}})-[:IS_ASSOCIATED_WITH]-(x)
+            WITH t, x
+            MATCH (s)-[:MENTIONS]-(x)-[:IS_ASSOCIATED_WITH]-(t)
+            RETURN x, count(s) as weight
             ORDER BY weight DESC
         """.format(self.vertex["term"])
         output = self.query(search_string)

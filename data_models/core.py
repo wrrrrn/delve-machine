@@ -179,35 +179,11 @@ class Document(DataModel):
         search_string = u"""
             MATCH (d:`Document`) WHERE d.link = "{0}" WITH d
             MATCH (d)-[:CONTAINS]->(s) WITH s
-            MATCH (s)-[:MENTIONS]->(feat:`{1}`)
-            RETURN distinct feat
+            MATCH (s)-[:MENTIONS]->(feat:`{1}`) with feat
+            RETURN feat, count(feat) as weight
+            ORDER BY weight DESC
         """.format(self.vertex["link"], feature)
         output = self.query(search_string)
-        for result in output:
-            yield result[0]
-
-    def get_feat_relationships(self):
-        search_string = u"""
-            MATCH (d:`Document`) WHERE d.link = "{0}" WITH d
-            MATCH (d)-[:CONTAINS]->(s) WITH s
-            MATCH (s)-[:MENTIONS]->(np:`Noun Phrase`)-
-            [rel:IS_ASSOCIATED_WITH]->(t:`Unique Term`)<-[:MENTIONS]-(s)
-            RETURN count(rel)
-        """.format(self.vertex["link"])
-        output = self.query(search_string)
-        for result in output:
-            yield result[0]
-
-    def get_training_documents(self, doc_limit):
-        search_string = u"""
-            MATCH (n:`Document`)
-            WHERE n.nounphrase_common < 10
-            AND n.publication <> "Bad Science"
-            RETURN n.title, n.content "
-            LIMIT {0}
-        """.format(doc_limit)
-        search_test = self.g.neo4j.CypherQuery(self.g.graph, search_string)
-        output = search_test.execute()
         for result in output:
             yield result[0], result[1]
 

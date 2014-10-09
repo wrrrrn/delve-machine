@@ -15,14 +15,13 @@ class DocumentController:
         self._set_properties()
 
     def name_mentions(self):
-        for mention in self._properties["mentions"]:
+        for mention in self._properties["name_mentions"]:
             if mention["type"] == "name":
                 yield mention
 
     def topic_mentions(self):
-        for mention in self._properties["mentions"]:
+        for mention in self._properties["term_mentions"]:
             if mention["type"] == "term":
-                print mention
                 yield mention
 
     def _set_properties(self):
@@ -36,15 +35,29 @@ class DocumentController:
         self._properties["title"] = self.d.vertex["title"]
         self._properties["content"] = self._format(self.d.vertex["content"])
         self._properties["publication"] = self.d.vertex["publication"]
-        self._properties["mentions"] = self._set_mentions()
+        self._set_mentions()
 
     def _set_mentions(self):
-        get_names = self.d.get_mentions("Named Entity")
-        get_terms = self.d.get_mentions("Unique Term")
-        names = [{"type": "name", "value": n["noun_phrase"]} for n in get_names]
-        terms = [{"type": "term", "value": t["term"]} for t in get_terms]
-        names.append(terms)
-        return names
+        get_names = self.d.get_doc_features("Named Entity")
+        get_terms = self.d.get_doc_features("Unique Term")
+        names = [
+            {
+                "type": "name",
+                "value": n[0]["noun_phrase"],
+                "count": n[1]
+            } for n in get_names
+        ]
+        terms = [
+            {
+                "type": "term",
+                "value": t[0]["term"],
+                "count": t[1]
+            } for t in get_terms
+        ]
+        self._properties["top_mentions"] = names[:3] + terms[:3]
+        self._properties["name_mentions"] = names
+        self._properties["term_mentions"] = terms
+        print self._properties["top_mentions"]
 
     def _format(self, string):
         old_content = string.split("\n\n")
