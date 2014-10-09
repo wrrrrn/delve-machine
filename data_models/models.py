@@ -560,8 +560,8 @@ class DebateArgument(Document):
             "publication": "They Work for You",
             "title": title,
             "content": self.content,
-            "summary": self.summary,
-            "doc_id": self.doc_id
+            "doc_id": self.doc_id,
+            "summary": self.summary
         }
         self.set_node_properties(
             properties,
