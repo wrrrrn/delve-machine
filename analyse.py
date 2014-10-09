@@ -39,9 +39,9 @@ print "Delve. Politic"
 
 #codebook()
 #members_of_parliament()
-get_acts()
-get_votes()
-current_media()
+#get_acts()
+#get_votes()
+#current_media()
 get_debates()
 
 
