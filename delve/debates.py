@@ -33,13 +33,14 @@ class ImportDebates(ImportInterface):
         for entry in arguments:
             text = entry["text"]
             topic = debate_node.vertex["topic"]
+            argument_id = entry["argument_id"]
             summary = self.summerizer.summarize(
                 topic,
                 text
             )
             summary = ' '.join(summary)
             new_argument = self._create_argument(
-                debate_node.vertex["debate_id"],
+                argument_id,
                 topic,
                 text,
                 summary
