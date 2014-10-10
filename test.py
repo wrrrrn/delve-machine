@@ -8,6 +8,7 @@ from utils.experimental_parser import ExperimentalParser
 ALL_PARTIES_API = 'http://www.theguardian.com/politics/api/party/all/json'
 
 model = core.DataModel()
+debates = cache.Debates()
 reps = cache.Politicians()
 all_reps = [doc["full_name"] for doc in reps.collection.find() if "full_name" in doc]
 
@@ -51,13 +52,29 @@ def test_doc():
             print m
 
 
-#find()
-#doc_test()
-#name_test()
-#term_test()
-#find_id()
+def test_increment():
+    cache_list = [d["debate_id"] for d in debates.fetch_all(return_list=True)]
+    print "\n---"
+    print "cached:", len(cache_list)
+    print cache_list[:10]
+    print "\n---"
+    imported = model.get_all_doc_ids("Parliamentary Debate")
+
+    print "live:", len(imported)
+    live = [record[0] for record in imported]
+    print live[:10]
+    cache_list.append(live[:10])
+    print "\n---"
+    to_import = [d for d in cache_list if d not in live]
+    for d in live:
+        if d in cache_list:
+            print "found something imported"
+    #print "to import:", len(to_import)
+
+
 #test_parser()
-test_doc()
+#t# est_doc()
+test_increment()
 
 
 

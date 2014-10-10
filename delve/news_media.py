@@ -8,8 +8,11 @@ class ImportMedia(ImportInterface):
         self.text = self.speech_tools.TextHandler()
 
     def delve(self):
-        for doc in self.cache.fetch_all(return_list=True):
-            self._import(doc)
+        cache_documents = [d for d in self.cache.fetch_all(return_list=True)]
+        to_import = self._initialise("Public Media", cache_documents)
+        for doc in cache_documents:
+            if doc["debate_id"] in to_import:
+                self._import(doc)
 
     def _import(self, node):
         title = node["title"]
@@ -63,6 +66,3 @@ class ImportMedia(ImportInterface):
             return False
         else:
             return self.text.parse_html(raw_content)
-
-    def print_out(self, label, value):
-        print " %-30s%-25s%-20s" % (label, value, "")

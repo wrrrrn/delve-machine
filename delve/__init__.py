@@ -1,12 +1,14 @@
 import document_parser
 from utils import general_linguistic
 from interfaces import web
+from data_models import core
 from data_models import models
 from data_models import cache
 
 
 class ImportInterface:
     def __init__(self):
+        self.core_model = core
         self.data_models = models
         self.cache_models = cache
         self.core_model = self.data_models.DataModel()
@@ -22,3 +24,18 @@ class ImportInterface:
             self.data_models,
             self.speech_tools
         )
+
+    def _initialise(self, doc_type, cache_documents):
+        live_docs = self.core_model.get_all_doc_ids(doc_type)
+        live_list = [record[0] for record in live_docs]
+        cache_list = [d["debate_id"] for d in cache_documents]
+        to_import = [d for d in cache_list if d not in live_list]
+        print "\nImporting Parliamentary Debates\n---"
+        self._print_out("Cached Documents", len(cache_list))
+        self._print_out("Live Documents", len(live_list))
+        self._print_out("To Import", len(to_import))
+        print "---\n"
+        return to_import
+
+    def _print_out(self, key, value):
+        print "  %-20s%-15s" % (key, value)

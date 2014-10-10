@@ -140,6 +140,12 @@ class DataModel:
             batch.add_labels(new_node, "Noun Phrase")
         batch.submit()
 
+    def get_all_doc_ids(self, doc_type):
+        doc_query = u"""
+            MATCH (d:`{0}`)
+            RETURN d.link
+        """.format(doc_type)
+        return self.query(doc_query)
 
 class Document(DataModel):
     def __init__(self, link=False):

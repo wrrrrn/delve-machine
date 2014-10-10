@@ -35,7 +35,7 @@ def current_media():
     media = news_media.ImportMedia()
     media.delve()
 
-print "Delve. Politic"
+print "\n\nDelve. Politic"
 
 #codebook()
 #members_of_parliament()

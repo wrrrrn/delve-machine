@@ -5,11 +5,15 @@ class ImportDebates(ImportInterface):
     def __init__(self):
         ImportInterface.__init__(self)
         self.cache = self.cache_models.Debates()
+        self.imported = self.core_model.get_all_doc_ids("Argument")
 
     def delve(self):
-        for doc in self.cache.fetch_all(return_list=True):
-            self._report(doc)
-            self._import(doc)
+        cache_documents = [d for d in self.cache.fetch_all(return_list=True)]
+        to_import = self._initialise("Parliamentary Debate", cache_documents)
+        for doc in cache_documents:
+            if doc["debate_id"] in to_import:
+                self._report(doc)
+                self._import(doc)
 
     def _import(self, node):
         new_debate = self._create_debate(node)
@@ -78,6 +82,3 @@ class ImportDebates(ImportInterface):
         else:
             print "\n\n\n\n", node, "\n\n\n\n"
         print "\n---"
-
-    def _print_out(self, key, value):
-        print "  %-20s%-15s" % (key, value)
