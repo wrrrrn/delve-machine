@@ -3,12 +3,13 @@ from data_models import models
 
 class NamedEntityController:
     def __init__(self, name=False):
-        self.noun_phrase = name
-        self.n = models.NounPhrase(self.noun_phrase)
+        self.name = name
+        self.identity = name
+        self.n = models.NounPhrase(self.name)
         self.n.fetch()
         self.exists = self.n.exists
         self.exclude = ['Named Entity', 'Noun Phrase']
-        self.name = ""
+
         self._properties = {}
         self.is_mp = False
         self.has_statements = False
@@ -43,6 +44,7 @@ class NamedEntityController:
                     "title": doc["title"],
                     "content": doc["content"],
                     "link": doc["link"],
+                    "summary": doc["summary"],
                     "sentiment": doc["sentiment_mean"],
                     "subjectivity": doc["subjectivity_mean"]
                 }
@@ -51,7 +53,7 @@ class NamedEntityController:
         for statement in self._properties["statements"]:
             yield {
                 "title": statement["title"],
-                #"summary": term["summary"],
+                "summary": statement["summary"],
                 "sentiment": statement["sentiment_mean"],
                 "subjectivity": statement["subjectivity_mean"]
             }

@@ -14,12 +14,12 @@ class DocumentController:
         self._properties = {}
         self._set_properties()
 
-    def name_mentions(self):
+    def associated_names(self):
         for mention in self._properties["name_mentions"]:
             if mention["type"] == "name":
                 yield mention
 
-    def topic_mentions(self):
+    def associated_topics(self):
         for mention in self._properties["term_mentions"]:
             if mention["type"] == "term":
                 yield mention
@@ -43,14 +43,14 @@ class DocumentController:
         names = [
             {
                 "type": "name",
-                "value": n[0]["noun_phrase"],
+                "edge": n[0]["noun_phrase"],
                 "count": n[1]
             } for n in get_names
         ]
         terms = [
             {
                 "type": "term",
-                "value": t[0]["term"],
+                "edge": t[0]["term"],
                 "count": t[1]
             } for t in get_terms
         ]

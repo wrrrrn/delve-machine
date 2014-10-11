@@ -41,7 +41,7 @@ class ImportMedia(ImportInterface):
         self.parser.parse_document(article, cleaned_text, map_statements=False)
 
     def _create_article_node(self, pub, title, link, content, sum, doc_id, date):
-        new_document = self.data_models.Document(link)
+        new_document = self.data_models.Document(doc_id)
         if not new_document.exists:
             new_document.create()
             labels = "Public Media"

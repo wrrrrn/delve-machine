@@ -1,133 +1,28 @@
 {% extends "layout.html" %}
 {% block body %}
+    {% from "macros.html" import mentions %}
+    {% from "macros.html" import debates %}
+    {% from "macros.html" import mp %}
+    {% from "macros.html" import associated %}
 
-<div class="row">
-    <div class="col-md-7" >
-        <h1>{{ entity.name|safe }}</h1>
-        <hr>
+    <div class="row">
+        <div class="col-md-7" >
+            <h1>{{ entity.name|safe }}</h1>
+            <hr>
+        </div >
     </div >
-</div >
 
-<div class="row">
-    <div class="col-md-7">
+    <div class="row">
+        <div class="col-md-7">
+            {{ mentions(entity) }}
 
-        {% if entity.has_mentions_in_media %}
-        <h3>Mentions in the Media</h3>
-        <div class="list-group">
-            {% for mention in entity.mentions_in_media() %}
-            <div class="list-group-item" >
-                <div class="row-action-primary">
-                    <i class="icon-material-folder"></i>
-                </div>
-                <div class="row-content">
-                    <div class="least-content">
-                        <a href="{{ url_for('show_entries', search_type = 'document', search_term = mention['link']) }}" > link </a>
-                    </div>
-                    <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
-                    <p class="list-group-item-text">{{ mention['summary'] }}</p>
-                </div>
-            </div>
-            <div class="list-group-separator"></div>
-            {% endfor %}
+            {{ debates(entity) }}
         </div>
-        {% endif %}
 
-        {% if entity.has_mentions_in_debate %}
-        <h3>Mentions in the Debate</h3>
-        <div class="list-group">
-            {% for mention in entity.mentions_in_debate() %}
-            <div class="list-group-item" >
-                <div class="row-action-primary">
-                    <i class="icon-material-folder"></i>
-                </div>
-                <div class="row-content">
-                    <div class="least-content">
-                        <a href="{{ url_for('show_entries', search_type = 'document', search_term = mention['link']) }}" > link </a>
-                    </div>
-                    <h4 class="list-group-item-heading">{{ mention['title'] }}</h4>
-                    <p class="list-group-item-text">{{ mention['summary'] }}</p>
-                </div>
-            </div>
-            <div class="list-group-separator"></div>
-            {% endfor %}
+        <div class="col-md-5">
+            {{ mp(entity) }}
+
+            {{ associated(entity) }}
         </div>
-        {% endif %}
-
-
-        {% if entity.has_statements %}
-        <h3>Debates in Parliament</h3>
-        <div class="list-group">
-            {% for statement in entity.statements() %}
-            <div class="list-group-item" >
-                <div class="row-action-primary">
-                    <i class="icon-material-folder"></i>
-                </div>
-                <div class="row-content">
-                    <div class="least-content">
-                        <a href="{{ url_for('show_entries', search_type = 'document', search_term = statement['link']) }}" > link </a>
-                    </div>
-                    <h4 class="list-group-item-heading">{{ statement['title'] }}</h4>
-                    <p class="list-group-item-text">{{ statement['summary'] }}</p>
-                </div>
-            </div>
-            <div class="list-group-separator"></div>
-            {% endfor %}
-        </div>
-        {% endif %}
     </div>
-
-    <div class="col-md-5">
-        {% if entity.has_positions %}
-        {% for position in entity.positions() %}
-        <div class="row">
-            <div class="col-md-10">
-                <div class="well">
-                    {{ position }}
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% endif %}
-
-        {% if entity.is_mp %}
-        <h4>Terms in Parliament</h4>
-        {% for term in entity.terms_in_parliament() %}
-        <div class="row">
-            <div class="col-md-10">
-                <div class="well">
-                    <h5 class="list-group-item-heading">{{ term['constituency'] }}</h5>
-                    <p class="list-group-item-text">In office from {{ term['entered'] }} to {{ term['left'] }} </br>{{ term['party'] }}</p>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% endif %}
-
-
-        {% if entity.has_associated %}
-        <div class="row">
-            <div class="col-md-10">
-
-                <div class="alert alert-dismissable alert-success">
-                    <h4>{{ entity.name|safe }}'s Connected Topics</h4>
-                    {% for link in entity.associated_topics() %}
-                    <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'] }} </a> /
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="col-md-10">
-
-                <div class="alert alert-dismissable alert-success">
-                    <h4>{{ entity.name|safe }}'s Connected Names</h4>
-                    {% for link in entity.associated_names() %}
-                    <a href="{{ url_for('show_entries', search_type = link['type'], search_term = link['edge']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ link['count'] }}">{{ link['edge'] }} </a> /
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% endif %}
-
-    </div>
-</div>
 {% endblock %}

@@ -48,4 +48,4 @@ def delete_names():
 #delete_all_cached()
 
 delete_terms()
-#delete_names()
+delete_names()

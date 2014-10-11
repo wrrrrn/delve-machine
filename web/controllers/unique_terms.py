@@ -4,6 +4,7 @@ from data_models import models
 class UniqueTermsController:
     def __init__(self, term=False):
         self.term = term
+        self.identity = term
         self.t = models.UniqueTerm(self.term)
         self.t.fetch()
         self.exists = self.t.exists
@@ -32,18 +33,30 @@ class UniqueTermsController:
                     "title": doc["title"],
                     "content": doc["content"],
                     "link": doc["link"],
+                    "summary": doc["summary"],
                     "sentiment": doc["sentiment_mean"],
                     "subjectivity": doc["subjectivity_mean"]
                 }
 
-    def associated(self):
+    def associated_names(self):
         for node, count in self._properties["associated"]:
             details = self._get_node_name(node)
-            yield {
-                "edge": details[0],
-                "type": details[1],
-                "count": count
-            }
+            if details[1] == "name":
+                yield {
+                    "edge": details[0],
+                    "type": details[1],
+                    "count": count
+                }
+
+    def associated_topics(self):
+        for node, count in self._properties["associated"]:
+            details = self._get_node_name(node)
+            if details[1] == "term":
+                yield {
+                    "edge": details[0],
+                    "type": details[1],
+                    "count": count
+                }
 
     def _set_properties(self):
         if self.t.exists:
@@ -99,4 +112,3 @@ class UniqueTermsController:
 
     def _print_out(self, key, value):
         print "  %-20s%-15s" % (key, value)
-

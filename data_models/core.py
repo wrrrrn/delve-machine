@@ -147,19 +147,20 @@ class DataModel:
         """.format(doc_type)
         return self.query(doc_query)
 
+
 class Document(DataModel):
-    def __init__(self, link=False):
+    def __init__(self, doc_id=False):
         DataModel.__init__(self)
-        self.link = link
+        self.doc_id = doc_id
         self.label = self.document_label
 
     def fetch(self):
-        if self.link:
+        if self.doc_id:
             #self.content = self.vertex.content.replace('\n', '<br /><br />')
             self.vertex = self.find_vertex(
                 self.label,
-                'link',
-                self.link
+                'doc_id',
+                self.doc_id
             )
             if self.vertex:
                 self.exists = True
@@ -167,8 +168,8 @@ class Document(DataModel):
     def create(self):
         self.vertex = self.create_vertex(
             self.label,
-            'link',
-            self.link
+            'doc_id',
+            self.doc_id
         )
 
     def get_sentences(self):
@@ -188,7 +189,7 @@ class Document(DataModel):
             MATCH (s)-[:MENTIONS]->(feat:`{1}`) with feat
             RETURN feat, count(feat) as weight
             ORDER BY weight DESC
-        """.format(self.vertex["link"], feature)
+        """.format(self.vertex["doc_id"], feature)
         output = self.query(search_string)
         for result in output:
             yield result[0], result[1]
