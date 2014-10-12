@@ -3,14 +3,16 @@ from data_models import models
 
 
 class DocumentController:
-    def __init__(self, link=False):
-        self.link = link
-        self.d = core.Document(self.link)
+    def __init__(self, doc_id=False):
+        self.doc_id = doc_id
+        self.d = core.Document(self.doc_id)
         self.d.fetch()
         self.exists = self.d.exists
         self.title = None
         self.content = None
         self.publication = None
+        self.has_associated = False
+        self.is_document = True
         self._properties = {}
         self._set_properties()
 
@@ -40,24 +42,34 @@ class DocumentController:
     def _set_mentions(self):
         get_names = self.d.get_doc_features("Named Entity")
         get_terms = self.d.get_doc_features("Unique Term")
-        names = [
+        self._properties["name_mentions"] = [
             {
                 "type": "name",
                 "edge": n[0]["noun_phrase"],
                 "count": n[1]
             } for n in get_names
         ]
-        terms = [
+        self._properties["term_mentions"] = [
             {
                 "type": "term",
                 "edge": t[0]["term"],
                 "count": t[1]
             } for t in get_terms
         ]
-        self._properties["top_mentions"] = names[:3] + terms[:3]
-        self._properties["name_mentions"] = names
-        self._properties["term_mentions"] = terms
-        print self._properties["top_mentions"]
+        self._properties["top_mentions"] = \
+            self._properties["name_mentions"][:3] + \
+            self._properties["term_mentions"][:3]
+        if len(self._properties["top_mentions"]) > 0:
+            self.has_associated = True
+
+    def show_properties(self):
+        for prop in self._properties:
+            if prop in ["outgoing", "incoming"]:
+                print "*", prop
+                for rel in self._properties[prop]:
+                    self._print_out(rel, " ")
+            else:
+                self._print_out(prop, self._properties[prop])
 
     def _format(self, string):
         old_content = string.split("\n\n")
@@ -66,4 +78,6 @@ class DocumentController:
             new_content += "<p>%s</p>" % para
         return new_content
 
+    def _print_out(self, key, value):
+        print "  %-20s%-15s" % (key, value)
 

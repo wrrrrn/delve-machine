@@ -24,34 +24,43 @@ class NamedEntityController:
             yield label
 
     def mentions_in_media(self):
-        for doc, labels in self._properties["documents"]:
-            if 'Public Media' in labels:
-                yield {
-                    "publication": doc["publication"],
-                    "title": doc["title"],
-                    "content": doc["content"],
-                    "summary": doc["summary"],
-                    "link": doc["link"],
-                    "sentiment": doc["sentiment_mean"],
-                    "subjectivity": doc["subjectivity_mean"]
-                }
+        public = [
+            (d[0], d[1]) for d in self._properties["documents"]
+            if 'Public Media' in d[1]
+        ]
+        for doc, labels in public:
+            yield {
+                "doc_id": doc["doc_id"],
+                "publication": doc["publication"],
+                "title": doc["title"],
+                "content": doc["content"],
+                "summary": doc["summary"],
+                "link": doc["link"],
+                "sentiment": doc["sentiment_mean"],
+                "subjectivity": doc["subjectivity_mean"]
+            }
 
     def mentions_in_debate(self):
-        for doc, labels in self._properties["documents"]:
-            if 'Debate Argument' in labels or 'Argument' in labels:
-                yield {
-                    "publication": doc["publication"],
-                    "title": doc["title"],
-                    "content": doc["content"],
-                    "link": doc["link"],
-                    "summary": doc["summary"],
-                    "sentiment": doc["sentiment_mean"],
-                    "subjectivity": doc["subjectivity_mean"]
-                }
+        debate = [
+            (d[0], d[1]) for d in self._properties["documents"]
+            if 'Debate Argument' in d[1]
+        ]
+        for doc, labels in debate:
+            yield {
+                "doc_id": doc["doc_id"],
+                "publication": doc["publication"],
+                "title": doc["title"],
+                "content": doc["content"],
+                "link": doc["link"],
+                "summary": doc["summary"],
+                "sentiment": doc["sentiment_mean"],
+                "subjectivity": doc["subjectivity_mean"]
+            }
 
     def statements(self):
         for statement in self._properties["statements"]:
             yield {
+                "doc_id": statement["doc_id"],
                 "title": statement["title"],
                 "summary": statement["summary"],
                 "sentiment": statement["sentiment_mean"],
@@ -76,7 +85,11 @@ class NamedEntityController:
             }
 
     def associated_names(self):
-        for node, count in self._properties["associated"]:
+        names = [
+            (d[0], d[1]) for d in self._properties["associated"]
+            if self._get_node_name(d[0])[1] == "name"
+        ]
+        for node, count in names[:100]:
             details = self._get_node_name(node)
             if details[1] == "name":
                 yield {
@@ -86,7 +99,11 @@ class NamedEntityController:
                 }
 
     def associated_topics(self):
-        for node, count in self._properties["associated"]:
+        topics = [
+            (d[0], d[1]) for d in self._properties["associated"]
+            if self._get_node_name(d[0])[1] == "term"
+        ]
+        for node, count in topics[:100]:
             details = self._get_node_name(node)
             if details[1] == "term":
                 yield {

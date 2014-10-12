@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 {% block article %}
+    {% from "macros.html" import show_document %}
+    {% from "macros.html" import associated %}
 
 <div class="row">
     <div class="col-md-7" >
@@ -10,39 +12,11 @@
 
 <div class="row">
     <div class="col-md-7">
-        <div class="list-group">
-            <div class="list-group-item" >
-                <div class="row-action-primary">
-                    <i class="icon-material-folder"></i>
-                </div>
-                <div class="row-content">
-                    <p class="list-group-item-text">{{ entity.content|safe }}</p>
-                </div>
-            </div>
-            <div class="list-group-separator"></div>
-        </div>
+        {{ show_document(entity) }}
     </div>
 
     <div class="col-md-5">
-        <div class="row">
-            <div class="col-md-10">
-                <div class="alert alert-dismissable alert-success">
-                    <h4>Connected Topics</h4>
-                    {% for mention in entity.topic_mentions() %}
-                    <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['count'] }}">{{ mention['value'] }}</a> /
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="col-md-10">
-                <div class="alert alert-dismissable alert-success">
-                    <h4>Connected Names</h4>
-                    {% for mention in entity.name_mentions() %}
-                    <a href="{{ url_for('show_entries', search_type = mention['type'], search_term = mention['value']) }}" class="alert-link" data-toggle="tooltip" data-placement="top" data-original-title="{{ mention['count'] }}">{{ mention['value'] }}</a> /
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+        {{ associated(entity) }}
     </div>
 </div>
 {% endblock article %}

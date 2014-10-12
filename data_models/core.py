@@ -174,7 +174,7 @@ class Document(DataModel):
 
     def get_sentences(self):
         search_string = u"""
-            MATCH (d:`Document`) WHERE d.link = "{0}" WITH d
+            MATCH (d:`Document`) WHERE d.doc_id = "{0}" WITH d
             MATCH (d)-[:CONTAINS]->(s)
             return s
         """.format(self.vertex["link"])
@@ -184,7 +184,7 @@ class Document(DataModel):
 
     def get_doc_features(self, feature):
         search_string = u"""
-            MATCH (d:`Document`) WHERE d.link = "{0}" WITH d
+            MATCH (d:`Document`) WHERE d.doc_id = "{0}" WITH d
             MATCH (d)-[:CONTAINS]->(s) WITH s
             MATCH (s)-[:MENTIONS]->(feat:`{1}`) with feat
             RETURN feat, count(feat) as weight

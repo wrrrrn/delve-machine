@@ -20,7 +20,8 @@ def delete_all_cached():
 def delete_terms():
     list = [
         "get", "-", "d", "j", "233", "hon", "8212", "would", "163", "also", "1", "could", "might",
-        "put", "8217", "said", "8221", "8220", "got", "says"
+        "put", "8217", "said", "8221", "8220", "got", "says", "must", "made", "want", "say", "take",
+        "see", "always", "including", "well", "steps", "got"
     ]
     for t in list:
         string = u"""
@@ -33,7 +34,7 @@ def delete_terms():
 
 def delete_names():
     list = [
-        "Friend", "Gentlemen", "Lady", "8221", "8220", "got"
+        "Friend", "Gentleman", "Lady", "8221", "8220"
     ]
     for t in list:
         string = u"""

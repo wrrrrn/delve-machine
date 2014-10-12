@@ -16,6 +16,7 @@ class UniqueTermsController:
         for doc, labels in self._properties["documents"]:
             if 'Public Media' in labels:
                 yield {
+                    "doc_id": doc["doc_id"],
                     "publication": doc["publication"],
                     "title": doc["title"],
                     "content": doc["content"],
@@ -29,6 +30,7 @@ class UniqueTermsController:
         for doc, labels in self._properties["documents"]:
             if 'Debate Argument' in labels or 'Argument' in labels:
                 yield {
+                    "doc_id": doc["doc_id"],
                     "publication": doc["publication"],
                     "title": doc["title"],
                     "content": doc["content"],

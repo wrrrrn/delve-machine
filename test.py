@@ -45,11 +45,17 @@ def test_parser():
 
 
 def test_doc():
-    url = 'http://owni.eu/2012/08/27/where-are-the-post-wikileaks-digital-whistleblowers-assange/'
+    url = '54234698e226df11893507ec'
     entity = documents.DocumentController(url)
     if entity.exists:
-        for m in entity.topic_mentions():
-            print m
+        print "yes"
+        print entity.show_properties()
+        for n in entity.associated_names():
+            print n
+        for t in entity.associated_topics():
+            print t
+    else:
+        print "huh?"
 
 
 def test_increment():
@@ -73,8 +79,8 @@ def test_increment():
 
 
 #test_parser()
-#t# est_doc()
-test_increment()
+test_doc()
+#test_increment()
 
 
 

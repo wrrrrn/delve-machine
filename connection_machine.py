@@ -16,8 +16,8 @@ app.config.from_object(__name__)
 
 @app.route('/document')
 def document():
-    url = 'http://owni.eu/2012/09/06/13-of-the-newest-political-and-civic-tools/'
-    entity = documents.DocumentController(url)
+    doc_id = '54234698e226df11893507ec'
+    entity = documents.DocumentController(doc_id)
     if entity.exists:
         return render_template('show_document.html', entity=entity)
     else:
