@@ -4,7 +4,7 @@ import simplejson
 
 class TWFYHansard:
     def __init__(self, link=False):
-        self.twfy = theyworkforyou.TWFY('D4kApuGX4PE9G8NvmkEKRTmV')
+        self.twfy = theyworkforyou.TWFY('EeVPvYDWP2B8DNdzMQGn7MYz')
 
     def get_mps(self):
         return simplejson.loads(

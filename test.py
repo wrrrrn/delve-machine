@@ -3,6 +3,7 @@ from fuzzywuzzy import process
 from data_models import models
 from utils import general_linguistic
 from web.controllers import documents
+from web.controllers import mps
 from utils.experimental_parser import ExperimentalParser
 
 ALL_PARTIES_API = 'http://www.theguardian.com/politics/api/party/all/json'
@@ -58,29 +59,17 @@ def test_doc():
         print "huh?"
 
 
-def test_increment():
-    cache_list = [d["debate_id"] for d in debates.fetch_all(return_list=True)]
-    print "\n---"
-    print "cached:", len(cache_list)
-    print cache_list[:10]
-    print "\n---"
-    imported = model.get_all_doc_ids("Parliamentary Debate")
-
-    print "live:", len(imported)
-    live = [record[0] for record in imported]
-    print live[:10]
-    cache_list.append(live[:10])
-    print "\n---"
-    to_import = [d for d in cache_list if d not in live]
-    for d in live:
-        if d in cache_list:
-            print "found something imported"
-    #print "to import:", len(to_import)
+def test_mp_aggr():
+    mp_aggregator = mps.MpAggregateController()
+    for p in mp_aggregator.government_positions():
+        print p
 
 
 #test_parser()
-test_doc()
-#test_increment()
+#test_doc()
+test_mp_aggr()
+
+
 
 
 

@@ -51,19 +51,19 @@ class DataModel:
         return self.vertex
 
     def set_node_properties(self, properties=None, labels=None):
-        batch = self.g.neo4j.WriteBatch(self.g.graph)
         if properties:
+            node_properties = self.vertex.get_properties()
             for prop in properties:
-                batch.set_property(self.vertex, prop, properties[prop])
-                #self.vertex.update_properties()
+                if prop in node_properties:
+                    self.vertex.update_properties({prop: properties[prop]})
+                else:
+                    self.vertex[prop] = properties[prop]
         if labels:
             if isinstance(labels, list):
                 for label in labels:
                     self.vertex.add_labels(label)
             else:
                 self.vertex.add_labels(labels)
-        results = batch.submit()
-        return results
 
     def create_relationship(self, vertex1, relationship, vertex2):
         #return self.g.create_relationship(vertex1, relationship, vertex2)

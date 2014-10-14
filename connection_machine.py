@@ -1,5 +1,6 @@
 from flask import Flask, url_for, render_template, abort
 from web.controllers import documents
+from web.controllers import mps
 from web.controllers import named_entities
 from web.controllers import unique_terms
 import os
@@ -12,6 +13,12 @@ static_dir = os.path.join(
 )
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.config.from_object(__name__)
+
+
+@app.route('/mps')
+def show_mps():
+    aggregate = mps.MpAggregateController()
+    return render_template('show_mps.html', entity=aggregate)
 
 
 @app.route('/document')

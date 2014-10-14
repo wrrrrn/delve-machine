@@ -5,6 +5,7 @@ class ImportMPs(ImportInterface):
     def __init__(self):
         ImportInterface.__init__(self)
         self.cache = self.cache_models.Politicians()
+        self.full_update = True
 
     def delve(self):
         for doc in self.cache.fetch_all():
@@ -12,8 +13,9 @@ class ImportMPs(ImportInterface):
 
     def _import(self, node):
         mp = self.import_mp(node)
-        if "terms" in node:
-            self.import_terms(mp, node["terms"])
+        if self.full_update:
+            if "terms" in node:
+                self.import_terms(mp, node["terms"])
 
     def import_mp(self, node):
         print "\n.................."
@@ -32,9 +34,12 @@ class ImportMPs(ImportInterface):
             "twfy_id": mp["twfy_id"],
             "number_of_terms": mp["number_of_terms"]
         }
-        if mp["guardian_url"]:
+
+        if "guardian_url" in mp:
             mp_details["guardian_url"] = mp["guardian_url"]
-        if mp["publicwhip_url"]:
+        if "guardian_image" in mp:
+            mp_details["guardian_image"] = mp["guardian_image"]
+        if "publicwhip_url" in mp:
             mp_details["publicwhip_url"] = mp["publicwhip_url"]
             mp_details["publicwhip_id"] = mp["publicwhip_id"]
         if not new_mp.exists:

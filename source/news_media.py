@@ -5,11 +5,7 @@ import os
 
 class CacheMedia(CacheInterface):
     OPML = os.path.join(
-<<<<<<< HEAD
-    os.path.dirname(os.path.abspath(__file__)), 'input/feedly.opml'
-=======
         os.path.dirname(os.path.abspath(__file__)), 'input/feedly.opml'
->>>>>>> master
     )
 
     def __init__(self):

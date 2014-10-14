@@ -3,20 +3,20 @@
     {% from "macros.html" import show_document %}
     {% from "macros.html" import associated %}
 
-<div class="row">
-    <div class="col-md-7" >
-        <h1>{{ entity.title|safe }}</h1>
-        <hr>
-    </div >
-</div>
-
-<div class="row">
-    <div class="col-md-7">
-        {{ show_document(entity) }}
+    <div class="row">
+        <div class="col-md-7" >
+            <h1>{{ entity.title|safe }}</h1>
+            <hr>
+        </div >
     </div>
 
-    <div class="col-md-5">
-        {{ associated(entity) }}
+    <div class="row">
+        <div class="col-md-7">
+            {{ show_document(entity) }}
+        </div>
+
+        <div class="col-md-5">
+            {{ associated(entity) }}
+        </div>
     </div>
-</div>
 {% endblock article %}

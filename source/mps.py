@@ -17,7 +17,7 @@ class CacheMPs(CacheInterface):
         self.all_mps = None
 
     def import_mps(self):
-        self._get_twfy_data()
+        #self._get_twfy_data()
         self._get_guardian_data()
         self._get_publicwhip_data()
 
@@ -33,7 +33,8 @@ class CacheMPs(CacheInterface):
                 "publicwhip_id": None,
                 "party": mp["party"],
                 "guardian_url": None,
-                "publicwhip_url": None
+                "publicwhip_url": None,
+                "guardian_image": None
             }
             print "\n"
             details = self.hansard.get_mp_details(mp["person_id"])
@@ -59,26 +60,19 @@ class CacheMPs(CacheInterface):
             self._report(node)
             self.cache.write(node)
             print "---"
-        self.all_mps = [doc["full_name"] for doc in self.cache.collection.find()]
 
     def _get_guardian_data(self):
         print "Updating Guardian data"
-        r = self.requests.get(CacheMPs.ALL_PARTIES_API)
-        parties = r.json()["parties"]
-        for party in parties:
-            party_uri = party["json-url"]
-            r = self.requests.get(party_uri)
-            if not r.status_code == 404:
-                mps = r.json()["party"]["mps"]
-                for mp in mps:
-                    mp_uri = mp["json-url"]
-                    r = self.requests.get(mp_uri)
-                    if not r.status_code == 404:
-                        person = r.json()["person"]
-                        url = person["aristotle-url"]
-                        result = self._find_cached_mp(person["name"])
-                        self._update_cached_mp(result["_id"], "guardian_url", url)
-                        self._print_out(result["full_name"], url)
+        self.all_mps = [doc["full_name"] for doc in self.cache.collection.find()]
+        for person in self._iterate_guardian_api():
+            url = person["aristotle-url"]
+            cached = self._find_cached_mp(person["name"])
+            self._update_cached_mp(cached["_id"], "guardian_url", url)
+            if "image" in person:
+                self._update_cached_mp(
+                    cached["_id"], "guardian_image", person["image"]
+                )
+            self._print_out(cached["full_name"], url)
 
     def _get_publicwhip_data(self):
         with open(CacheMPs.VOTE_MATRIX) as fin:
@@ -91,10 +85,33 @@ class CacheMPs(CacheInterface):
                 self._update_cached_mp(result["_id"], "publicwhip_url", url)
                 self._print_out(name, url)
 
+    def _iterate_guardian_api(self):
+        r = self.requests.get(CacheMPs.ALL_PARTIES_API)
+        parties = r.json()["parties"]
+        for party in parties:
+            party_uri = party["json-url"]
+            r = self.requests.get(party_uri)
+            if not r.status_code == 404:
+                mps = r.json()["party"]["mps"]
+                for mp in mps:
+                    mp_uri = mp["json-url"]
+                    r = self.requests.get(mp_uri)
+                    if not r.status_code == 404:
+                        person = r.json()["person"]
+                        yield person
+
     def _find_cached_mp(self, search):
-        cand = self.fuzzy.extractOne(search, self.all_mps)
-        result = self.cache.collection.find({"full_name": cand[0]}).limit(1)
-        return result[0]
+        if self.all_mps:
+            cand = self.fuzzy.extractOne(search, self.all_mps)
+            name = cand[0]
+        else:
+            name = search
+        result = self.cache.collection.find({"full_name": name}).limit(1)
+        try:
+            return result[0]
+        except IndexError:
+            return None
+
 
     def _update_cached_mp(self, id, key, value):
         self.cache.collection.update({"_id": id}, {"$set": {key: value}})

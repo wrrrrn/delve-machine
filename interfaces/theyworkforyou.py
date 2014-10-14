@@ -22,27 +22,28 @@ import time
 import urllib
 
 #API Spec
-API = {'api':{
-       'convertURL':[('output', 'url',), ()],
-       'getConstituency':[('output', 'postcode',), ()],
-       'getConstituencies':[('output',), ('date', 'search', 'latitude', 'longitude', 'distance')],
-       'getMP':[('output',), ('postcode', 'constituency', 'id', 'always_return')],
-       'getMPInfo':[('output', 'id',), ('fields')],
-       'getMPsInfo':[('output', 'id',), ('fields')],
-       'getMPs':[('output',), ('date', 'party', 'search')],
-       'getLord':[('output', 'id',), ()],
-       'getLords':[('output',), ('date', 'party', 'search')],
-       'getMLAs':[('output',), ('date', 'party', 'search')],
-       'getMSP':[('output',), ('postcode', 'constituency', 'id')],
-       'getMSPs':[('output',), ('date', 'party', 'search')],
-       'getGeometry':[('output',), ('name',)],
-       'getCommittee':[('output', 'name',), ('date',)],
-       'getDebates':[('output', 'type',), ('date', 'search', 'person', 'gid', 'order', 'page', 'num')],
-       'getWrans':[('output',), ('date', 'search', 'person', 'gid', 'order', 'page', 'num')],
-       'getWMS':[('output',), ('date', 'search', 'person', 'gid', 'order', 'page', 'num')],
-       'getHansard':[('output',), ('search', 'person', 'order', 'page', 'num')],
-       'getComments':[('output',), ('date', 'search', 'user_id', 'pid', 'page', 'num')]} 
-        }
+API = {
+    'api': {
+       'convertURL': [('output', 'url',), ()],
+       'getConstituency': [('output', 'postcode',), ()],
+       'getConstituencies': [('output',), ('date', 'search', 'latitude', 'longitude', 'distance')],
+       'getMP': [('output',), ('postcode', 'constituency', 'id', 'always_return')],
+       'getMPInfo': [('output', 'id',), 'fields'],
+       'getMPsInfo': [('output', 'id',), 'fields'],
+       'getMPs': [('output',), ('date', 'party', 'search')],
+       'getLord': [('output', 'id',), ()],
+       'getLords': [('output',), ('date', 'party', 'search')],
+       'getMLAs': [('output',), ('date', 'party', 'search')],
+       'getMSP': [('output',), ('postcode', 'constituency', 'id')],
+       'getMSPs': [('output',), ('date', 'party', 'search')],
+       'getGeometry': [('output',), ('name',)],
+       'getCommittee': [('output', 'name',), ('date',)],
+       'getDebates': [('output', 'type',), ('date', 'search', 'person', 'gid', 'order', 'page', 'num')],
+       'getWrans': [('output',), ('date', 'search', 'person', 'gid', 'order', 'page', 'num')],
+       'getWMS': [('output',), ('date', 'search', 'person', 'gid', 'order', 'page', 'num')],
+       'getHansard': [('output',), ('search', 'person', 'order', 'page', 'num')],
+       'getComments': [('output',), ('date', 'search', 'user_id', 'pid', 'page', 'num')]}
+}
 
 OUTPUTS = ['xml', 'php', 'js', 'rabx']
 SERVICE_URL = 'http://www.theyworkforyou.com/api/'

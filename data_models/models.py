@@ -134,7 +134,6 @@ class NounPhrase(DataModel):
             MATCH (s)-[:CONTAINS]-(d)
             RETURN DISTINCT d
         """.format(self.vertex["noun_phrase"])
-        print search_string
         output = self.query(search_string)
         for result in output:
             yield result[0]
@@ -289,11 +288,12 @@ class GovernmentDepartment(NounPhrase):
 
 
 class GovernmentPosition(NounPhrase):
-    def __init__(self, name):
+    def __init__(self, name=None):
         NounPhrase.__init__(self)
-        self.noun_phrase = name
-        self.label = self.noun_label
-        self.fetch()
+        if name:
+            self.noun_phrase = name
+            self.label = self.noun_label
+            self.fetch()
 
     def update_details(self, details=None):
         labels = ["Named Entity", "Government Position", "Parliamentary Matters"]
@@ -302,6 +302,19 @@ class GovernmentPosition(NounPhrase):
             properties,
             labels
         )
+
+    def get_current_positions(self):
+        search_string = u"""
+            MATCH (p:`Government Position`) with p
+            MATCH (p)-[:SERVED_IN]-(t) WHERE t.left_reason = "still_in_office"
+            WITH p, t
+            MATCH (t)-[:REPRESENTATIVE_FOR]-(mp) with p, t, mp
+            MATCH (mp)-[r]-() WITH t, mp, r, COLLECT(p.noun_phrase) AS positions
+            RETURN mp.noun_phrase, mp.party, mp.guardian_image, positions, count(r) as weight
+            ORDER BY weight DESC
+        """
+        search_result = self.query(search_string)
+        return search_result
 
 
 class UniqueTerm(DataModel):
