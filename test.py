@@ -66,8 +66,8 @@ def test_mp_aggr():
 
 
 #test_parser()
-#test_doc()
-test_mp_aggr()
+test_doc()
+#test_mp_aggr()
 
 
 
