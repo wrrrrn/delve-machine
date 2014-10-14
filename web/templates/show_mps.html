@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block article %}
+
+    <div class="row">
+        <div class="col-md-6" >
+            <h1>Government</h1>
+            <hr>
+        </div >
+        <div class="col-md-6" >
+            <h1>Opposition</h1>
+            <hr>
+        </div >
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="list-group">
+                {% for mp, weight in entity.government_positions() %}
+                    <div class="list-group-item" >
+                        {% if mp["image"] %}
+                            <div class="row-picture">
+                                <img class="circle" src="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/5/13/1242224187473/David-Cameron-MP-001.jpg" alt="icon">
+                            </div>
+                        {% else %}
+                            <div class="row-action-primary">
+                                <i class="icon-material-folder"></i>
+                            </div>
+                        {% endif %}
+                        <div class="row-content">
+                            <div class="least-content">
+                                <a href="{{ url_for('show_entries', search_type = 'name', search_term = mp["name"]) }}" > more </a>
+                            </div>
+                            <h4 class="list-group-item-heading">{{ mp["name"]|safe }}</h4>
+                            {{ mp["party"]|safe }}
+                            <p>
+                                {% for position in mp["positions"] %}
+                                    <li>{{ position|safe }}</li>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="list-group-separator"></div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="list-group">
+                {% for mp, weight in entity.opposition_positions() %}
+                    <div class="list-group-item" >
+                        <div class="row-picture">
+                            <img class="circle" src="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/5/14/1242298590886/Edward-Miliband-MP-001.jpg" alt="icon">
+                        </div>
+                        <div class="row-content">
+                            <div class="least-content">
+                                <a href="{{ url_for('show_entries', search_type = 'name', search_term = mp["name"]) }}" > more </a>
+                            </div>
+                            <h4 class="list-group-item-heading">{{ mp["name"]|safe }}</h4>
+                            {{ mp["party"]|safe }}
+                            <p>
+                                {% for position in mp["positions"] %}
+                                    <li>{{ position|safe }}</li>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="list-group-separator"></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock article %}
