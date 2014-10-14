@@ -19,7 +19,7 @@
                     <div class="list-group-item" >
                         {% if mp["image"] %}
                             <div class="row-picture">
-                                <img class="circle" src="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/5/13/1242224187473/David-Cameron-MP-001.jpg" alt="icon">
+                                <img class="circle" src="{{ mp['image'] }}" alt="icon">
                             </div>
                         {% else %}
                             <div class="row-action-primary">
@@ -49,7 +49,7 @@
                 {% for mp, weight in entity.opposition_positions() %}
                     <div class="list-group-item" >
                         <div class="row-picture">
-                            <img class="circle" src="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/5/14/1242298590886/Edward-Miliband-MP-001.jpg" alt="icon">
+                            <img class="circle" src="{{ mp['image'] }}" alt="icon">
                         </div>
                         <div class="row-content">
                             <div class="least-content">
