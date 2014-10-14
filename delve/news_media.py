@@ -11,7 +11,7 @@ class ImportMedia(ImportInterface):
         cache_documents = [d for d in self.cache.fetch_all(return_list=True)]
         to_import = self._initialise("Public Media", cache_documents)
         for doc in cache_documents:
-            if doc["debate_id"] in to_import:
+            if doc["link"] in to_import:
                 self._import(doc)
 
     def _import(self, node):

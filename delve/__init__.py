@@ -28,9 +28,12 @@ class ImportInterface:
     def _initialise(self, doc_type, cache_documents):
         live_docs = self.core_model.get_all_doc_ids(doc_type)
         live_list = [record[0] for record in live_docs]
-        cache_list = [d["debate_id"] for d in cache_documents]
+        if doc_type == "Parliamentary Debate":
+            cache_list = [d["debate_id"] for d in cache_documents]
+        elif doc_type == "Public Media":
+            cache_list = [d["link"] for d in cache_documents]
         to_import = [d for d in cache_list if d not in live_list]
-        print "\nImporting Parliamentary Debates\n---"
+        print "\nImporting", doc_type, "\n---"
         self._print_out("Cached Documents", len(cache_list))
         self._print_out("Live Documents", len(live_list))
         self._print_out("To Import", len(to_import))
