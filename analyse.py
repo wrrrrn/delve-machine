@@ -42,7 +42,7 @@ print "\n\nDelve. Politic"
 #get_acts()
 #get_votes()
 current_media()
-get_debates()
+#get_debates()
 
 
 
