@@ -44,21 +44,21 @@ class ImportMedia(ImportInterface):
         new_document = self.data_models.Document(doc_id)
         if not new_document.exists:
             new_document.create()
-            labels = "Public Media"
-            properties = {
-                "publication": pub,
-                "title": title,
-                "link": link,
-                "content": content,
-                "summary": sum,
-                "doc_id": doc_id,
-                "date": date
-            }
-            new_document.set_node_properties(
-                properties,
-                labels
-            )
             print '#', title, 'created...'
+        labels = "Public Media"
+        properties = {
+            "publication": pub,
+            "title": title,
+            "link": link,
+            "content": content,
+            "summary": sum,
+            "doc_id": doc_id,
+            "date": date
+        }
+        new_document.set_node_properties(
+            properties,
+            labels
+        )
         new_document.set_published_date(date)
         return new_document
 
