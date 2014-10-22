@@ -11,10 +11,12 @@ class MpAggregateController:
 
     def government_positions(self):
         for mp, weight in self.government:
+            print "gov:", mp
             yield mp, weight
 
     def opposition_positions(self):
         for mp, weight in self.opposition:
+            print "opp:", mp
             yield mp, weight
 
     def _set_properties(self):

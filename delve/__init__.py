@@ -26,6 +26,7 @@ class ImportInterface:
         )
 
     def _initialise(self, doc_type, cache_documents):
+        cache_list = []
         live_docs = self.core_model.get_all_doc_ids(doc_type)
         live_list = [record[0] for record in live_docs]
         if doc_type == "Parliamentary Debate":
@@ -38,6 +39,8 @@ class ImportInterface:
         self._print_out("Live Documents", len(live_list))
         self._print_out("To Import", len(to_import))
         print "---\n"
+        print cache_list[:3]
+        print to_import[:3]
         return to_import
 
     def _print_out(self, key, value):
