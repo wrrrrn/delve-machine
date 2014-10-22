@@ -37,12 +37,12 @@ def current_media():
 
 print "\n\nDelve. Politic"
 
-#codebook()
-#members_of_parliament()
-#get_acts()
-#get_votes()
+codebook()
+members_of_parliament()
+get_acts()
+get_votes()
 current_media()
-#get_debates()
+get_debates()
 
 
 
