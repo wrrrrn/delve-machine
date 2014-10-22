@@ -43,7 +43,7 @@ class DocumentParser:
         sentence_node = self.data_models.Sentence(sentence_id)
         if not sentence_node.exists:
             sentence_node.create()
-            sentence_node.vertex["sentence"] = sentence
+        sentence_node.vertex["sentence"] = sentence
         return sentence_node
 
     def _get_terms(self, words):

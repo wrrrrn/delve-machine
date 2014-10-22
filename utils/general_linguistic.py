@@ -2,7 +2,6 @@ from collections import Counter
 from math import fabs
 import re
 import os
-
 from nltk.corpus import stopwords, wordnet
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim import corpora, models as gensim_models

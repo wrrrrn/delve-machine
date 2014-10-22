@@ -48,6 +48,7 @@ class ImportMedia(ImportInterface):
             properties = {
                 "publication": pub,
                 "title": title,
+                "link": link,
                 "content": content,
                 "summary": sum,
                 "doc_id": doc_id,
