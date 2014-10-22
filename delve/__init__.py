@@ -40,7 +40,7 @@ class ImportInterface:
         self._print_out("To Import", len(to_import))
         print "---\n"
         print cache_list[:3]
-        print to_import[:3]
+        print live_list[:3]
         return to_import
 
     def _print_out(self, key, value):

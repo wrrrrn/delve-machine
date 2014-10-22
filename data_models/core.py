@@ -141,10 +141,14 @@ class DataModel:
         batch.submit()
 
     def get_all_doc_ids(self, doc_type):
+        if doc_type == "Parliamentary Debate":
+            return_type = "debate_id"
+        elif doc_type == "Public Media":
+            return_type = "link"
         doc_query = u"""
             MATCH (d:`{0}`)
-            RETURN d.link
-        """.format(doc_type)
+            RETURN d.{1}
+        """.format(doc_type, return_type)
         return self.query(doc_query)
 
 
