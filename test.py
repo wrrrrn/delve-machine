@@ -1,6 +1,5 @@
-from data_models import cache, core
+from data_models import cache, core, models
 from fuzzywuzzy import process
-from data_models import models
 from utils import general_linguistic
 from web.controllers import documents
 from web.controllers import mps
@@ -61,13 +60,22 @@ def test_doc():
 
 def test_mp_aggr():
     mp_aggregator = mps.MpAggregateController()
-    for p in mp_aggregator.government_positions():
+    for p in mp_aggregator.government():
         print p
 
 
+def test_mp():
+    name = "Mark Durkan"
+    mp = models.MemberOfParliament(name)
+    print mp.positions
+    print mp.departments
+
+
+
 #test_parser()
-test_doc()
-#test_mp_aggr()
+#test_doc()
+test_mp_aggr()
+#test_mp()
 
 
 

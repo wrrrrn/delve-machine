@@ -194,7 +194,6 @@ class Document(DataModel):
             RETURN feat, count(feat) as weight
             ORDER BY weight DESC
         """.format(self.vertex["doc_id"], feature)
-        print search_string
         output = self.query(search_string)
         for result in output:
             yield result[0], result[1]

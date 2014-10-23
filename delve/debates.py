@@ -5,7 +5,7 @@ class ImportDebates(ImportInterface):
     def __init__(self):
         ImportInterface.__init__(self)
         self.cache = self.cache_models.Debates()
-        self.imported = self.core_model.get_all_doc_ids("Argument")
+        self.imported = self.core_model.get_all_doc_ids("Parliamentary Debate")
 
     def delve(self):
         cache_documents = [d for d in self.cache.fetch_all(return_list=True)]

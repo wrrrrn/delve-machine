@@ -218,11 +218,42 @@ class NounPhrase(DataModel):
 
 
 class MemberOfParliament(NounPhrase):
-    def __init__(self, name):
+    def __init__(self, name=None):
         NounPhrase.__init__(self)
-        self.noun_phrase = name
-        self.label = self.noun_label
-        self.fetch()
+        if name:
+            self.noun_phrase = name
+            self.label = self.noun_label
+            self.fetch()
+            if self.exists:
+                self.positions = self._get_positions()
+                self.departments = self._get_departments()
+
+    def get_all_mps(self):
+        search_string = u"""
+            MATCH (mp:`Member of Parliament`) with mp
+            MATCH (mp)-[r]-() with mp,  r
+            RETURN mp.noun_phrase, mp.party, mp.guardian_image, count(r) as weight
+            ORDER BY weight DESC
+        """
+        search_result = self.query(search_string)
+        return search_result
+
+    def _get_positions(self):
+        return self._get_government_positions("Government Position")
+
+    def _get_departments(self):
+        return self._get_government_positions("Government Department")
+
+    def _get_government_positions(self, pos_type):
+        search_string = u"""
+            MATCH (mp:`Member of Parliament` {{noun_phrase:"{0}"}}) with mp
+            MATCH (mp)-[:REPRESENTATIVE_FOR]-(const)
+            WHERE const.left_reason = "still_in_office" with const
+            MATCH (const)-[:SERVED_IN]-(p:`{1}`) with COLLECT(p.noun_phrase) AS positions
+            RETURN positions
+        """.format(self.vertex["noun_phrase"], pos_type)
+        output = self.query(search_string)
+        return output[0][0]
 
     def update_mp_details(self, properties=None):
         labels = ["Named Entity", "Member of Parliament", "Parliamentary Matters"]

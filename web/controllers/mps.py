@@ -3,29 +3,33 @@ from data_models import core, models
 
 class MpAggregateController:
     def __init__(self):
-        self.positions_model = models.GovernmentPosition()
+        self.mps = models.MemberOfParliament()
         self.data_model = core.DataModel()
-        self.government = []
-        self.opposition = []
+        self.government_members = []
+        self.opposition_members = []
         self._set_properties()
 
-    def government_positions(self):
-        for mp, weight in self.government:
+    def government(self):
+        for mp, weight in self.government_members:
             yield mp, weight
 
-    def opposition_positions(self):
-        for mp, weight in self.opposition:
+    def opposition(self):
+        for mp, weight in self.opposition_members:
             yield mp, weight
 
     def _set_properties(self):
-        for p in self.positions_model.get_current_positions():
+        for mp in self.mps.get_all_mps():
             shadow, government = False, False
-            mp, party, image, positions, weight = p[0], p[1], p[2], p[3], p[4]
-            mp_detail = {
+            mp, party, image, weight = mp[0], mp[1], mp[2], mp[3]
+            mp_detail = models.MemberOfParliament(mp)
+            positions = mp_detail.positions
+            departments = mp_detail.departments
+            aggregate_detail = {
                 "name": mp,
                 "party": party,
                 "image": image,
-                "positions": positions
+                "positions": positions,
+                "departments": departments
             }
             for pos in positions:
                 if "Shadow" in pos or party == "Labour":
@@ -33,17 +37,6 @@ class MpAggregateController:
                 elif party in ['Liberal Democrat', 'Conservative']:
                     government = True
             if shadow:
-                self.opposition.append((mp_detail, weight))
+                self.opposition_members.append((aggregate_detail, weight))
             if government:
-                self.government.append((mp_detail, weight))
-
-    def _get_departments(self, mp):
-        search_query = u"""
-            MATCH (mp:`Noun Phrase` {{noun_phrase:"{0}"}}) with mp
-            MATCH (mp)-[:REPRESENTATIVE_FOR]-(t)
-            where t.left_office = "still_in_office" with mp, t
-            MATCH (t)-[:SERVED_IN]-(g:`Government Department`)
-            RETURN collect(g.noun_phrase) as dept
-        """.format(mp)
-        result = self.data_model.query(search_query)
-        return result[0]
+                self.government_members.append((aggregate_detail, weight))
