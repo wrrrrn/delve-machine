@@ -25,7 +25,8 @@ class NamedEntityExtractor:
             range = e[0]
             tag = e[1]
             entity_text = u" ".join(tokens[i].decode('utf-8') for i in range)
-            entities_text.append(entity_text)
+            if not u'"' in entity_text:
+                entities_text.append(entity_text)
         return entities_text
 
 
