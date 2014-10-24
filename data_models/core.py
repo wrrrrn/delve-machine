@@ -142,7 +142,7 @@ class DataModel:
 
     def get_all_doc_ids(self, doc_type):
         if doc_type == "Parliamentary Debate":
-            return_type = "debate_id"
+            return_type = "doc_id"
         elif doc_type == "Public Media":
             return_type = "link"
         doc_query = u"""
