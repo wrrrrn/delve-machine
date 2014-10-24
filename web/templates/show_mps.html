@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block article %}
+    {% from "macros.html" import show_mp %}
 
     <div class="row">
         <div class="col-md-6" >
@@ -15,29 +16,9 @@
     <div class="row">
         <div class="col-md-6">
             <div class="list-group">
-                {% for mp, weight in entity.government_positions() %}
+                {% for mp, weight in entity.government() %}
                     <div class="list-group-item" >
-                        {% if mp["image"] %}
-                            <div class="row-picture">
-                                <img class="circle" src="{{ mp['image'] }}" alt="icon">
-                            </div>
-                        {% else %}
-                            <div class="row-action-primary">
-                                <i class="icon-material-folder"></i>
-                            </div>
-                        {% endif %}
-                        <div class="row-content">
-                            <div class="least-content">
-                                <a href="{{ url_for('show_entries', search_type = 'name', search_term = mp["name"]) }}" > more </a>
-                            </div>
-                            <h4 class="list-group-item-heading">{{ mp["name"]|safe }}</h4>
-                            {{ mp["party"]|safe }}
-                            <p>
-                                {% for position in mp["positions"] %}
-                                    <li>{{ position|safe }}</li>
-                                {% endfor %}
-                            </p>
-                        </div>
+                        {{ show_mp(mp) }}
                     </div>
                     <div class="list-group-separator"></div>
                 {% endfor %}
@@ -46,29 +27,9 @@
 
         <div class="col-md-6">
             <div class="list-group">
-                {% for mp, weight in entity.opposition_positions() %}
+                {% for mp, weight in entity.opposition() %}
                     <div class="list-group-item" >
-                        {% if mp["image"] %}
-                            <div class="row-picture">
-                                <img class="circle" src="{{ mp['image'] }}" alt="icon">
-                            </div>
-                        {% else %}
-                            <div class="row-action-primary">
-                                <i class="icon-material-folder"></i>
-                            </div>
-                        {% endif %}
-                        <div class="row-content">
-                            <div class="least-content">
-                                <a href="{{ url_for('show_entries', search_type = 'name', search_term = mp["name"]) }}" > more </a>
-                            </div>
-                            <h4 class="list-group-item-heading">{{ mp["name"]|safe }}</h4>
-                            {{ mp["party"]|safe }}
-                            <p>
-                                {% for position in mp["positions"] %}
-                                    <li>{{ position|safe }}</li>
-                                {% endfor %}
-                            </p>
-                        </div>
+                        {{ show_mp(mp) }}
                     </div>
                     <div class="list-group-separator"></div>
                 {% endfor %}
@@ -76,3 +37,4 @@
         </div>
     </div>
 {% endblock article %}
+
