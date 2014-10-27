@@ -20,14 +20,12 @@ def get_profile():
     #names.get_np_stats()
     #documents = document_summary.DocumentsSummary(verbose=False)
     #documents.get_document_stats()
-    #structure = network_centrality.InOutDegree()
-    #structure.show_degrees()
-    #centre = central_nodes.CentralNodes()
-    #centre.show_nodes()
+    structure = network_centrality.InOutDegree()
+    structure.show_degrees()
+    centre = central_nodes.CentralNodes()
+    centre.show_nodes()
     #sentence_summary = sentence.SentenceNodes()
     #sentence_summary.show_counts()
-    #stats = document_metrics.PopulationStatistics(models, text_io, sem=semantic_tools)
-    #stats.get_documents()
 
 
 get_profile()

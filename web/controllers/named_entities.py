@@ -7,9 +7,7 @@ class NamedEntityController:
         self.identity = name
         self.n = models.NounPhrase(self.name)
         self.n.fetch()
-        self.exists = self.n.exists
         self.exclude = ['Named Entity', 'Noun Phrase']
-
         self._properties = {}
         self.is_mp = False
         self.has_statements = False
