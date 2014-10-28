@@ -1,5 +1,4 @@
-from data_models import cache
-from data_models import core
+from data_models import core, cache
 
 graph_model = core.DataModel()
 politicians = cache.Politicians()

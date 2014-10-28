@@ -1,7 +1,6 @@
 from utils import general_linguistic
 from delve import document_parser
-from data_models import models
-from data_models import cache
+from data_models import models, cache
 from interfaces import text_io
 from interfaces import data_io
 from interfaces import web

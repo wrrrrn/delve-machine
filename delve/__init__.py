@@ -1,9 +1,8 @@
 import document_parser
 from utils import general_linguistic
 from interfaces import web
-from data_models import core
+from data_models import core, cache
 from data_models import models
-from data_models import cache
 
 
 class ImportInterface:
