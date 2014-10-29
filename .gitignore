@@ -24,6 +24,7 @@ analyse.py
 document_update.py
 utils/vectors/recreate_vectors.py
 source/input/document_metrics-14042014.csv
+data_models/schema visualization/
 test.py
 test.py.lprof
 utils/system_stats.r
