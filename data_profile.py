@@ -14,8 +14,8 @@ print "---"
 def get_profile():
     node_count = nodes.NodeCount()
     node_count.show_counts()
-    #terms = term_summary.TermSummary(verbose=True)
-    #terms.get_term_stats()
+    terms = term_summary.TermSummary(verbose=True)
+    terms.get_term_stats()
     #names = np_summary.NounPhraseSummary(verbose=True)
     #names.get_np_stats()
     #documents = document_summary.DocumentsSummary(verbose=False)
