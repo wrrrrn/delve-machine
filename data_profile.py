@@ -1,6 +1,7 @@
 from time import strftime
 from utils.data_profiler import node_summary as nodes
 from utils.data_profiler import document_summary
+from utils.data_profiler import term_summary
 from utils.data_profiler import network_centrality
 from utils.data_profiler import central_nodes
 
