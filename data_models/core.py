@@ -4,10 +4,8 @@ import re
 
 
 class DataModel:
-    g = graph.GraphInterface()
-
     def __init__(self):
-        self.g = DataModel.g
+        self.g = graph.GraphInterface()
         self.vertex = None
         self.exists = False
         self.document_label = 'Document'

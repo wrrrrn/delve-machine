@@ -228,16 +228,6 @@ class MemberOfParliament(NounPhrase):
                 self.positions = self._get_positions()
                 self.departments = self._get_departments()
 
-    def get_all_mps(self):
-        search_string = u"""
-            MATCH (mp:`Member of Parliament`) with mp
-            MATCH (mp)-[r]-() with mp,  r
-            RETURN mp.noun_phrase, mp.party, mp.guardian_image, count(r) as weight
-            ORDER BY weight DESC
-        """
-        search_result = self.query(search_string)
-        return search_result
-
     def _get_positions(self):
         return self._get_government_positions("Government Position")
 
@@ -278,6 +268,32 @@ class MemberOfParliament(NounPhrase):
 
     def link_session(self, term):
         self.create_relationship(self.vertex, "REPRESENTATIVE_FOR", term.vertex)
+
+
+class MembersOfParliament(DataModel):
+    def __init__(self):
+        DataModel.__init__(self)
+        self.count = self.get_mp_count()
+
+    def get_mp_count(self):
+        search_string = u"""
+            MATCH (mp:`Member of Parliament`)
+            RETURN count(mp)
+        """
+        search_result = self.query(search_string)
+        return search_result[0][0]
+
+    def get_all_mps(self, page_size, skip_to):
+        if skip_to < (self.count - page_size):
+            search_string = u"""
+                MATCH (mp:`Member of Parliament`) with mp
+                MATCH (mp)-[r]-() with mp,  r
+                RETURN mp.noun_phrase, mp.party, mp.guardian_image, count(r) as weight
+                ORDER BY weight DESC
+                SKIP {0} LIMIT {1}
+            """.format(skip_to, page_size)
+            search_result = self.query(search_string)
+            return search_result
 
 
 class TermInParliament(NounPhrase):

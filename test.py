@@ -4,6 +4,7 @@ from data_models import core, models, cache
 from utils import general_linguistic
 from web.controllers import documents
 from web.controllers import mps
+from web.api import mps_api
 from utils.experimental_parser import ExperimentalParser
 
 
@@ -61,7 +62,7 @@ def test_doc():
 
 
 def test_mp_aggr():
-    mp_aggregator = mps.MpAggregateController()
+    mp_aggregator = mps_api.MpAggregateController()
     for p in mp_aggregator.government():
         print p
 
@@ -73,11 +74,14 @@ def test_mp():
     print mp.departments
 
 
+def test_mps():
+    mps = mps_api.MpsApi()
+    print mps.get_all()
 
 #test_parser()
 #test_doc()
-test_mp_aggr()
-#test_mp()
+#test_mp_aggr()
+test_mps()
 
 
 
