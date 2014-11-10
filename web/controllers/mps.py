@@ -3,7 +3,7 @@ from data_models import core, models
 
 class MpAggregateController:
     def __init__(self):
-        self.mps = models.MemberOfParliament()
+        self.mps = models.MembersOfParliament()
         self.data_model = core.DataModel()
         self.government_members = []
         self.opposition_members = []
@@ -18,7 +18,7 @@ class MpAggregateController:
             yield mp, weight
 
     def _set_properties(self):
-        for mp in self.mps.get_all_mps():
+        for mp in self.mps.get_all_mps(page_size=20, skip_to=0):
             shadow, government = False, False
             mp, party, image, weight = mp[0], mp[1], mp[2], mp[3]
             mp_detail = models.MemberOfParliament(mp)

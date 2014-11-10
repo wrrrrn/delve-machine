@@ -65,7 +65,7 @@
 <div class="container">
 
     {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
+        <div class=flash>{{ message }}</div>
     {% endfor %}
     <body class="container">
     {% block body %}{% endblock %}
@@ -80,18 +80,41 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <!--
-<script src="{{ url_for('static', filename='jquery.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script> -->
-<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+
+<script id="mpTemplate" type="text/template">
+    <div class="list-group-item" >
+        <div class="row-picture">
+            <img class="circle" src="<%= image %>" alt="icon">
+        </div>
+        <div class="row-content">
+            <div class="least-content">
+                <a href="#" > more </a>
+            </div>
+            <h4 class="list-group-item-heading"><%= name %></h4>
+            <%= party%>
+        </div>
+    </div>
+    <div class="list-group-separator"></div>
+</script>
+
+
+<script src="{{ url_for('static', filename='js/lib/jquery.js') }}"></script>
+<script src="{{ url_for('static', filename='js/lib/underscore-min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/lib/backbone-min.js') }}"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-        $(document).ready(function() {
-            $("[data-toggle=tooltip]").tooltip();
-        });
-
+    $(document).ready(function() {
+        $("[data-toggle=tooltip]").tooltip();
+    });
 </script>
 <script src="{{ url_for('static', filename='js/lib/d3/d3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='material/scripts/ripples.js') }}"></script>
 <script src="{{ url_for('static', filename='material/scripts/material.js') }}"></script>
+<script src="{{ url_for('static', filename='js/models/mp.js') }}"></script>
+<script src="{{ url_for('static', filename='js/collections/mps.js') }}"></script>
+<script src="{{ url_for('static', filename='js/views/government.js') }}"></script>
+<script src="{{ url_for('static', filename='js/models/mp.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

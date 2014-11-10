@@ -28,14 +28,14 @@ class MpsApi:
             mp_info = models.MemberOfParliament(name)
             positions = mp_info.positions
             departments = mp_info.departments
-            aggregate_detail = {
+            mp_detail = {
                 "name": name,
                 "party": party,
                 "image": image,
                 "positions": positions,
-                "departments": departments
+                "departments": departments,
+                "weight": mp[3]
             }
-            mp_detail = {"mp": aggregate_detail, "weight": mp[3]}
             self.all.append(mp_detail)
             for pos in positions:
                 if "Shadow" in pos or party == "Labour":

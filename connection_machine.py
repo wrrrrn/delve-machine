@@ -1,5 +1,5 @@
 from flask import Flask, url_for, render_template, abort
-from flask.ext.restful import Api, Resource, reqparse, fields, marshal
+from flask.ext.restful import Api, Resource, reqparse
 from web.controllers import documents
 from web.controllers import mps
 from web.controllers import named_entities
@@ -22,6 +22,10 @@ api = Api(app)
 def show_mps():
     aggregate = mps.MpAggregateController()
     return render_template('show_mps.html', entity=aggregate)
+
+@app.route('/test')
+def show_test():
+    return render_template('show_mps_api.html', entity=None)
 
 
 @app.route('/document')
@@ -55,12 +59,19 @@ def show_entries(search_type, search_term):
 class MpsList(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('type', type=str)
         super(MpsList, self).__init__()
 
     def get(self):
+        args = self.reqparse.parse_args()
         mps = mps_api.MpsApi()
-        all = mps.get_all()
-        return {'mps': all}
+        if args["type"] == "government":
+            all = mps.get_government()
+        if args["type"] == "opposition":
+            all = mps.get_opposition()
+        else:
+            all = mps.get_all()
+        return all
 
 api.add_resource(MpsList, '/api/v0.1/mps', endpoint='mps')
 
