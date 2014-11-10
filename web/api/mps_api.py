@@ -24,25 +24,25 @@ class MpsApi:
         result = self.mps.get_all_mps(page_size, skip_to)
         for mp in result:
             shadow, government = False, False
-            weight = {"weight": mp[3]}
-            mp, party, image = mp[0], mp[1], mp[2]
-            mp_detail = models.MemberOfParliament(mp)
-            positions = mp_detail.positions
-            departments = mp_detail.departments
+            name, party, image = mp[0], mp[1], mp[2]
+            mp_info = models.MemberOfParliament(name)
+            positions = mp_info.positions
+            departments = mp_info.departments
             aggregate_detail = {
-                "name": mp,
+                "name": name,
                 "party": party,
                 "image": image,
                 "positions": positions,
                 "departments": departments
             }
-            self.all.append((aggregate_detail, weight))
+            mp_detail = {"mp": aggregate_detail, "weight": mp[3]}
+            self.all.append(mp_detail)
             for pos in positions:
                 if "Shadow" in pos or party == "Labour":
                     shadow = True
                 elif party in ['Liberal Democrat', 'Conservative']:
                     government = True
             if shadow:
-                self.opposition_members.append((aggregate_detail, weight))
+                self.opposition_members.append(mp_detail)
             if government:
-                self.government_members.append((aggregate_detail, weight))
+                self.government_members.append(mp_detail)
